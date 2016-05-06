@@ -223,10 +223,10 @@
 (defn code-solver-using-best-clue
   [clues assigned-letters-map-coll]
   (let [leaves (filter map? (tree-seq (complement map?) identity  assigned-letters-map-coll))
-        letmap (first leaves)
-        sortclues (rank-n-sort-clues clues letmap)]
-    (println letmap)
-    (println sortclues)
+        letmaptosort (first leaves)
+        sortclues (rank-n-sort-clues clues letmaptosort)]
+    ;(println letmaptosort)
+    ;(println sortclues)
     (if (first sortclues)
       (code-solver-using-best-clue clues
                                    (code-solver
@@ -235,9 +235,10 @@
       leaves)))
 
 ; Examples
+
 ; (def cc (get-cc 1))
 ; (def ans (code-solver-using-best-clue (:clues cc) (:encodemap cc)))
-; (show-sol 0 (seq ans) (:clues cc))
+; (show-sol 0 ans (:clues cc))
 
 
 ; TODO make code-solver-using-best-clue
@@ -378,6 +379,15 @@
     (println scores)
     (show-sol 0 maps-in-ans n-good-clues)))
 
+
+
+; Examples - some work n 1 ... 48 other stack overflow
+(defn solve-example-cc
+  [n]
+  (let [cc (get-cc n)
+        ans (code-solver-using-best-clue (:clues cc) (:encodemap cc))]
+    (println (count ans))
+    (time (show-sol 0 ans (:clues cc)))))
 
 
 
