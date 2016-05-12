@@ -283,10 +283,12 @@
   [clues assigned-letters-map-coll sort-function]
   (let [leaves (extract-leaves assigned-letters-map-coll)
         letmaptosort (first leaves)
+        ; assuming all maps in the leaves will produce same sort order so use first
+        ; this is (probably) true for rank-n-sort-clues but not on orders that depend on fewest matches
         sortclues (sort-function clues letmaptosort)]
     ;(println letmaptosort)
     ;(println sortclues)
-    (println assigned-letters-map-coll)
+    ;(println assigned-letters-map-coll)
     (if (first sortclues)
       (code-solver-using-best-clue clues
                                    (code-solver
@@ -344,7 +346,7 @@
   (loop
     [output assigned-letters-map
      alm (code-solver-from-all-clues clues assigned-letters-map sort-function)]
-    (println alm)
+    ;(println alm)
     (if (empty? (extract-leaves alm))
       (extract-leaves output)
       (recur alm (code-solver-from-all-clues clues alm sort-function)))))
