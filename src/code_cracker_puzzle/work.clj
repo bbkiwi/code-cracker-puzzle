@@ -46,7 +46,7 @@
         (inc (- (/ cnt)))))))
 
 (defn set-inital-partial-sol
-  "Sets values for keys"
+  "Sets values for keys :wordlists :partialwords :decodedclues :simplescores :wordcountscores"
   [cc]
   (let [dotmap (zipmap (range 1 27) (repeat 27 \.))
         wordlists (map #(find-all-words % (:encodemap cc)) (:clues cc))
@@ -113,6 +113,16 @@
 ;TODO why if #_ removed does side effects of map not work? fact they are lazy?
 
 
+(defn make-example-for-work
+  "Breaks sentence into lower case words and encodes via 1 \\a, 2 \\b ...
+   to get list of clues which are used to solve."
+  [sentence]
+  (let [clues (map encode (str/split (str/lower-case sentence) #" +"))
+        cc {:encodemap {} :clues clues}]
+    (println clues)
+    (set-inital-partial-sol cc)))
 
 
+;(make-example-for-work "pas pals clap sap lap slap claps pal")
+;(def root (make-example-for-work "pas pals clap sap lap slap claps pal"))
 

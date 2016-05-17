@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="Routines sorting clues&#10;Data in recources">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
+    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/replstate.xml" afterPath="$PROJECT_DIR$/.idea/replstate.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code-cracker-puzzle.iml" afterPath="$PROJECT_DIR$/code-cracker-puzzle.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
     </list>
     <ignored path="code-cracker-puzzle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,8 +30,8 @@
       <file leaf-file-name="core.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="30" selection-start-line="2" selection-start-column="4" selection-end-line="6" selection-end-column="30" />
+            <state relative-caret-position="6315">
+              <caret line="421" column="54" selection-start-line="408" selection-start-column="0" selection-end-line="421" selection-end-column="54" />
               <folding>
                 <element signature="e#2448#2877#0" expanded="false" />
               </folding>
@@ -44,8 +42,8 @@
       <file leaf-file-name="work.clj" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="709">
-              <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+            <state relative-caret-position="604">
+              <caret line="116" column="73" selection-start-line="116" selection-start-column="73" selection-end-line="116" selection-end-column="73" />
               <folding />
             </state>
           </provider>
@@ -138,7 +136,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT&#10;Clojure" />
   </component>
-  <component name="ReplState" timestamp="1463458195628">{:repl-history {:ide [], :local [&quot;(decode-to-vec (nth (:clues ccc) 2) (:encodemap ccc))&quot; &quot;(decode-to-vec (nth (:clues ccc) 3) (:encodemap ccc))&quot; &quot;(decode-to-vec (nth (:clues ccc) 4) (:encodemap ccc))&quot; &quot;(decode-to-vec (nth (:clues ccc) 5) (:encodemap ccc))&quot; &quot;(map #(decode-to-vec  % (:encodemap ccc)) (:clues ccc))&quot; &quot;(some-fn number? (1 2 3))&quot; &quot;(some number? (1 2 3))&quot; &quot;(number? 2)&quot; &quot;(some number? [ 1 2 3])&quot; &quot;(some number? '(1 2 3))&quot; &quot;(:simplescores cc)&quot; &quot;(doc map)&quot; &quot;(deref ccc)&quot; &quot;(doc deref)&quot; &quot;(doc def)&quot; &quot;(myvars)&quot; &quot;ccc&quot; &quot;(take 10 (nth (:wordlists ccc)3))&quot; &quot;(take 10 (nth (:wordlists ccc)4))&quot; &quot;(take 10 (nth (:wordlists ccc)5))&quot; &quot;(take 10 (nth (:wordlists ccc)7))&quot; &quot;(take 10 (nth (:wordlists ccc)8))&quot; &quot;(:decodedclues ccc)&quot; &quot;(def ccc (set-inital-partial-sol 4))&quot; &quot;(def ccc (set-inital-partial-sol 5))&quot; &quot;(:wordcountscores ccc)&quot; &quot;(:simplescores ccc)&quot; &quot;(keys ccc)&quot; &quot;(non-completed-clue? ccc)&quot; &quot;(make-child ccc (nth (:decodedclues ccc) 0) (nth (:wordlists ccc) 0))&quot; &quot;(make-child ccc (nth (:decodedclues ccc) 0) (nth (nth (:wordlists ccc) 0)0))&quot; &quot;(make-child ccc (nth (:decodedclues ccc) 3) (nth (nth (:wordlists ccc) 3)0))&quot; &quot;(make-child ccc (nth (:clues ccc) 3) (nth (nth (:wordlists ccc) 3)0))&quot; &quot;(filtercode {7 a, 13 w, 9 c, 5 s, 14 i, 10 u, 8 b} \&quot;abacus\&quot; [7 8 7 9 10 5] [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;{8 \\a}&quot; &quot;(println (:encodemap ccc))&quot; &quot;(filtercode {7 \\a, 13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} \&quot;abacus\&quot; [7 8 7 9 10 5] [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {13 \\w, 14 \\i} \&quot;abacus\&quot; [7 8 7 9 10 5] [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {13 \\w, 14 \\i} [7 8 7 9 10 5] \&quot;abacus\&quot; [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(keys cccnew)&quot; &quot;(def cccnew (make-child ccc (nth (:clues ccc) 0) (nth (nth (:wordlists ccc) 0)0)))&quot; &quot;(:encodemap cccnew)&quot; &quot;(:simplescores cccnew)&quot; &quot;(:wordcountscores cccnew)&quot; &quot;(def childclue (children-from-clue ccc 0))&quot; &quot;(count child)&quot; &quot;(def childclue (children-from-clue ccc 1))&quot; &quot;(def childclue (children-from-clue ccc 2))&quot; &quot;(count childclue)&quot; &quot;childclue&quot; &quot;(:encodemap ccc)&quot; &quot;(def childclue (children-from-clue ccc 3))&quot; &quot;(:clue ccc)&quot; &quot;(:clue cc)&quot; &quot;(:clues cc)&quot; &quot;(defn children-from-clue\n  [cc clue-index]\n  (reduce #(conj %1 (make-child cc (nth (:clues cc) clue-index) %2)) (lazy-seq) (nth(:wordlists cc) clue-index)))&quot; &quot;(cc :clues)&quot; &quot;(cc :simplescores)&quot; &quot;(cc :wordcountscores)&quot; &quot;(cc1 :wordcountscores)&quot; &quot;((nth cc1 0) :wordcountscores)&quot; &quot;((nth cc1 1) :wordcountscores)&quot; &quot;((nth cc2 1) :simplescores)&quot; &quot;((nth cc2 2) :simplescores)&quot; &quot;((nth cc2 1) :wordcountscores)&quot; &quot;((nth cc2 2) :wordcountscores)&quot; &quot;(def cc2 (children-from-clue (nth cc1 0) 12))&quot; &quot;((nth cc2 0) :wordcountscores)&quot; &quot;((nth ))&quot; &quot;((nth cc2 0) :simplescores)&quot; &quot;((nth cc2 0) :decodedclues)&quot; &quot;(nice-print cc2 0)&quot; &quot;(nice-print cc2 1)&quot; &quot;(nice-print cc2 2)&quot; &quot;(type cc2)&quot; &quot;(type cc1)&quot; &quot;(make-child ccc (nth (:clues ccc) 0) (nth (nth (:wordlists ccc) 0)0))&quot; &quot;(make-child cc (nth (:clues cc) 0) (nth (nth (:wordlists cc) 0)0))&quot; &quot;(conj 1 (lazy-seq 3 4 5))&quot; &quot;(lazy-seq 3 4 5)&quot; &quot;(lazy-seq [3 4 5])&quot; &quot;(conj 1 (lazy-seq [3 4 5]))&quot; &quot;(conj  (lazy-seq [3 4 5])\n       1)&quot; &quot;(cons 1  (lazy-seq [3 4 5]))&quot; &quot;(cons 1 (range))&quot; &quot;(cons 1 (range 10))&quot; &quot;(type *1)&quot; &quot;(type (range 10))&quot; &quot;(type (range))&quot; &quot;cc1&quot; &quot;(count cc1)&quot; &quot;(nth cc1 0)&quot; &quot;(nth cc1 1)&quot; &quot;(nth cc1 2)&quot; &quot;(doc cons)&quot; &quot;(doc conj)&quot; &quot;(def cc1 (children-from-clue cc 1))&quot; &quot;(nice-print cc1 0)&quot; &quot;(def cc (get-cc 3))&quot; &quot;cc&quot; &quot;(def cc (set-inital-partial-sol (get-cc 3)))&quot;], :remote []}}</component>
+  <component name="ReplState" timestamp="1463461229988">{:repl-history {:ide [], :local [&quot;(type *1)&quot; &quot;(type (range 10))&quot; &quot;(type (range))&quot; &quot;cc1&quot; &quot;(nth cc1 0)&quot; &quot;(nth cc1 1)&quot; &quot;(nth cc1 2)&quot; &quot;(doc conj)&quot; &quot;(def cc (get-cc 3))&quot; &quot;cc&quot; &quot;(type cc)&quot; &quot;(type cc1)&quot; &quot;(type (cc1 0))&quot; &quot;(type (nth cc1 0))&quot; &quot;(type (nth cc1 1))&quot; &quot;(type (nth cc1 ))&quot; &quot;(def cc1 (children-from-clue cc 0))&quot; &quot;(doc map)&quot; &quot;(cond [1 2 3] [4 5 6])&quot; &quot;(cons [1 2 3] [4 5 6])&quot; &quot;(doc cons)&quot; &quot;(doc replace)&quot; &quot;(replace {1 /. 2/.} [\\a 1 2 \\b])&quot; &quot;(replace {1 \\. 2 \\.} [\\a 1 2 \\b])&quot; &quot;(str/join \&quot;\&quot; *1)&quot; &quot;(keys cc)&quot; &quot;(zipmap (range 1 27) (repeat 27 \\.))&quot; &quot;(doc apply)&quot; &quot;(def cc (set-inital-partial-sol (get-cc 3)))&quot; &quot;(cc :partialwords)&quot; &quot;(nice-print cc1 0)&quot; &quot;(min 4 5)&quot; &quot;(def cc2 (children-from-clue (first cc1) 3))&quot; &quot;(def cc2 (children-from-clue (first cc1) 2))&quot; &quot;(def cc2 (children-from-clue (first cc1) 12))&quot; &quot;(nice-print cc2 0)&quot; &quot;(nice-print cc2 1)&quot; &quot;(nice-print cc2 2)&quot; &quot;(doc some)&quot; &quot;(doc some?)&quot; &quot;(doc every)&quot; &quot;(doc every?)&quot; &quot;(doc not=)&quot; &quot;(type cc2)&quot; &quot;(doc for)&quot; &quot;(take 100 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(take 10 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(doc concat)&quot; &quot;(concat [1 2 3] [4 5 6])&quot; &quot;(def cc1 (children-from-clue cc 1))&quot; &quot;(def cc1 (children cc [1]))&quot; &quot;(def cca (nth cc1 0))&quot; &quot;(def cc1 (children cca [1]))&quot; &quot;(def cc1 (children cca [2]))&quot; &quot;(count cc2)&quot; &quot;(def cc1a (children-from-clue cca 12))&quot; &quot;(count cc1a)&quot; &quot;(def cc1b (children-from-clue cca 15))&quot; &quot;(count cc1b)&quot; &quot;(doc inspect)&quot; &quot;(doc inspector)&quot; &quot;(count (nth cc2 0))&quot; &quot;(keys (nth cc2 0))&quot; &quot;(key1 (nth cc2 0))&quot; &quot;(keys (nth cc2 1))&quot; &quot;(keys (nth cc2 2))&quot; &quot;(keys (nth cc2 3))&quot; &quot;(concat (lazy-seq) {:a 1 :b 2})&quot; &quot;(concat (lazy-seq) '({:a 1 :b 2}))&quot; &quot;(concat *1 '({:a 1 :b 2}))&quot; &quot;(def cc1 (children cca [12 15]))&quot; &quot;(count cc1)&quot; &quot;(zipmap (range 4) [3 5 2 8])&quot; &quot;(def tm (zipmap (range 4) [3 5 2 8]))&quot; &quot;tm&quot; &quot;(keys tm)&quot; &quot;(vals tm)&quot; &quot;(map last tm)&quot; &quot;(map next tm)&quot; &quot;(sort #(&lt;= (last tm) %) tm)&quot; &quot;(sort #(&lt;= (last %)) tm)&quot; &quot;(sort #(last %) tm)&quot; &quot;(example sort)&quot; &quot;(doc sort)&quot; &quot;(sort #(&lt; (last %1) (last %2)) tm)&quot; &quot;(keys *1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 1)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 2)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 3)))&quot; &quot;(take 1 ans)&quot; &quot;(take 2 ans)&quot; &quot;()&quot; &quot;(nice-print (nth ans 0))&quot; &quot;(nice-print (nth ans 0) 0)&quot; &quot;(nth ans 0)&quot; &quot;(nice-print ans 1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 4)))&quot; &quot;(make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;)&quot; &quot;(def root (make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;))&quot; &quot;(def ans (filter (complement non-completed?) (tree-seq non-completed? children root)))&quot; &quot;(nice-print ans 0)&quot;], :remote []}}</component>
   <component name="RunManager" selected="Clojure REPL.REPL for code-cracker-puzzle">
     <configuration default="false" name="core" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
       <module name="code-cracker-puzzle" />
@@ -313,17 +311,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="36" width="1824" height="948" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="REPL" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5117845" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46015713" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Leiningen" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.4867968" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -331,14 +327,16 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25645342" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5045872" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39908257" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -355,7 +353,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new functions" />
     <MESSAGE value="Routines sorting clues&#10;Data in recources" />
-    <option name="LAST_COMMIT_MESSAGE" value="Routines sorting clues&#10;Data in recources" />
+    <MESSAGE value="Added work.clj to use tree-seq" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added work.clj to use tree-seq" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -761,8 +760,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="30" selection-start-line="2" selection-start-column="4" selection-end-line="6" selection-end-column="30" />
+        <state relative-caret-position="6315">
+          <caret line="421" column="54" selection-start-line="408" selection-start-column="0" selection-end-line="421" selection-end-column="54" />
           <folding>
             <element signature="e#2448#2877#0" expanded="false" />
           </folding>
@@ -771,8 +770,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="709">
-          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+        <state relative-caret-position="604">
+          <caret line="116" column="73" selection-start-line="116" selection-start-column="73" selection-end-line="116" selection-end-column="73" />
           <folding />
         </state>
       </provider>
