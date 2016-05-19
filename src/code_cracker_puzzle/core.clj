@@ -78,6 +78,7 @@
     :else (str char-from-pat)))
 
 
+
 ; maybe use reduce here
 (defn code-cracker-to-regex-body
   "This is the recursive routine"
@@ -98,7 +99,7 @@
   0 is a free letter. Pattern starts with blank which is start of word in the dictionary.
   The whole word is group 1, then code crackers unknowns are assigned groups 2,...,9.
   Example \"b12t\"  goes to
-  #\" (b([abdefghijklmnopqrsuvwxyz])(?!\\2)([abdefghijklmnopqrsuvwxyz])t)(?= )\"
+  #\" (b([adefghijklmnopqrsuvwxyz])(?!\\2)([adefghijklmnopqrsuvwxyz])t)(?= )\"
   Note no checks on validity of code cracker pattern done - code letters must start
   and 1, introduced consecutively."
   ;TODO might want code-cracker-pat to be vector and will need to fix
@@ -161,31 +162,6 @@
 (defn new-keys
   [alm clue]
   (vec (set/difference   (set clue) (set (keys alm)))))
-
-;TODO  in filtercode wanted to use transducer but cant see how to use it to keep a lazy seq
-; tried with filtercode producing (remove #(nil? (re-matches repat %))) called it ftran
-; tried (transduce ftran (completing #(cons %2 %1)) [] (lazy-seq ["texxx" "abcde" "te" "atexj" "te;lk"]))
-; but have found now way to keep a lazy sequence
-;TODO the code below must be able to be shortened
-(defn filtercode
-  "Given the assigned letter map, the clue and matching word used to update it
-   finds the filter code to get new word lists associated with otherclue
-   returns the new word list"
-  [alm clue word otherclue otherwords]
-  (let [newkeys (new-keys alm clue)
-        firstinds (first-indicies newkeys otherclue)
-        cluerange (range 0 (count otherclue))
-        restinds (vec (set/difference (set cluerange) (set firstinds)))
-        cluemap (zipmap clue word)
-        otherword (replace cluemap otherclue)
-        cluemap (zipmap cluerange otherword)
-        defmap (zipmap restinds (repeat (count restinds) \.))
-        filtermap (merge cluemap defmap)
-        repat (re-pattern (str/join "" (replace filtermap cluerange)))]
-    ;(println newkeys firstinds restinds defmap cluemap otherword filtermap repat)
-    (remove #(nil? (re-matches repat %)) otherwords)))
-
-;(filtercode {7 \a, 13 \w, 9 \c, 5 \s, 14 \i, 10 \u, 8 \b} "abacus" [7 8 7 9 10 5] [7 8 7] ["aba" "aca"])
 
 
 

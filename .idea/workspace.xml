@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="">
+    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="Back from Nelson new filter code moved to work">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/replstate.xml" afterPath="$PROJECT_DIR$/.idea/replstate.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
     </list>
     <ignored path="code-cracker-puzzle.iws" />
@@ -30,11 +31,9 @@
       <file leaf-file-name="core.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6315">
-              <caret line="421" column="54" selection-start-line="408" selection-start-column="0" selection-end-line="421" selection-end-column="54" />
-              <folding>
-                <element signature="e#2448#2877#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="2475">
+              <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -42,8 +41,8 @@
       <file leaf-file-name="work.clj" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="604">
-              <caret line="116" column="73" selection-start-line="116" selection-start-column="73" selection-end-line="116" selection-end-column="73" />
+            <state relative-caret-position="185">
+              <caret line="79" column="29" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -136,7 +135,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT&#10;Clojure" />
   </component>
-  <component name="ReplState" timestamp="1463461229988">{:repl-history {:ide [], :local [&quot;(type *1)&quot; &quot;(type (range 10))&quot; &quot;(type (range))&quot; &quot;cc1&quot; &quot;(nth cc1 0)&quot; &quot;(nth cc1 1)&quot; &quot;(nth cc1 2)&quot; &quot;(doc conj)&quot; &quot;(def cc (get-cc 3))&quot; &quot;cc&quot; &quot;(type cc)&quot; &quot;(type cc1)&quot; &quot;(type (cc1 0))&quot; &quot;(type (nth cc1 0))&quot; &quot;(type (nth cc1 1))&quot; &quot;(type (nth cc1 ))&quot; &quot;(def cc1 (children-from-clue cc 0))&quot; &quot;(doc map)&quot; &quot;(cond [1 2 3] [4 5 6])&quot; &quot;(cons [1 2 3] [4 5 6])&quot; &quot;(doc cons)&quot; &quot;(doc replace)&quot; &quot;(replace {1 /. 2/.} [\\a 1 2 \\b])&quot; &quot;(replace {1 \\. 2 \\.} [\\a 1 2 \\b])&quot; &quot;(str/join \&quot;\&quot; *1)&quot; &quot;(keys cc)&quot; &quot;(zipmap (range 1 27) (repeat 27 \\.))&quot; &quot;(doc apply)&quot; &quot;(def cc (set-inital-partial-sol (get-cc 3)))&quot; &quot;(cc :partialwords)&quot; &quot;(nice-print cc1 0)&quot; &quot;(min 4 5)&quot; &quot;(def cc2 (children-from-clue (first cc1) 3))&quot; &quot;(def cc2 (children-from-clue (first cc1) 2))&quot; &quot;(def cc2 (children-from-clue (first cc1) 12))&quot; &quot;(nice-print cc2 0)&quot; &quot;(nice-print cc2 1)&quot; &quot;(nice-print cc2 2)&quot; &quot;(doc some)&quot; &quot;(doc some?)&quot; &quot;(doc every)&quot; &quot;(doc every?)&quot; &quot;(doc not=)&quot; &quot;(type cc2)&quot; &quot;(doc for)&quot; &quot;(take 100 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(take 10 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(doc concat)&quot; &quot;(concat [1 2 3] [4 5 6])&quot; &quot;(def cc1 (children-from-clue cc 1))&quot; &quot;(def cc1 (children cc [1]))&quot; &quot;(def cca (nth cc1 0))&quot; &quot;(def cc1 (children cca [1]))&quot; &quot;(def cc1 (children cca [2]))&quot; &quot;(count cc2)&quot; &quot;(def cc1a (children-from-clue cca 12))&quot; &quot;(count cc1a)&quot; &quot;(def cc1b (children-from-clue cca 15))&quot; &quot;(count cc1b)&quot; &quot;(doc inspect)&quot; &quot;(doc inspector)&quot; &quot;(count (nth cc2 0))&quot; &quot;(keys (nth cc2 0))&quot; &quot;(key1 (nth cc2 0))&quot; &quot;(keys (nth cc2 1))&quot; &quot;(keys (nth cc2 2))&quot; &quot;(keys (nth cc2 3))&quot; &quot;(concat (lazy-seq) {:a 1 :b 2})&quot; &quot;(concat (lazy-seq) '({:a 1 :b 2}))&quot; &quot;(concat *1 '({:a 1 :b 2}))&quot; &quot;(def cc1 (children cca [12 15]))&quot; &quot;(count cc1)&quot; &quot;(zipmap (range 4) [3 5 2 8])&quot; &quot;(def tm (zipmap (range 4) [3 5 2 8]))&quot; &quot;tm&quot; &quot;(keys tm)&quot; &quot;(vals tm)&quot; &quot;(map last tm)&quot; &quot;(map next tm)&quot; &quot;(sort #(&lt;= (last tm) %) tm)&quot; &quot;(sort #(&lt;= (last %)) tm)&quot; &quot;(sort #(last %) tm)&quot; &quot;(example sort)&quot; &quot;(doc sort)&quot; &quot;(sort #(&lt; (last %1) (last %2)) tm)&quot; &quot;(keys *1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 1)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 2)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 3)))&quot; &quot;(take 1 ans)&quot; &quot;(take 2 ans)&quot; &quot;()&quot; &quot;(nice-print (nth ans 0))&quot; &quot;(nice-print (nth ans 0) 0)&quot; &quot;(nth ans 0)&quot; &quot;(nice-print ans 1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 4)))&quot; &quot;(make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;)&quot; &quot;(def root (make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;))&quot; &quot;(def ans (filter (complement non-completed?) (tree-seq non-completed? children root)))&quot; &quot;(nice-print ans 0)&quot;], :remote []}}</component>
+  <component name="ReplState" timestamp="1463549012771">{:repl-history {:ide [], :local [&quot;(type (nth cc1 ))&quot; &quot;(def cc1 (children-from-clue cc 0))&quot; &quot;(doc map)&quot; &quot;(cond [1 2 3] [4 5 6])&quot; &quot;(cons [1 2 3] [4 5 6])&quot; &quot;(doc cons)&quot; &quot;(doc replace)&quot; &quot;(replace {1 /. 2/.} [\\a 1 2 \\b])&quot; &quot;(replace {1 \\. 2 \\.} [\\a 1 2 \\b])&quot; &quot;(str/join \&quot;\&quot; *1)&quot; &quot;(keys cc)&quot; &quot;(zipmap (range 1 27) (repeat 27 \\.))&quot; &quot;(doc apply)&quot; &quot;(def cc (set-inital-partial-sol (get-cc 3)))&quot; &quot;(cc :partialwords)&quot; &quot;(nice-print cc1 0)&quot; &quot;(min 4 5)&quot; &quot;(def cc2 (children-from-clue (first cc1) 3))&quot; &quot;(def cc2 (children-from-clue (first cc1) 2))&quot; &quot;(def cc2 (children-from-clue (first cc1) 12))&quot; &quot;(nice-print cc2 0)&quot; &quot;(nice-print cc2 1)&quot; &quot;(nice-print cc2 2)&quot; &quot;(doc some)&quot; &quot;(doc some?)&quot; &quot;(doc every)&quot; &quot;(doc every?)&quot; &quot;(doc not=)&quot; &quot;(type cc2)&quot; &quot;(doc for)&quot; &quot;(take 100 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(take 10 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(doc concat)&quot; &quot;(concat [1 2 3] [4 5 6])&quot; &quot;(def cc1 (children-from-clue cc 1))&quot; &quot;(def cc1 (children cc [1]))&quot; &quot;(def cca (nth cc1 0))&quot; &quot;(def cc1 (children cca [1]))&quot; &quot;(def cc1 (children cca [2]))&quot; &quot;(count cc2)&quot; &quot;(def cc1a (children-from-clue cca 12))&quot; &quot;(count cc1a)&quot; &quot;(def cc1b (children-from-clue cca 15))&quot; &quot;(count cc1b)&quot; &quot;(doc inspect)&quot; &quot;(doc inspector)&quot; &quot;(count (nth cc2 0))&quot; &quot;(keys (nth cc2 0))&quot; &quot;(key1 (nth cc2 0))&quot; &quot;(keys (nth cc2 1))&quot; &quot;(keys (nth cc2 2))&quot; &quot;(keys (nth cc2 3))&quot; &quot;(concat (lazy-seq) {:a 1 :b 2})&quot; &quot;(concat (lazy-seq) '({:a 1 :b 2}))&quot; &quot;(concat *1 '({:a 1 :b 2}))&quot; &quot;(def cc1 (children cca [12 15]))&quot; &quot;(count cc1)&quot; &quot;(zipmap (range 4) [3 5 2 8])&quot; &quot;(def tm (zipmap (range 4) [3 5 2 8]))&quot; &quot;tm&quot; &quot;(keys tm)&quot; &quot;(vals tm)&quot; &quot;(map last tm)&quot; &quot;(map next tm)&quot; &quot;(sort #(&lt;= (last tm) %) tm)&quot; &quot;(sort #(&lt;= (last %)) tm)&quot; &quot;(sort #(last %) tm)&quot; &quot;(example sort)&quot; &quot;(doc sort)&quot; &quot;(sort #(&lt; (last %1) (last %2)) tm)&quot; &quot;(keys *1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 1)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 2)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 3)))&quot; &quot;(take 1 ans)&quot; &quot;(take 2 ans)&quot; &quot;()&quot; &quot;(nice-print (nth ans 0))&quot; &quot;(nice-print (nth ans 0) 0)&quot; &quot;(nth ans 0)&quot; &quot;(nice-print ans 1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 4)))&quot; &quot;(make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;)&quot; &quot;(def root (make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;))&quot; &quot;(def ans (filter (complement non-completed?) (tree-seq non-completed? children root)))&quot; &quot;(nice-print ans 0)&quot; &quot;(filtercode {7 \\a, 13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} \&quot;abacus\&quot; [7 8 7 9 10 5] [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {7 \\a, 13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} [7 8 7 9 10 5] \&quot;abacus\&quot; [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} [7 8 7 9 10 5] \&quot;abacus\&quot; [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filter identity [ 1 2 3 nil 4 5])&quot; &quot;(code-cracker-pat-to-regexpat \&quot;b12t\&quot; \&quot;\&quot;)&quot; &quot;(first \&quot;b12c1\&quot;)&quot; &quot;(rest \&quot;b12c1\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat \&quot;b12c1\&quot; \&quot;\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;wxyz\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;a-z\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;ab-z\&quot;)&quot; &quot;(make-code-cracker-pat [\\b 10 12 \\c 10])&quot; &quot;(make-code-cracker-pat [\\b 10 12 \\c 10 12 10 \\f])&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c121f\&quot; \&quot;abcdefghijkl\&quot;)&quot;], :remote []}}</component>
   <component name="RunManager" selected="Clojure REPL.REPL for code-cracker-puzzle">
     <configuration default="false" name="core" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
       <module name="code-cracker-puzzle" />
@@ -315,6 +314,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -328,7 +328,6 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5045872" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39908257" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -354,7 +353,9 @@
     <MESSAGE value="new functions" />
     <MESSAGE value="Routines sorting clues&#10;Data in recources" />
     <MESSAGE value="Added work.clj to use tree-seq" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added work.clj to use tree-seq" />
+    <MESSAGE value="Added make-example-for-work" />
+    <MESSAGE value="Back from Nelson new filter code moved to work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Back from Nelson new filter code moved to work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -373,9 +374,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -391,9 +390,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -409,9 +406,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -427,9 +422,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -445,9 +438,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -463,9 +454,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -481,9 +470,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -499,9 +486,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -518,9 +503,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -536,9 +519,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -554,9 +535,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -572,9 +551,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -590,9 +567,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -608,9 +583,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -626,9 +599,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -644,9 +615,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -662,9 +631,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -680,9 +647,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -698,9 +663,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -760,18 +723,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6315">
-          <caret line="421" column="54" selection-start-line="408" selection-start-column="0" selection-end-line="421" selection-end-column="54" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="2475">
+          <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="604">
-          <caret line="116" column="73" selection-start-line="116" selection-start-column="73" selection-end-line="116" selection-end-column="73" />
+        <state relative-caret-position="185">
+          <caret line="79" column="29" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
           <folding />
         </state>
       </provider>
