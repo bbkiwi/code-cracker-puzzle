@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="Routines sorting clues&#10;Data in recources">
+    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="Back from Nelson new filter code moved to work">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/replstate.xml" afterPath="$PROJECT_DIR$/.idea/replstate.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
     </list>
     <ignored path="code-cracker-puzzle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,14 +28,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="core.clj" pinned="false" current-in-tab="true">
+      <file leaf-file-name="core.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="352" column="0" selection-start-line="352" selection-start-column="0" selection-end-line="352" selection-end-column="0" />
-              <folding>
-                <element signature="e#2448#2877#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="2475">
+              <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="work.clj" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="185">
+              <caret line="79" column="29" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -41,7 +51,7 @@
       <file leaf-file-name="project.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
+            <state relative-caret-position="120">
               <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
             </state>
@@ -65,14 +75,14 @@
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch" />
         <option value="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+        <option value="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-9" />
-    <option name="y" value="-9" />
-    <option name="width" value="1938" />
-    <option name="height" value="1064" />
+    <option name="y" value="36" />
+    <option name="width" value="1824" />
+    <option name="height" value="948" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -101,7 +111,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -114,17 +124,10 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane />
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -132,7 +135,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT&#10;Clojure" />
   </component>
-  <component name="ReplState" timestamp="1462964199751">{:repl-history {:ide [], :local [&quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 22))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 20))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 19))) (:clues cc))&quot; &quot;(show-sol 1 (filter map? (tree-seq (complement map?) identity  (nth sols 4))) (:clues cc))&quot; &quot;(show-sol 2 (filter map? (tree-seq (complement map?) identity  (nth sols 1))) (:clues cc))&quot; &quot;(code-solver-from-all-clues (:clues cc) sol5)\n                &quot; &quot;(filter map? (tree-seq (complement map?) identity  (nth sols 1)))&quot; &quot;(filter map? (tree-seq (complement map?) identity  (nth sols 21)))&quot; &quot;(filter map? (tree-seq (complement map?) identity  (nth sols 22)))&quot; &quot;(empty? (filter map? (tree-seq (complement map?) identity  (nth sols 22))))&quot; &quot;(empty? (filter map? (tree-seq (complement map?) identity  (nth sols 21))))&quot; &quot;(defn iterate-code-solver-from-all-clues\n  [clues assigned-letters-map]\n  (loop\n    [output assigned-letters-map \n     alm (code-solver-from-all-clues clues assigned-letters-map)]\n    (if (empty? (filter map? (tree-seq (complement map?) identity  alm)))\n      output\n      (recur alm (code-solver-from-all-clues clues alm)))))&quot; &quot;*1&quot; &quot;(defn iterate-code-solver-from-all-clues\n  [clues assigned-letters-map]\n  (loop\n    [output assigned-letters-map\n     alm (code-solver-from-all-clues clues assigned-letters-map)]\n    (if (empty? (filter map? (tree-seq (complement map?) identity  alm)))\n      (filter map? (tree-seq (complement map?) identity  output))\n      (recur alm (code-solver-from-all-clues clues alm)))))&quot; &quot;(-main 2)&quot; &quot;(-main 6)&quot; &quot;(solve-example-cc 7)&quot; &quot;(solve-example-cc 4)&quot; &quot;(-main 7)&quot; &quot;(show-sol 1 (filter map? (tree-seq (complement map?) identity  (nth sols 1))) (:clues cc))&quot; &quot;(def cc (get-cc 7))\n                &quot; &quot;(solve-example-cc 3)&quot; &quot;(filter number? [1 2 \\a \\c 5])&quot; &quot;(complete? [1 2 3] {1 \\a 2 \\b 3 \\c})&quot; &quot;(if (complete? [1 2 3] {1 \\a 2 \\b 4 \\c}) \&quot;complete\&quot; \&quot;not complete\&quot;)&quot; &quot;(if (complete? [1 2 3] {1 \\a 2 \\b 3 \\c}) \&quot;complete\&quot; \&quot;not complete\&quot;)&quot; &quot;(score-clue-on-count [1 2 3] {1 \\c 2 \\a 3 \\t})&quot; &quot;(score-clue-on-count [1 2 3] {1 \\c 2 \\a 3 \\x})&quot; &quot;(score-clue-on-count [1 2 3] {1 \\c 2 \\a})&quot; &quot;(find-all-words [1 2 3] {1 \\c 2 \\a})&quot; &quot;(/ 8)&quot; &quot;(- (/ 8))&quot; &quot;(find-all-words [1 2 3 2 1] {})&quot; &quot;(score-clue-on-count [1 2 3 2 1] {})&quot; &quot;(score-clue-on-count [1 2 3 2 1] {1 \\c})&quot; &quot;(score-clue-on-count [1 2 3 ] {})&quot; &quot;cc&quot; &quot;(iterate-code-solver-from-all-clues (:clues cc) (:encodemap cc))&quot; &quot;(def x [1 1 2])&quot; &quot;(distinct x)&quot; &quot;(distinct? x)&quot; &quot;(apply distinct? x)&quot; &quot;(-main 1)&quot; &quot;(-main 3)&quot; &quot;(-main 5)&quot; &quot;(-main 4)&quot; &quot;(take 1 sols)&quot; &quot;(take 3 sols)&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 5))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 6))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 8))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 9))) (:clues cc))&quot; &quot;(count sols)&quot; &quot;ddd&quot; &quot;(def cc (get-cc 3))\n                &quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 0))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 1))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 2))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 3))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 4))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 7))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 10))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 11))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 12))) (:clues cc))&quot; &quot;(def sols (iterate #(code-solver-from-all-clues (:clues cc) %) (:encodemap cc)))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 14))) (:clues cc))&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 15))) (:clues cc))&quot; &quot;(def sols (iterate #(code-solver-from-all-clues (:clues cc) % rank-n-sort-clues-on-count) (:encodemap cc)))\n&quot; &quot;(show-sol 0 (filter map? (tree-seq (complement map?) identity  (nth sols 13))) (:clues cc))&quot; &quot;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 1 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 7 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count)&quot; &quot;(myvars)&quot; &quot;CCdata&quot; &quot;(def ttt \&quot;test\&quot;   3)&quot; &quot;ttt&quot; &quot;(doc ttt)&quot; &quot;(doc def)&quot; &quot;(code-solver [1 2 3 4] {1 \\a 2 \\b})&quot; &quot;(code-solver [1 2 3 4 3] {1 \\a 2 \\b})&quot; &quot;(code-solver [1 2 3 4 3] {1 \\a})&quot; &quot;(code-solver [1 2 13 24 13] {1 \\a})&quot; &quot;(test-cc-48 3)&quot; &quot;(complement zero? 4)&quot; &quot;((complement zero?) 4)&quot; &quot;((complement zero?) 0)&quot; &quot;(solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues)&quot; &quot;(solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues)&quot; &quot;(solve-example-cc 3 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count)&quot; &quot;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues)&quot; &quot;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues)&quot; &quot;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count)&quot; &quot;(make-example \&quot;pas pals clap sap lap slap claps pal\&quot;)&quot; &quot;(def clues [[1 2 3 2 1],[1 5 6],[6 7 8 9], [9 10 11 12]])&quot; &quot;(def ans (brute-solver-from-4-clues clues {}))&quot; &quot;(show-sol 75342 ans clues)&quot; &quot;(show-sol 75343 ans clues)&quot;], :remote []}}</component>
+  <component name="ReplState" timestamp="1463549012771">{:repl-history {:ide [], :local [&quot;(type (nth cc1 ))&quot; &quot;(def cc1 (children-from-clue cc 0))&quot; &quot;(doc map)&quot; &quot;(cond [1 2 3] [4 5 6])&quot; &quot;(cons [1 2 3] [4 5 6])&quot; &quot;(doc cons)&quot; &quot;(doc replace)&quot; &quot;(replace {1 /. 2/.} [\\a 1 2 \\b])&quot; &quot;(replace {1 \\. 2 \\.} [\\a 1 2 \\b])&quot; &quot;(str/join \&quot;\&quot; *1)&quot; &quot;(keys cc)&quot; &quot;(zipmap (range 1 27) (repeat 27 \\.))&quot; &quot;(doc apply)&quot; &quot;(def cc (set-inital-partial-sol (get-cc 3)))&quot; &quot;(cc :partialwords)&quot; &quot;(nice-print cc1 0)&quot; &quot;(min 4 5)&quot; &quot;(def cc2 (children-from-clue (first cc1) 3))&quot; &quot;(def cc2 (children-from-clue (first cc1) 2))&quot; &quot;(def cc2 (children-from-clue (first cc1) 12))&quot; &quot;(nice-print cc2 0)&quot; &quot;(nice-print cc2 1)&quot; &quot;(nice-print cc2 2)&quot; &quot;(doc some)&quot; &quot;(doc some?)&quot; &quot;(doc every)&quot; &quot;(doc every?)&quot; &quot;(doc not=)&quot; &quot;(type cc2)&quot; &quot;(doc for)&quot; &quot;(take 100 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(take 10 (for [x (range 100000000) y (range 1000000) :while (&lt; y x)] [x y]))&quot; &quot;(doc concat)&quot; &quot;(concat [1 2 3] [4 5 6])&quot; &quot;(def cc1 (children-from-clue cc 1))&quot; &quot;(def cc1 (children cc [1]))&quot; &quot;(def cca (nth cc1 0))&quot; &quot;(def cc1 (children cca [1]))&quot; &quot;(def cc1 (children cca [2]))&quot; &quot;(count cc2)&quot; &quot;(def cc1a (children-from-clue cca 12))&quot; &quot;(count cc1a)&quot; &quot;(def cc1b (children-from-clue cca 15))&quot; &quot;(count cc1b)&quot; &quot;(doc inspect)&quot; &quot;(doc inspector)&quot; &quot;(count (nth cc2 0))&quot; &quot;(keys (nth cc2 0))&quot; &quot;(key1 (nth cc2 0))&quot; &quot;(keys (nth cc2 1))&quot; &quot;(keys (nth cc2 2))&quot; &quot;(keys (nth cc2 3))&quot; &quot;(concat (lazy-seq) {:a 1 :b 2})&quot; &quot;(concat (lazy-seq) '({:a 1 :b 2}))&quot; &quot;(concat *1 '({:a 1 :b 2}))&quot; &quot;(def cc1 (children cca [12 15]))&quot; &quot;(count cc1)&quot; &quot;(zipmap (range 4) [3 5 2 8])&quot; &quot;(def tm (zipmap (range 4) [3 5 2 8]))&quot; &quot;tm&quot; &quot;(keys tm)&quot; &quot;(vals tm)&quot; &quot;(map last tm)&quot; &quot;(map next tm)&quot; &quot;(sort #(&lt;= (last tm) %) tm)&quot; &quot;(sort #(&lt;= (last %)) tm)&quot; &quot;(sort #(last %) tm)&quot; &quot;(example sort)&quot; &quot;(doc sort)&quot; &quot;(sort #(&lt; (last %1) (last %2)) tm)&quot; &quot;(keys *1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 1)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 2)))&quot; &quot;(def root (set-inital-partial-sol (get-cc 3)))&quot; &quot;(take 1 ans)&quot; &quot;(take 2 ans)&quot; &quot;()&quot; &quot;(nice-print (nth ans 0))&quot; &quot;(nice-print (nth ans 0) 0)&quot; &quot;(nth ans 0)&quot; &quot;(nice-print ans 1)&quot; &quot;(def root (set-inital-partial-sol (get-cc 4)))&quot; &quot;(make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;)&quot; &quot;(def root (make-example-for-work \&quot;pas pals clap sap lap slap claps pal\&quot;))&quot; &quot;(def ans (filter (complement non-completed?) (tree-seq non-completed? children root)))&quot; &quot;(nice-print ans 0)&quot; &quot;(filtercode {7 \\a, 13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} \&quot;abacus\&quot; [7 8 7 9 10 5] [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {7 \\a, 13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} [7 8 7 9 10 5] \&quot;abacus\&quot; [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filtercode {13 \\w, 9 \\c, 5 \\s, 14 \\i, 10 \\u, 8 \\b} [7 8 7 9 10 5] \&quot;abacus\&quot; [7 8 7] [\&quot;aba\&quot; \&quot;aca\&quot;])&quot; &quot;(filter identity [ 1 2 3 nil 4 5])&quot; &quot;(code-cracker-pat-to-regexpat \&quot;b12t\&quot; \&quot;\&quot;)&quot; &quot;(first \&quot;b12c1\&quot;)&quot; &quot;(rest \&quot;b12c1\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat \&quot;b12c1\&quot; \&quot;\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;wxyz\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;a-z\&quot;)&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c1\&quot; \&quot;ab-z\&quot;)&quot; &quot;(make-code-cracker-pat [\\b 10 12 \\c 10])&quot; &quot;(make-code-cracker-pat [\\b 10 12 \\c 10 12 10 \\f])&quot; &quot;(code-cracker-pat-to-regexpat-filter \&quot;b12c121f\&quot; \&quot;abcdefghijkl\&quot;)&quot;], :remote []}}</component>
   <component name="RunManager" selected="Clojure REPL.REPL for code-cracker-puzzle">
     <configuration default="false" name="core" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
       <module name="code-cracker-puzzle" />
@@ -214,25 +217,35 @@
       <envs />
       <method />
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="code-cracker-puzzle" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <envs />
+      <method />
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="executeSpecs" factoryName="Gauge Execution">
-      <setting name="environment" value="" />
-      <setting name="specsToExecute" value="" />
-      <setting name="tags" value="" />
-      <setting name="parallelNodes" value="" />
-      <setting name="execInParallel" value="false" />
-      <setting name="programParameters" value="" />
-      <setting name="workingDirectory" value="" />
-      <setting name="moduleName" value="" />
-      <envMap />
-      <setting name="rowsRange" value="" />
       <method />
     </configuration>
     <list size="2">
@@ -296,24 +309,25 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1064" extended-state="0" />
+    <frame x="0" y="36" width="1824" height="948" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
-      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.52360517" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46015713" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Leiningen" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.4867968" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26019314" sideWeight="0.49541286" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25697425" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26599327" sideWeight="0.49541286" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25645342" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5045872" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39908257" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -338,20 +352,29 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new functions" />
     <MESSAGE value="Routines sorting clues&#10;Data in recources" />
-    <option name="LAST_COMMIT_MESSAGE" value="Routines sorting clues&#10;Data in recources" />
+    <MESSAGE value="Added work.clj to use tree-seq" />
+    <MESSAGE value="Added make-example-for-work" />
+    <MESSAGE value="Back from Nelson new filter code moved to work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Back from Nelson new filter code moved to work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/project.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -367,9 +390,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -385,9 +406,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -403,9 +422,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -421,9 +438,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -439,9 +454,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -457,27 +470,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -493,9 +486,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -512,9 +503,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -530,9 +519,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -548,9 +535,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -566,9 +551,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -584,9 +567,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -602,9 +583,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -620,9 +599,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -638,9 +615,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -656,9 +631,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -674,9 +647,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -692,9 +663,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -715,16 +684,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/doc/intro.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/intro.md" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -755,7 +715,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/project.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
+        <state relative-caret-position="120">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
@@ -763,11 +723,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="352" column="0" selection-start-line="352" selection-start-column="0" selection-end-line="352" selection-end-column="0" />
-          <folding>
-            <element signature="e#2448#2877#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="2475">
+          <caret line="165" column="0" selection-start-line="165" selection-start-column="0" selection-end-line="165" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="79" column="29" selection-start-line="79" selection-start-column="29" selection-end-line="79" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>

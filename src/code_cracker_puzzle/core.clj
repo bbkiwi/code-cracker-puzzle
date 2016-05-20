@@ -78,6 +78,7 @@
     :else (str char-from-pat)))
 
 
+
 ; maybe use reduce here
 (defn code-cracker-to-regex-body
   "This is the recursive routine"
@@ -98,7 +99,7 @@
   0 is a free letter. Pattern starts with blank which is start of word in the dictionary.
   The whole word is group 1, then code crackers unknowns are assigned groups 2,...,9.
   Example \"b12t\"  goes to
-  #\" (b([abdefghijklmnopqrsuvwxyz])(?!\\2)([abdefghijklmnopqrsuvwxyz])t)(?= )\"
+  #\" (b([adefghijklmnopqrsuvwxyz])(?!\\2)([adefghijklmnopqrsuvwxyz])t)(?= )\"
   Note no checks on validity of code cracker pattern done - code letters must start
   and 1, introduced consecutively."
   ;TODO might want code-cracker-pat to be vector and will need to fix
@@ -147,6 +148,22 @@
         temp-map (zipmap distinct-numbers (range 1 (inc (count distinct-numbers))))]
     ;(println temp-map)
     (str/join "" (replace temp-map decoded-vec))))
+
+(defn first-index
+  "returns the first index of n in the vector clue or nil"
+  [n clue]
+  (first (keep-indexed #(if ((hash-set n) %2) %1) clue)))
+
+(defn first-indicies
+  "returns vec of first indicies of entries of vec in clue"
+  [nums clue]
+  (reduce #(conj %1 (first-index %2 clue)) [] nums))
+
+(defn new-keys
+  [alm clue]
+  (vec (set/difference   (set clue) (set (keys alm)))))
+
+
 
 (defn assigned-letters-string->assigned-letters-map
   [als]
@@ -480,7 +497,7 @@
          [4 21 22 5 ] [22 5 21 20 6 ] [6 15 20 14 26 3 ] [18 14 2 24 6 26 3]
          [19 21 5 3 9 6 3]]
         n-good-clues (distinct (concat (take n good-order-clues) (:clues cc)))
-        ans (code-solver-from-clues n-good-clues (:encodemap cc))
+        ans (time (code-solver-from-clues n-good-clues (:encodemap cc)))
         maps-in-ans (filter map? (tree-seq (complement map?) identity ans))
         scores (map #(score-clue % (:encodemap cc)) n-good-clues)]
     (println cc)
