@@ -462,11 +462,8 @@
   (map (fn [s] (str/join " " (map #(decode %1 s) clues))) [(nth ans n)]))
 
 
-; do some filtering out of empty maps
-; use tree-seq to explore
-(defn -main
-  [n]
-  (println "Main" n))
+
+
 
 
 ;(def ans (brute-solver-from-4-clues [[1 2 3 2 1],[4 5 6 4],[1 6 5], [1 5 6]] {} ))
@@ -502,7 +499,8 @@
         scores (map #(score-clue % (:encodemap cc)) n-good-clues)]
     (println cc)
     (println scores)
-    (show-sol 0 maps-in-ans n-good-clues)))
+    (println (show-sol 0 maps-in-ans n-good-clues))))
+
 
 
 
@@ -520,22 +518,38 @@
     (println (count ans))
     (show-sol 0 ans (:clues cc))))
 
+(defn -main
+  "Called automatically using lein run nstr
+  Note the parmeters parsed by lein run are strings"
+  [nstr]
+  (in-ns 'code-cracker-puzzle.core) ; lein run goes to user ns
+  (let [n (edn/read-string nstr)] ; (Integer. nstr) also works
+    ;(println "Solve code cracker number 48 using " n " best ordered clues")
+    ;(test-cc-48 n)
+    (println "Solve code cracker number " n)
+    (println (solve-example-cc n iterate-code-solver-from-all-clues rank-n-sort-clues))))
+
+
+
+
 ; problem 1
-;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues) ; solves "Elapsed time: 402 msecs"
-;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count) ; inf loop - final map just moves deeper down tree
-;(solve-example-cc 1 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count) ; solves 9256 msecs
-;(solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues) ; solves "Elapsed time: 368.754859 msecs"
-;(solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues-on-count) ;inf loop -
-;(solve-example-cc 1 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count) ;solved 9206 msecs
+(comment
+  (solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues) ; solves "Elapsed time: 402 msecs"
+  (solve-example-cc 1 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count) ; inf loop - final map just moves deeper down tree
+  (solve-example-cc 1 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count) ; solves 9256 msecs
+  (solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues) ; solves "Elapsed time: 368.754859 msecs"
+  (solve-example-cc 1 code-solver-using-best-clue rank-n-sort-clues-on-count) ;inf loop -
+  (solve-example-cc 1 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count)) ;solved 9206 msecs
 
 
 ; problem 3 has a bad word
-;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues) ; premature stops "Elapsed time: 146.010114 msecs"
-;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count) ; solves "Elapsed time: 15817.357202 msecs"
-;(solve-example-cc 3 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count) ; solves "Elapsed time: 18676 msecs"
-;(solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues) ; after 10 recursions gets tree of empty maps and stackoverflow
-;(solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues-on-count) ;same as above but slower
-;(solve-example-cc 3 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count) ;solved 8661 msecs
+(comment
+  (solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues) ; premature stops "Elapsed time: 146.010114 msecs"
+  (solve-example-cc 3 iterate-code-solver-from-all-clues rank-n-sort-clues-on-count) ; solves "Elapsed time: 15817.357202 msecs"
+  (solve-example-cc 3 iterate-code-solver-from-all-clues rank-filtered-n-sort-clues-on-count) ; solves "Elapsed time: 18676 msecs"
+  (solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues) ; after 10 recursions gets tree of empty maps and stackoverflow
+  (solve-example-cc 3 code-solver-using-best-clue rank-n-sort-clues-on-count) ;same as above but slower
+  (solve-example-cc 3 code-solver-using-best-clue rank-filtered-n-sort-clues-on-count)) ;solved 8661 msecs
 
 
 ; observation
