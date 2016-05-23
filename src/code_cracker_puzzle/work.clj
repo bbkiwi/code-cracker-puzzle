@@ -129,8 +129,6 @@
                :wordcountscores wordcountscores
                :completed completed
                :allgood allgood
-               :clue []
-               :word ""
                :depth depth})))
 
 
