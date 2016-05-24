@@ -58,7 +58,7 @@
 
 (defn pat-for-old
   "Gives pattern for subsequent use of letter n 1...8"
-  [n & letuse]                                              ; second param ignored but want to keep same arg list as pat-for-new
+  [n & letuse]  ; second param ignored but want to keep same arg list as pat-for-new
   (str "\\" (inc n)))
 
 (defn char->num
@@ -77,8 +77,6 @@
       (pat-for-new (char->num char-from-pat) cleaned-letuse))
     :else (str char-from-pat)))
 
-
-
 ; maybe use reduce here
 (defn code-cracker-to-regex-body
   "This is the recursive routine"
@@ -94,6 +92,7 @@
              letuse
              cleaned-letuse)))))
 
+; TODO check for patterns with zeros (free letters) 001122
 (defn code-cracker-pat-to-regexpat
   "Converts code cracker pattern string to regex. Assume letters assigned sequentially from 1 to 8
   0 is a free letter. Pattern starts with blank which is start of word in the dictionary.
@@ -134,8 +133,9 @@
 
 
 (defn encode
-  "Encodes a string of letters using assigned-letters-map to
-  a vector of numbers and characters (if they are not in values in the map)"
+  "Encodes a string of letters using assigned-letters-map
+  (or default {1 \\a, 2 \\b ...}  to a vector of numbers and
+  characters (if they are not in values in the map)"
   ([word]
    (encode word (zipmap (range 1 27) "abcdefghijklmnopqrstuvwxyz")))
   ([word assigned-letters-map]
