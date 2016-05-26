@@ -10,10 +10,14 @@
 
 (defn myvars [] (keys (ns-interns *ns*))) ; use (myvars) to see what's in *ns*
 
-(def word-dic
+(def word-dic-words
   "string starting with blank consisting of words each followed by blank"
   ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\WordLists\\2of4brifblanksep.txt")
   (slurp "resources/2of4brifblanksep.txt"))
+
+
+;put individual letters in dictionary
+(def word-dic (str " a b c d e f g h i j k l m n o p q r s t u v w x y z " word-dic-words))
 
 (def CCdata
   ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")

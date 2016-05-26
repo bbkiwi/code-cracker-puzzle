@@ -11,12 +11,16 @@
 ; why do I need require clojure.repl here?
 ; ANS in project.clj ns desiginated by :main will get it.
 
+(defn count-num-in-clues
+  "Produces lazy seq c with (nth c n) the number of clues having n in them"
+  [clues]
+  (map (fn [n] (count (keep (fn [clue] ((set clue) n)) clues))) (range 1 27)))
+
 (defn letpat-filter
   [letuse]
   (if
     (= letuse "abcdefghijklmnopqrstuvwxyz") #"."
                                             (str "[" letuse "]")))
-
 (defn partial-decoded-code-vec-to-regexpat-filter
   "Given partially decoded code cracker clue and new encoding map
   and letter to use produce the regex used in filtercode"
@@ -67,7 +71,8 @@
     (dec)
     (* (/ (count decodedclue)))))
 
-
+;TODO is there an optimal maxcnt? with 4x4 empty grid example
+;TODO 30 was much faster than 10 or 100000
 (defn score-using-bounded-wordcount
   "completed clues give 3 if in dictionary, 2 if not in dictionary,
   give 1 if no words match uncompleted clue
@@ -75,7 +80,7 @@
   so denominator is min number of matches and 10
   in particular gives 0 if exactly 1 word matches uncompleted clue"
   [wordlist simplescore]
-  (let [maxcnt 10
+  (let [maxcnt 30
         cnt (count (take maxcnt wordlist))]
     (if (< simplescore 0) ;complete
       (+ 2 cnt)
@@ -129,11 +134,14 @@
 (defn make-root
   "2-arity makes root with :encodegmap rootmap. 1-arity with (:encodemap cc)"
   ([cc rootmap]
-   (let [wordlists (map #(find-all-words % rootmap) (:clues cc))
+   (let [numinclues (count-num-in-clues (:clues cc))
+         wordlists (map #(find-all-words % rootmap) (:clues cc))
          rmap (merge cc
                      {:encodemap rootmap
                       :wordlists wordlists
+                      :numinclues numinclues
                       :depth     0})]
+     (println numinclues)
      (set-remaining-keys rmap)))
   ([cc]
    (make-root cc (:encodemap cc))))
@@ -141,8 +149,7 @@
 
 (defn make-child
   [cc clue word]
-  (let [maxn 5
-        newmap (update-assigned-letters-map (:encodemap cc) clue word)
+  (let [newmap (update-assigned-letters-map (:encodemap cc) clue word)
         newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
         updatedcc (merge cc {:encodemap newmap,
                              :wordlists newwords
@@ -235,7 +242,15 @@
     (let [sols (take nmax ans)
           nshow (count sols)]
       (doseq [n (range nshow)]
-        (println n (map #(% (nth sols n)) [:depth :completed :allgood :clue :word :partialwords :wordcountscores]))))))
+        (println n (map #(% (nth sols n)) [:depth :completed :allgood :clue :word]))
+        (doall (map #(print (str/join [%1 "(" %2 ") "]))
+                    (replace ((nth sols n) :encodemap) (range 1 27))
+                    ((nth sols n) :numinclues)))
+        ;(println (replace ((nth sols n) :encodemap) (range 1 27)))
+        ;(println ((nth sols n) :numinclues))
+        (println)
+        (println n (map #(% (nth sols n)) [:partialwords]))
+        (println n (map #(% (nth sols n)) [:wordcountscores]))))))
 
 ;TODO clarify how to set up root and how to use tree-seq
 (comment
@@ -249,10 +264,20 @@
   (def root (make-example-for-work "abc def ghi adg beh cfi")) ; 3x3 grid of distinct letters
   (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp")) ; 4x4 grid of distinct letters
   ; using fastest below found 2 solutions in just under 10 minutes!, one the transpose matrix of the other
+  ; then (show-at-most-n ans 2)
   ;0 (7 complete all good [13 14 15 16] sumo (newt achy grip sumo nags ecru whim typo) (3 3 3 3 3 3 3 3))
   ;1 (7 complete all good [4 8 12 16] sumo (nags ecru whim typo newt achy grip sumo) (3 3 3 3 3 3 3 3))
-  ;"Elapsed time: 547677.413145 msecs" NOTE: maxcnt = 10 in score-using-bounded-wordcount
+  ; "Elapsed time: 64308.210487 msecs" (maxcnt = 30) in score-using-bounded-wordcount
+  ; "Elapsed time: 478321.65516 msecs" (maxcnt = 100000)
+  ;   61 sec more if ask for 3 sols
+  ; but if (show-at-most ans 3) will find the two thus proves no other sols but time -
+  ;"Elapsed time: 178874.157181 msecs" (maxcnt = 30)
+  ;"Elapsed time: 547677.413145 msecs"       maxcnt = 10 in score-using-bounded-wordcount
   ;"Elapsed time: 483433.413157 msecs"       maxcnt = 100000
+
+  (def root (make-root root {1 \n 4 \s 13 \t 16 \o})) ; with hint
+  ;"Elapsed time: 60.3222 msecs" Liz solved this in a few hours)
+
   (def root (make-example-for-work "abcde fghij klmno pqrst uvwxy afkpu bglqv chmrw dinsx ejoty")) ; 5x5 grid of distinct letters
   ; nil "Elapsed time: 480560.109286 msecs" so no 5x5 of distinct letters verified in 8 minutes (maxcnt=10)
 
@@ -270,8 +295,8 @@
   (str/join " "(:partialwords (nth ans 0))) ; show just partialwords
   ; if want to examine complete tree traversal
   (def root (make-example-for-work "pas pals clap sap lap slap claps pal")) ; 4 sols big tree
-  (def root1 (make-root root {16 \p 1 \a})) ; 2 sols little tree
-  (def ans (tree-seq non-completed-and-all-good? children-from-best-clue root1))
+  (def root (make-root root {16 \p 1 \a})) ; 2 sols little tree
+  (def ans (tree-seq non-completed-and-all-good? children-from-best-clue root))
   (show-at-most-n ans 100))
 
 (comment
@@ -301,5 +326,7 @@
              (tree-seq non-completed-and-all-good? children-from-best-clue root)))
   (show-at-most-n ans 1)
   (show-from-root (nth ans 0)))  ; show chain from root
+
+
 
 
