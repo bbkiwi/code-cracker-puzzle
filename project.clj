@@ -4,5 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [net.mikera/core.matrix "0.51.0"]]
+                 [net.mikera/core.matrix "0.51.0"]
+                 [io.aviso/pretty "0.1.26"]]
+  :plugins [[io.aviso/pretty "0.1.26"]]
   :main ^:skip-aot code-cracker-puzzle.core)
+
