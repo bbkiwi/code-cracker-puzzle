@@ -1,22 +1,37 @@
 (ns code-cracker-puzzle.work
-  (:gen-class)
-  (:require [clojure.string :as str]
-            [clojure.set :as set]
-            [clojure.edn :as edn]  ;safe io
-            [clojure.core.matrix :as m]
-            [clojure.walk]
-            [code-cracker-puzzle.core :refer :all]
-            [clojure.repl :refer :all]
-            [io.aviso.ansi :as ioa]
-            [io.aviso.columns :as col]))
+    (:gen-class)
+    (:require [clojure.string :as str]
+              [clojure.set :as set]
+              [clojure.edn :as edn]                         ;safe io
+              [clojure.core.matrix :as m]
+              [clojure.walk]
+              [code-cracker-puzzle.core :refer :all]
+              [clojure.repl :refer :all]
+              [io.aviso.ansi :as ioa]
+              [io.aviso.columns :as col]))
 
 ; why do I need require clojure.repl here?
 ; ANS in project.clj ns desiginated by :main will get it.
 
-(defn count-num-in-clues
-  "Produces lazy seq c with (nth c n) the number of clues having n in them"
-  [clues]
-  (map (fn [n] (count (keep (fn [clue] ((set clue) n)) clues))) (range 1 27)))
+(defn make-sorted-single-letter-clues
+  "Find all numbers occuring in a clue and how many clues it appears in
+  Returns list of single number clues for these and the count"
+  [cc]
+  (let [clues (:clues cc)
+        sortedpairs (sort
+                      #(> (last %1) (last %2))
+                      (remove
+                        #(zero? (last %))
+                        (map
+                          (fn [n] [n (count (keep (fn [clue] ((set clue) n)) clues))])
+                          (range 1 27))))
+        singleclues (map #(seq [(first %)]) sortedpairs)
+        numinothers (map #(last %) sortedpairs)]
+    ;(println singleclues)
+    ;(println numinothers)
+    ;singleclues
+    {:singleclues singleclues :numinothers numinothers}))
+
 
 (defn letpat-filter
   [letuse]
@@ -38,11 +53,11 @@
         v2 (replace new-map v1)
         v3 (reduce (fn [res input]
                      (conj res
-                              (cond
-                                (number? input) (letpat-filter cleanlet)
-                                :else input)))
+                           (cond
+                             (number? input) (letpat-filter cleanlet)
+                             :else input)))
                    [] v2)
-        v3 (re-pattern(str/join "" v3))]
+        v3 (re-pattern (str/join "" v3))]
     ;(println partial-decoded-code-vec new-map letuse)
     ;(println cleanlet v1 v2 v3)
     v3))
@@ -60,6 +75,9 @@
   (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
     (filter #(re-matches repat %) otherwords)))
 
+(defn numinother-score
+  [decodedclue oldnuminother]
+  (if (or (> (count decodedclue) 1) (apply number? decodedclue)) oldnuminother 3))
 
 (defn simple-scores
   "completed clues give 3 if in dictionary, 2 if not in dictionary,
@@ -101,7 +119,7 @@
 (defn non-completed-some-could-be-bad?
   [cc]
   ;(some #(< % 1) (:simplescores cc)))   ; this means some non-completed or 1 letter left but not completable
-  (some #(<= % 1) (:wordcountscores cc))) ; allows non-completed-bad-clues
+  (some #(<= % 1) (:wordcountscores cc)))                   ; allows non-completed-bad-clues
 
 (defn non-completed-and-all-good?
   [cc]
@@ -111,11 +129,11 @@
 
 (defn all-completed-and-all-good?
   [cc]
-  (every? #(= % 3) (:wordcountscores cc))) ; all completed with good words
+  (every? #(= % 3) (:wordcountscores cc)))                  ; all completed with good words
 
 (defn all-completed?
   [cc]
-  (every? #(> % 1) (:simplescores cc))) ; all completed
+  (every? #(> % 1) (:simplescores cc)))                     ; all completed
 
 (defn all-completed-or-not-completable?
   [cc]
@@ -123,39 +141,46 @@
 
 (defn all-good?
   [cc]
-  (every? #(or (< % 1) (= % 3)) (:wordcountscores cc))) ; all good words
+  (every? #(or (< % 1) (= % 3)) (:wordcountscores cc)))     ; all good words
 
 (defn set-remaining-keys
   "Sets values for keys :wordlists :partialwords :decodedclues :simplescores :wordcountscores"
   [cc]
   (when (not (:depth cc)) (println "Warning set-remaining-keys got cc with no depth. Setting up root?"))
   (let [dotmap (zipmap (range 1 27) (repeat 27 \.))
-         decodedclue-vecs (map #(decode-to-vec % (:encodemap cc)) (:clues cc))
-         partialwords (map #(str/join "" (replace dotmap %)) decodedclue-vecs)
-         simplescores (map simple-scores decodedclue-vecs (:wordlists cc))
-         wordcountscores (map score-using-bounded-wordcount (:wordlists cc) simplescores)
-         completed (if (every? #(> % 1) wordcountscores) "complete" "unfinished")
-         allgood (if (every? #(or (< % 1) (= % 3)) wordcountscores) "all good" "some bad")]
-     (merge cc
-            {:partialwords    partialwords
-             :decodedclues    decodedclue-vecs
-             :simplescores    simplescores
-             :wordcountscores wordcountscores
-             :completed       completed
-             :allgood         allgood})))
+        decodedclue-vecs (map #(decode-to-vec % (:encodemap cc)) (:clues cc))
+        partialwords (map #(str/join "" (replace dotmap %)) decodedclue-vecs)
+        simplescores (map simple-scores decodedclue-vecs (:wordlists cc))
+        wordcountscores (map score-using-bounded-wordcount (:wordlists cc) simplescores)
+        numinothers (map numinother-score decodedclue-vecs (:numinothers cc))
+        completed (if (every? #(> % 1) wordcountscores) "complete" "unfinished")
+        allgood (if (every? #(or (< % 1) (= % 3)) wordcountscores) "all good" "some bad")]
+    (merge cc
+           {:partialwords    partialwords
+            :decodedclues    decodedclue-vecs
+            :simplescores    simplescores
+            :wordcountscores wordcountscores
+            :numinothers     numinothers
+            :completed       completed
+            :allgood         allgood})))
 
 
 (defn make-root
   "2-arity makes root with :encodegmap rootmap. 1-arity with (:encodemap cc)"
   ([cc rootmap]
-   (let [numinclues (count-num-in-clues (:clues cc))
-         wordlists (map #(find-all-words % rootmap) (:clues cc))
+   (let [clues (:clues cc)
+         singleletterclues (make-sorted-single-letter-clues cc)
+         numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
+         augmentedclues (concat  (singleletterclues :singleclues) clues)
+         wordlists (map #(find-all-words % rootmap) augmentedclues)
          rmap (merge cc
-                     {:encodemap rootmap
-                      :wordlists wordlists
-                      :numinclues numinclues
-                      :depth     0})]
-     (println numinclues)
+                     {:clues augmentedclues
+                      :numinothers numinothers
+                      :encodemap  rootmap
+                      :wordlists  wordlists
+                      :depth      0})]
+     ;(println clues)
+     ;(println augmentedclues)
      (set-remaining-keys rmap)))
   ([cc]
    (make-root cc (:encodemap cc))))
@@ -167,10 +192,10 @@
         newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
         updatedcc (merge cc {:encodemap newmap,
                              :wordlists newwords
-                             :parent cc
-                             :depth (inc (:depth cc))
-                             :clue clue
-                             :word word})]
+                             :parent    cc
+                             :depth     (inc (:depth cc))
+                             :clue      clue
+                             :word      word})]
     ;(println (inc (:depth cc)) (:encodemap cc) clue word newmap)
     ;(println (map #(take maxn %) (:wordlists cc)))
     ;(println (map #(take maxn %) newwords)) ; if this is uncommented will
@@ -186,7 +211,7 @@
   "take list of indicies of non-completed-good-clues and combines all their children"
   [cc clue-indicies]
   ;(println clue-indicies (:depth cc) (:wordcountscores cc))
-  (reduce #(concat %1 (lazy-seq (children-from-clue cc %2))) (lazy-seq)  clue-indicies))
+  (reduce #(concat %1 (lazy-seq (children-from-clue cc %2))) (lazy-seq) clue-indicies))
 
 (defn children-from-top-clues
   "takes children of the kbest best clues wordcountscores.
@@ -198,29 +223,30 @@
   [kbest cc]
   (let [cm (zipmap (range (count (cc :clues))) (cc :wordcountscores))
         ;scm (sort #(< (last %1) (last %2)) cm)
-        scm (sort-by last cm); better than above
+        scm (sort-by last cm)                               ; better than above
         sind (keys scm)]
     (children-from-clue-indicies cc (take kbest sind))))
 
-;TODO not working for key :simplescores
-; gets stuck if smallest simplescore is a bad word - try fixing
-; by using only good words
+
 (defn children-from-best-clue
-  "takes children of the best index using key (:wordcountscores (default if 1arity), :simplescores, ...)
+  "takes children of the best index using key (:wordcountscores, :simplescores, ...)
   since 0 is smallest possible  scan indices keeping track of min found
   but stop if find 0"
-  ([key cc]
-   (let [bind (first (reduce-kv
+  [key cc]
+  (let [bind (first (reduce-kv
                        (fn [acc ind val]
                          (cond
                            (zero? val) (reduced [ind val])
                            (> (last acc) val) [ind val]
                            :else acc))
-                       [nil 4]                              ; 4 is bigger than any wordcountscores
+                       [nil 4]  ; 4 is bigger than any wordcountscores
                        (vec (cc key))))]
      (children-from-clue cc bind)))
-  ([cc]
-   (children-from-best-clue :wordcountscores cc)))
+
+
+(defn children-from-best-clue-using
+  [key]
+  (partial children-from-best-clue key))
 
 
 (defn nice-print
@@ -232,9 +258,7 @@
          (cc :simplescores)
          (cc :clues)
          (cc :decodedclues)
-         (cc :wordcountscores))
-    #_(println "done")))
-;TODO why if #_ removed does side effects of map not work? fact they are lazy?
+         (cc :wordcountscores))))
 
 
 (defn make-example-for-work
@@ -244,48 +268,50 @@
   [sentence]
   (let [clues (map encode (str/split (str/lower-case sentence) #" +"))
         cc {:clues clues}]
-    (println clues)
+    ;(println clues)
     (make-root cc {})))
 
 (defn printcctable
+  "prints table with each row being a the partial word, it's wordcount, simplescore and clue of cc
+  colored blue for most recent clue used, yellow for completed word not in dictionary, red for non-completible partial word,
+  green for completible partial word, black for completed word in dictionary"
   [cc]
   (let [word (:word cc)
-        rows (map #(zipmap [:clue :partialword :wordcountscore :simplescore] [%1 %2 %3 %4])
-                  (:clues cc) (:partialwords cc) (:wordcountscores cc) (:simplescores cc))
+        rows (map #(zipmap [:clue :partialword :wordcountscore :simplescore :numinother] [%1 %2 %3 %4 %5])
+                  (:clues cc) (:partialwords cc) (:wordcountscores cc) (:simplescores cc) (:numinothers cc))
+        rows (conj rows {:clue "clue" :partialword "part" :wordcountscore "wcount" :simplescore "simplesc" :numinother "numino"})
         select-n-color (fn [key row]
                          (let [wc (:wordcountscore row)
                                val (key row)]
                            (cond
-                            (= word val) (ioa/bold-blue val)
-                            (= wc 2) (ioa/yellow val)
-                            (< wc 1) (ioa/green val)
-                            (= wc 1) (ioa/red val)
-                            :else val)))]
+                             (= word val) (ioa/bold-blue val) ; cant be resolved as defined by macro
+                             (= wc 2) (ioa/bold-yellow val)
+                             (string? wc) (ioa/bold-black val) ; for header line
+                             (< wc 1) (ioa/bold-green val)
+                             (= wc 1) (ioa/bold-red val)
+                             :else (ioa/bold-black val))))]
     (col/write-rows
       *out*
-      [(partial select-n-color :partialword) " " (partial select-n-color :wordcountscore) " " (partial select-n-color :simplescore) " " (partial select-n-color :clue)]
+      [(partial select-n-color :partialword) " " (partial select-n-color :wordcountscore) " "
+       (partial select-n-color :simplescore) " " (partial select-n-color :numinother) " " [(partial select-n-color :clue) :left]]
       rows)))
 
-(defn printccans
+(defn printinfoencoding
   [n cc]
   (println n (map #(% cc) [:depth :completed :allgood :clue :word]))
-  (if (zero? n) (do
-                  (doall (map #(print (str/join [%1 "(" %2 ") "]))
-                              (replace (cc :encodemap) (range 1 27))
-                              (cc :numinclues)))
-                  (println))))
-  ;(println (replace ((nth sols n) :encodemap) (range 1 27)))
-  ;(println ((nth sols n) :numinclues))
-  ;(println n (map #(% cc) [:partialwords]))
-  ;(println n (map #(% cc) [:simplescores]))
-  ;(println n (map #(% cc) [:wordcountscores])))
+  (doall (map #(if ((cc :encodemap) %) (printf (str ioa/bold-blue-font "%3s" ioa/reset-font)  %) (printf "%3s" %)) (range 1 27)))
+  (println)
+  (doall
+    (map #(if ((cc :encodemap) %) (printf (str ioa/bold-blue-font "%3s" ioa/reset-font)  ((cc :encodemap) %)) (printf "%3s" ".")) (range 1 27)))
+  (println))
+
 
 (defn show-from-root
   [ans]
   (let [depth (:depth ans)
         gen (take (inc depth) (iterate #(:parent %) ans))]
     (doseq [n (range depth -1 -1)]
-      (printccans (- depth n) (nth gen n))
+      (printinfoencoding (- depth n) (nth gen n))
       (printcctable (nth gen n)))))
 
 (defn show-at-most-n
@@ -295,7 +321,7 @@
     (let [sols (take nmax ans)
           nshow (count sols)]
       (doseq [n (range nshow)]
-        (printccans n (nth ans n))
+        (printinfoencoding n (nth ans n))
         (printcctable (nth ans n))))))
 
 
@@ -303,11 +329,11 @@
 (comment
   (def root (make-example-for-work "the quick brown fox jumps over the lazy level dog")) ; 96 solutions
   (def root (make-example-for-work "now is the time for all good men to come to the aid of their party")) ; lots of solutions
-  (def root (make-example-for-work "Jived fox nymph grabs quick waltz"))  ; might take long time to verify this
+  (def root (make-example-for-work "Jived fox nymph grabs quick waltz")) ; might take long time to verify this
   (def root (make-example-for-work "abc cdef fghij jklmna")) ; lots of solutions 0 ... 5431
   (def root (make-example-for-work "abc defg hijkl mnopqr stu")) ; solutions 0 ...
-  (def root (make-example-for-work "level")) ;13 solutions
-  (def root (make-example-for-work "level kayak"))  ; disjoint palendromes so will also have kayak level
+  (def root (make-example-for-work "level"))                ;13 solutions
+  (def root (make-example-for-work "level kayak"))          ; disjoint palendromes so will also have kayak level
   (def root (make-example-for-work "abc def ghi adg beh cfi")) ; 3x3 grid of distinct letters
   (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp")) ; 4x4 grid of distinct letters
   ; using fastest below found 2 solutions in just under 10 minutes!, one the transpose matrix of the other
@@ -322,7 +348,7 @@
   ;"Elapsed time: 547677.413145 msecs"       maxcnt = 10 in score-using-bounded-wordcount
   ;"Elapsed time: 483433.413157 msecs"       maxcnt = 100000
 
-  (def root (make-root root {1 \n 4 \s 13 \t 16 \o})) ; with hint
+  (def root (make-root root {1 \n 4 \s 13 \t 16 \o}))       ; with hint
   ;"Elapsed time: 60.3222 msecs" Liz solved this in a few hours)
 
   (def root (make-example-for-work "abcde fghij klmno pqrst uvwxy afkpu bglqv chmrw dinsx ejoty")) ; 5x5 grid of distinct letters
@@ -331,24 +357,24 @@
   ;fastest
   (def ans (filter
              all-completed-and-all-good?
-             (tree-seq non-completed-and-all-good? children-from-best-clue root)))
+             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))
   ;slower
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (partial children-from-top-clues 1) root)))
-  (nice-print ans 0);
+  (nice-print ans 0)                                        ;
   (show-at-most-n ans 10)
-  (show-from-root (nth ans 0))  ; show chain from root
-  (str/join " "(:partialwords (nth ans 0))) ; show just partialwords
+  (show-from-root (nth ans 0))                              ; show chain from root
+  (str/join " " (:partialwords (nth ans 0)))                ; show just partialwords
   ; if want to examine complete tree traversal
   (def root (make-example-for-work "pas pals clap sap lap slap claps pal")) ; 4 sols big tree
-  (def root (make-root root {16 \p 1 \a})) ; 2 sols little tree
-  (def ans (tree-seq non-completed-and-all-good? children-from-best-clue root))
+  (def root (make-root root {16 \p 1 \a}))                  ; 2 sols little tree
+  (def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))
   (show-at-most-n ans 100))
 
 (comment
   ; set up root using assigned encodemap
-  (def ccnumber 43) ;3 has bad word, 4 has no bad words, 43 has a few bad words
+  (def ccnumber 43)                                         ;3 has bad word, 4 has no bad words, 43 has a few bad words
   (def root (make-root (get-cc ccnumber)))
   ; set up root overwritting assigned encodemap and using {}
   (def root (make-root (get-cc ccnumber) {}))
@@ -356,57 +382,42 @@
   ;  43 with "root" encoding is interesting and will almost solve, but not with override {}
   (def ans (filter
              (complement non-completed-some-could-be-bad?)
-             (tree-seq non-completed-some-could-be-bad? children-from-best-clue root)))
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscores) root)))
   (def ans (filter
              all-completed-or-not-completable?
-             (tree-seq non-completed-some-could-be-bad? children-from-best-clue root)))
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscores) root)))
   ;fail for 43, work for 3
   (def ans (filter
              (complement non-completed-some-could-be-bad?)
-             (tree-seq non-completed-some-could-be-bad? (partial children-from-best-clue :simplescores) root)))
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :simplescores) root)))
   ;finds a few 'solutions'  for 43, 3
   (def ans (filter
              all-completed-or-not-completable?
-             (tree-seq non-completed-some-could-be-bad? (partial children-from-best-clue :simplescores) root)))
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :simplescores) root)))
   (def ans (filter
              all-completed?
-             (tree-seq non-completed-some-could-be-bad? children-from-best-clue root)))
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscores) root)))
   ; will not solve if has bad word and will find nothing
   (def ans (filter
              all-completed-and-all-good?
-             (tree-seq non-completed-and-all-good? children-from-best-clue root)))
+             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))
   (def ans (filter
              all-completed-and-all-good?
-             (tree-seq non-completed-and-all-good? (partial children-from-best-clue :simplescores) root)))
+             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :simplescores) root)))
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (partial children-from-top-clues 1) root)))
+  (def ans (filter
+             all-completed-and-all-good?
+             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))
   ; will not solve if has bad word and will stop with partial sol when get a bad uncomplete word
   (def ans (filter
              (complement non-completed-and-all-good?)
-             (tree-seq non-completed-and-all-good? children-from-best-clue root)))
+             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))
   (show-at-most-n ans 1)
-  (show-from-root (nth ans 0)))  ; show chain from root
+  (show-from-root (nth ans 0)))                             ; show chain from root
 
 
 
-(comment
-  (let [customers [{:first-name "Bill" :last-name "Baritompa" :age 71}
-                   {:last-name (ioa/red "foo") :first-name {:a 3 :b [55 100 233] :age 0}}]
-        formatter (col/format-columns [:right 10] ", " [:left 10] ": " :none)]
-    (col/write-rows *out* formatter [:last-name :first-name :age] customers)
-
-    (col/write-rows
-      *out*
-      [:last-name (str ", " ioa/red-font) :first-name (str ioa/reset-font ": ") [:age :none]]
-      customers))
-  (col/write-rows
-    *out*
-    [:clues (str ", " ioa/red-font) :partialwords (str ioa/reset-font ": ") [:wordcountscores :none]]
-    [{:clues 3 :partialwords "dfadf" :wordcountscores 45}])
-  (col/write-rows
-    *out*
-    [#(nth % 0) (str ", " ioa/red-font) #(nth % 1) (str ioa/reset-font ": ") [#(nth % 2) :none]]
-    [[3 4 5] [300 -33 22.33]]))
 
 
