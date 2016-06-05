@@ -166,14 +166,17 @@
 
 
 (defn make-root
-  "2-arity makes root with :encodegmap rootmap. 1-arity with (:encodemap cc)"
-  ([cc rootmap]
-   (let [clues (:clues cc)
-         singleletterclues (make-sorted-single-letter-clues cc)
-         numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
-         augmentedclues (concat  (singleletterclues :singleclues) clues)
-         wordlists (map #(find-all-words % rootmap) augmentedclues)
-         rmap (merge cc
+  "makes root from cc with :encodegmap rootmap or (:encodemap cc)
+  adds single letters as clues if asl true"
+  [{cc :ccinfo rootmap :rootmap asl :addsingleletters}]
+  (let [clues (:clues cc)
+        rootmap (when (not rootmap) (:encodemap cc))
+        singleletterclues (if asl (make-sorted-single-letter-clues cc)
+                                  {:singleclues '() :numinothers '()})
+        numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
+        augmentedclues (concat  (singleletterclues :singleclues) clues)
+        wordlists (map #(find-all-words % rootmap) augmentedclues)
+        rmap (merge cc
                      {:clues augmentedclues
                       :numinothers numinothers
                       :encodemap  rootmap
@@ -182,8 +185,7 @@
      ;(println clues)
      ;(println augmentedclues)
      (set-remaining-keys rmap)))
-  ([cc]
-   (make-root cc (:encodemap cc))))
+
 
 
 (defn make-child
@@ -269,7 +271,7 @@
   (let [clues (map encode (str/split (str/lower-case sentence) #" +"))
         cc {:clues clues}]
     ;(println clues)
-    (make-root cc {})))
+    (make-root {:ccinfo cc :rootmap {}})))
 
 (defn printcctable
   "prints table with each row being a the partial word, it's wordcount, simplescore and clue of cc
@@ -348,7 +350,7 @@
   ;"Elapsed time: 547677.413145 msecs"       maxcnt = 10 in score-using-bounded-wordcount
   ;"Elapsed time: 483433.413157 msecs"       maxcnt = 100000
 
-  (def root (make-root root {1 \n 4 \s 13 \t 16 \o}))       ; with hint
+  (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}}))       ; with hint
   ;"Elapsed time: 60.3222 msecs" Liz solved this in a few hours)
 
   (def root (make-example-for-work "abcde fghij klmno pqrst uvwxy afkpu bglqv chmrw dinsx ejoty")) ; 5x5 grid of distinct letters
@@ -368,16 +370,18 @@
   (str/join " " (:partialwords (nth ans 0)))                ; show just partialwords
   ; if want to examine complete tree traversal
   (def root (make-example-for-work "pas pals clap sap lap slap claps pal")) ; 4 sols big tree
-  (def root (make-root root {16 \p 1 \a}))                  ; 2 sols little tree
+  (def root (make-root {:ccinfo root :rootmap {16 \p 1 \a}}))                  ; 2 sols little tree
   (def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))
   (show-at-most-n ans 100))
 
 (comment
   ; set up root using assigned encodemap
   (def ccnumber 43)                                         ;3 has bad word, 4 has no bad words, 43 has a few bad words
-  (def root (make-root (get-cc ccnumber)))
+  (def root (make-root {:ccinfo (get-cc ccnumber)}))
+  ; set up root with singleletter clues added
+  (def root (make-root {:ccinfo (get-cc ccnumber) :addsingleletters true}))
   ; set up root overwritting assigned encodemap and using {}
-  (def root (make-root (get-cc ccnumber) {}))
+  (def root (make-root {:ccinfo (get-cc ccnumber) :rootmap {}}))
   ; will solve code cracker even if has a few bad words but may find other partial sols with some badwords
   ;  43 with "root" encoding is interesting and will almost solve, but not with override {}
   (def ans (filter
