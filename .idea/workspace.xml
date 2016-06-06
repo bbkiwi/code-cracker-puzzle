@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="new functions">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__net_mikera_core_matrix_0_51_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Leiningen__org_clojure_tools_macro_0_1_5.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+    <list default="true" id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/replstate.xml" afterPath="$PROJECT_DIR$/.idea/replstate.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code-cracker-puzzle.iml" afterPath="$PROJECT_DIR$/code-cracker-puzzle.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.clj" afterPath="$PROJECT_DIR$/project.clj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" afterPath="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
     </list>
+    <list id="531a656c-d835-4634-b479-cccbeb48ce0c" name="No longer needed to track" comment="" />
     <ignored path="code-cracker-puzzle.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -31,15 +30,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="core.clj" pinned="false" current-in-tab="true">
+      <file leaf-file-name="core.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="235" column="0" selection-start-line="235" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
-              <folding>
-                <element signature="e#2064#2493#0" expanded="false" />
-                <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-              </folding>
+            <state relative-caret-position="135">
+              <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example_code.clj" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/example_code.clj">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1215">
+              <caret line="45" column="77" selection-start-line="45" selection-start-column="77" selection-end-line="45" selection-end-column="77" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="work.clj" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -47,8 +63,8 @@
       <file leaf-file-name="project.clj" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <state relative-caret-position="189">
+              <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -58,14 +74,23 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dev" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/project.clj" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch" />
+        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+        <option value="$PROJECT_DIR$/src/code_cracker_puzzle/demo.clj" />
+        <option value="$PROJECT_DIR$/src/code_cracker_puzzle/example_code.clj" />
+        <option value="$PROJECT_DIR$/project.clj" />
+        <option value="$PROJECT_DIR$/src/code_cracker_puzzle/work.clj" />
       </list>
     </option>
   </component>
@@ -118,16 +143,42 @@
     <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
+    <property name="settings.editor.selected.configurable" value="Clojure.IDE" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea/replstate.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT&#10;Clojure" />
+    <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="203" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="236" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="237" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="1135" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="215" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="232" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="233" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="1131" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
   </component>
-  <component name="ReplState" timestamp="1462524621268">{:repl-history {:ide [], :local [&quot;(def ans (brute-solver-from-4-clues clues {} ))&quot; &quot;(doc take)&quot; &quot;(take 3 good-order-clues)&quot; &quot;(def all-clues (distinct (concat good-order-clues (:clues cc))))&quot; &quot;(def all-clues (distinct (concat (take 5 good-order-clues) (:clues cc))))&quot; &quot;(def all-clues (distinct (concat (take 3 good-order-clues) (:clues cc))))&quot; &quot;(code-solver-from-clues all-clues (:encodemap cc))&quot; &quot;(def all-clues (distinct (concat (take 1 good-order-clues) (:clues cc))))&quot; &quot;(def ans (code-solver-from-clues all-clues (:encodemap cc)))&quot; &quot;(def maps-in-ans (filter map? (tree-seq (complement map?) identity ans)))&quot; &quot;(show-sol 0 maps-in-ans all-clues)&quot; &quot;(def all-clues (distinct (concat (take 0 good-order-clues) (:clues cc))))&quot; &quot;all-clues&quot; &quot;(test-cc-48 18)&quot; &quot;(test-cc-48 3)&quot; &quot;(test-cc-48 2)&quot; &quot;(test-cc-48 20)&quot; &quot;(test-cc-48 0)&quot; &quot;(time (test-cc-48 10))&quot; &quot;(time (test-cc-48 5))&quot; &quot;(time (test-cc-48 3))&quot; &quot;(time (test-cc-48 2))&quot; &quot;(time (test-cc-48 1))&quot; &quot;(time (test-cc-48 0))&quot; &quot;(distinct [1 2 3 4])&quot; &quot;(distinct [1 2 3 4 4 3])&quot; &quot;(distinct? [1 2 3 4 4 3])&quot; &quot;(distinct? [1 2 3 4])&quot; &quot;(apply distinct? [1 2 3 4])&quot; &quot;(apply distinct? [1 2 3 4 4 3])&quot; &quot;(doc distinct)&quot; &quot;(doc distinct?)&quot; &quot;(rand-int 50)&quot; &quot;(repeatedly 10 (rand-int 9))&quot; &quot;(doc repeatedly)&quot; &quot;(repeatedly 5 rand)&quot; &quot;(rand)&quot; &quot;(repeatedly 5 rand-int)&quot; &quot;(repeatedly 5 #(rand-int 10))&quot; &quot;(repeatedly 50 #(rand-int 10))&quot; &quot;(distinct (repeatedly 50 #(rand-int 10)))&quot; &quot;(apply distinct? (distinct x))&quot; &quot;(def x 3)\n(apply distinct? (distinct x))&quot; &quot;(def x #{1 2 3 4 3})\n(apply distinct? (distinct x))&quot; &quot;(def x [1 2 3 2 2])\n(apply distinct? (distinct x))&quot; &quot;(def x \&quot;abcd\&quot;)\n(apply distinct? (distinct x))&quot; &quot;(def x \&quot;abcdfed\&quot;)\n(apply distinct? (distinct x))&quot; &quot;(distinct x)&quot; &quot;(distinct {:a 1})&quot; &quot;(coll? {:a 1})&quot; &quot;(map? {:a 1 :b 33})&quot; &quot;(coll? {:a 1 :b 33})&quot; &quot;(distinct {:a 1 :b 33})&quot; &quot;(nth {:a 1 :b 33} 0)&quot; &quot;(seq {:a 1 :b 33})&quot; &quot;(nth (seq {:a 1 :b 33} 0))&quot; &quot;(nth (seq {:a 1 :b 33}) 0)&quot; &quot;(coll? (seq {:a 1 :b 33}))&quot; &quot;(seq {:a 1 :b 33 :a 5})&quot; &quot;{:a 1 :b 33 :a 5}&quot; &quot;{:aa 1 :b 33 :a 5}&quot; &quot;(in-dictionary? \&quot;apple\&quot; word-dic)&quot; &quot;()&quot; &quot;(true? (in-dictionary? \&quot;apple\&quot; word-dic))&quot; &quot;(if (in-dictionary? \&quot;apple\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;applxe\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;li\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;la\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;ma\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;madam\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (in-dictionary? \&quot;madamself\&quot; word-dic) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(in-dictionary? \&quot;appxle\&quot; word-dic)&quot; &quot;map&quot; &quot;maps-in-ans&quot; &quot;(decode [1 2 3 4] maps-in-ans)&quot; &quot;(decode [1 2 3 4] (nth maps-in-ans 0))&quot; &quot;(decode [1 2 3 4] {1 \\a 3 \\c})&quot; &quot;(filter number? (decode [1 2 3 4] {1 \\a 3 \\c}))&quot; &quot;(filter number? (decode [1 2 3 4 4 5 3] {1 \\a 3 \\c}))&quot; &quot;(distinct (filter number? (decode [1 2 3 4 4 5 3] {1 \\a 3 \\c})))&quot; &quot;(-&gt;\n  (decode [1 2 3 4 4 5 3] {1 \\a 3 \\c})\n  (filter number?)\n  (distinct)\n  (count))&quot; &quot;(-&gt;\n  (decode [1 2 3 4 4 5 3] {1 \\a 3 \\c})\n  (filter number?))\n  &quot; &quot;\n  (decode [1 2 3 4 4 5 3] {1 \\a 3 \\c})\n  \n  &quot; &quot;(filter number? *1)\n  \n  &quot; &quot;(distinct *1)\n  \n  &quot; &quot;(count *1)\n  \n  &quot; &quot;(/ 3)&quot; &quot;(dec 5)&quot; &quot;(test-cc-48 10)&quot; &quot;(score-clue [1 3 3 1] {1 \\a 3 \\c})&quot; &quot;(score-clue [1 3 3 1 4] {1 \\a 3 \\c})&quot; &quot;(doc dec)&quot; &quot;(decode [1 2 3 4 4 5 3] {1 \\a 3 \\c})&quot; &quot;(filter number? *1)&quot; &quot;(distinct *1)&quot; &quot;(count *1)&quot; &quot;(dec *1)&quot; &quot;(* (/  7) *1)&quot; &quot;(score-clue2 [1 2 3 4 4 5 3] {1 \\a 3 \\c})&quot; &quot;(+ -1 5)&quot; &quot;(score-clue [1 2 3 4 4 5 3] {1 \\a 3 \\c})&quot;], :remote []}}</component>
+  <component name="ReplState" timestamp="1465126902152">{:repl-history {:ide [], :local [&quot;(#(format \&quot;%1s\&quot; %) \&quot;hi\&quot;)&quot; &quot;(map #(format \&quot;%2s\&quot; %) \&quot;hibdddd\&quot;)&quot; &quot;(map #(format \&quot;%2s\&quot; %) [\\a \\b])&quot; &quot;(map #(printf \&quot;%2s\&quot; %) [\\a \\b])&quot; &quot;(map #(printf \&quot;%2s\&quot; %) \&quot;hello\&quot;)&quot; &quot;(map #(printf \&quot;%4s\&quot; %) \&quot;hello\&quot;)&quot; &quot;(map #(printf \&quot;%4s\&quot; %) [2 3 4 22])&quot; &quot;(map #(printf \&quot;%3s\&quot; %) (range 1 27))&quot; &quot;(keys root)&quot; &quot;(type (keys root))&quot; &quot;(if (root :a) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if (root :clues) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(root :encodemap)&quot; &quot;(if )&quot; &quot;(if (root :encodemap) 4 \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if ((root :encodemap 4) \&quot;yes\&quot; \&quot;no\&quot;))&quot; &quot;(if ((root :encodemap) 4) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(if ((root :encodemap) 2) \&quot;yes\&quot; \&quot;no\&quot;)&quot; &quot;(def ccnumber 11)&quot; &quot;(count nil)&quot; &quot;(type ans)&quot; &quot;(take 1 ans)&quot; &quot;(count *1)&quot; &quot;(range 0)&quot; &quot;(doseq [n (range 0)])&quot; &quot;s= (printcctable root)&quot; &quot;root&quot; &quot;(def ans (filter\n             all-completed-and-all-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscore) root)))&quot; &quot;(def ans (filter\n             all-completed-and-all-good?\n             (tree-seq non-completed-and-all-good? (partial children-from-top-clues 1) root)))&quot; &quot;(def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscore) root))&quot; &quot;(def ccnumber 21)&quot; &quot;(clojure.pprint/pp [[1 2 3] [4 5 6]])&quot; &quot;(clojure.pprint/pprint [[1 2 3] [4 5 6]])&quot; &quot;(def ans (filter\n             (complement non-completed-some-could-be-bad?)\n             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscore) root)))&quot; &quot;(def ans (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscore) root))&quot; &quot;(count ans)&quot; &quot;(def ans (tree-seq non-completed-some-could-be-bad? (partial children-from-best-clue :wordcountscore) root))&quot; &quot;(root :word)&quot; &quot;(root :wordcountscores)&quot; &quot;(root :simplescores)&quot; &quot;(number? 3)&quot; &quot;(root :numinothers)&quot; &quot;(apply number? [])&quot; &quot;(apply number? [3])&quot; &quot;(apply number? [3 4])&quot; &quot;(apply number? [\\a])&quot; &quot;(apply number? [\\a 4])&quot; &quot;(number? [3])&quot; &quot;(defn numinother-score\n  [decodedclue oldnuminother]\n  (if (and (= (count decodedclue) 1) (apply number? decodedclue)) oldnuminother 1) decodedclue oldnuminother)&quot; &quot;(numinother-score [\\a] 5)&quot; &quot;(numinother-score [1] 5)&quot; &quot;(numinother-score [\\a 3] 5)&quot; &quot;(numinother-score [1 2] 5)&quot; &quot;(def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root))&quot; &quot;(show-at-most-n ans 5)&quot; &quot;(show-at-most-n ans 50)&quot; &quot;(def ans (filter\n             completeall-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))&quot; &quot;(def ans (filter\n             all-completed-and-all-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :simplescores) root)))&quot; &quot;(show-at-most-n ans 150)&quot; &quot;(show-from-root (nth ans 130))&quot; &quot;(def ans (filter\n             all-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))&quot; &quot;(def root (make-root root {1 \\n 4 \\s 13 \\t 16 \\o}))&quot; &quot;(def ans (filter\n             all-completed?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))&quot; &quot;(def ans (filter\n             all-completed-and-all-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))&quot; &quot;(defn apply-bitmask [s bitmask]\n  (for [[item bit] (map vector s bitmask)\n        :when (= bit 1)]\n    item))&quot; &quot;(apply-bitmask [1 23 4 5 3] [0 1 1 0 1])&quot; &quot;(map vector [1 2 3 4 5] [0 1 1 0 1])&quot; &quot;(def root (make-root (get-cc ccnumber)))&quot; &quot;(def ans (filter\n             all-completed-or-not-completable?\n             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :simplescores) root)))&quot; &quot;(show-at-most-n ans 1)&quot; &quot;(show-at-most-n ans 3)&quot; &quot;(show-at-most-n ans 2)&quot; &quot;(defn f [a :a b :b] (println a b))&quot; &quot;(defn f {a :a b :b} (println a b))&quot; &quot;(defn f [{a :a b :b}] (println a b))&quot; &quot;(f {:a 4})&quot; &quot;(f {:b 4})&quot; &quot;(f {:b 4 :a \&quot;aaa\&quot; :c 333})&quot; &quot;(if nil \&quot;t\&quot; \&quot;f\&quot;)&quot; &quot;(if true \&quot;t\&quot; \&quot;f\&quot;)&quot; &quot;(if (not nil) \&quot;t\&quot; \&quot;f\&quot;)&quot; &quot;(def root (make-example-for-work \&quot;abcd efgh ijkl mnop aeim bfjn cgko dhlp\&quot;))&quot; &quot;(printinfoencoding 0 root)&quot; &quot;(def root (make-root {:ccinfo root :rootmap {1 \\n 4 \\s 13 \\t 16 \\o}}))&quot; &quot;(printcctable root)&quot; &quot;(def root (make-example-for-work \&quot;abc def ghi adg beh cfi\&quot;))&quot; &quot;(def ans (filter\n             all-completed-and-all-good?\n             (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))&quot; &quot;(def ccnumber 43)&quot; &quot;(def ccnumber 33)&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :rootmap {}}))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber)}))&quot; &quot;(show-at-most-n ans 10)&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :singleclues true}))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :singleclues false}))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :addsingleclues false}))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :addsingleletters false}))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :addsingleletters }))&quot; &quot;(def root (make-root {:ccinfo (get-cc ccnumber) :addsingleletters true}))&quot; &quot;(def ans (filter\n             (complement non-completed-some-could-be-bad?)\n             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscores) root)))&quot; &quot;(show-from-root (nth ans 0))&quot; &quot;(doc make-root)&quot;], :remote []}}</component>
   <component name="RunManager" selected="Clojure REPL.REPL for code-cracker-puzzle">
+    <configuration default="false" name="core" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" temporary="true">
+      <module name="code-cracker-puzzle" />
+      <setting name="path" value="$PROJECT_DIR$/src/code_cracker_puzzle/core.clj" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$/src/code_cracker_puzzle" />
+      <setting name="repl" value="true" />
+      <method />
+    </configuration>
     <configuration default="false" name="REPL for code-cracker-puzzle" type="ClojureREPL" factoryName="Local" temporary="true">
       <setting name="replType" value="1" />
       <module name="code-cracker-puzzle" />
@@ -220,12 +271,14 @@
       <setting name="rowsRange" value="" />
       <method />
     </configuration>
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Clojure REPL.REPL for code-cracker-puzzle" />
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Clojure Application.core" />
+      <item index="1" class="java.lang.String" itemvalue="Clojure REPL.REPL for code-cracker-puzzle" />
     </list>
     <recent_temporary>
-      <list size="1">
+      <list size="2">
         <item index="0" class="java.lang.String" itemvalue="Clojure REPL.REPL for code-cracker-puzzle" />
+        <item index="1" class="java.lang.String" itemvalue="Clojure Application.core" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="JUnit" default="true" selected="false">
@@ -247,9 +300,14 @@
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
+    <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="84307bbf-fec1-4b6f-b41b-7347e54b238d" name="Default" comment="" />
+      <changelist id="531a656c-d835-4634-b479-cccbeb48ce0c" name="No longer needed to track" comment="" />
       <created>1461990410745</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -262,7 +320,49 @@
       <option name="project" value="LOCAL" />
       <updated>1462190590687</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fixed bug so filtercode is no longer ignored in make-child&#10;more examples&#10;fixed -main so will run with lein run">
+      <created>1463918431822</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1463918431822</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed bug in code-cracker-puzzle.work/set-remaining-keys&#10;  no longer overwrites :clue and :word">
+      <created>1463967517169</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1463967517169</updated>
+    </task>
+    <task id="LOCAL-00004" summary="tidied up">
+      <created>1464055918357</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1464055918357</updated>
+    </task>
+    <task id="LOCAL-00005" summary="using individual letters and finding those in the most words">
+      <created>1464257396421</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1464257396421</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fixed simplescores so non completeable words get 1 (as in wordcountscores)&#10;using io.aviso for color and column printing">
+      <created>1464780571749</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1464780571749</updated>
+    </task>
+    <task id="LOCAL-00007" summary="score by numinothers&#10;tweaked printing">
+      <created>1464956017129</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1464956017129</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -275,33 +375,60 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1064" extended-state="1" />
+    <frame x="-9" y="-9" width="1938" height="1064" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
-      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.444206" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Leiningen" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.4867968" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.50214595" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48738593" sideWeight="0.5132032" order="4" side_tool="false" content_ui="tabs" x="832" y="462" width="255" height="95" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32798165" sideWeight="0.49785408" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Leiningen" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32957596" sideWeight="0.4867968" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2573996" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28019324" sideWeight="0.49541286" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5045872" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39954075" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39908257" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912844" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39908257" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="REPL" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6695279" sideWeight="0.5132032" order="4" side_tool="true" content_ui="tabs" x="-9" y="-9" width="1938" height="1064" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Leiningen" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.4867968" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295063" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26555794" sideWeight="0.49541286" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25645342" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25643778" sideWeight="0.5045872" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -316,29 +443,28 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="new functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="new functions" />
+    <MESSAGE value="Routines sorting clues&#10;Data in recources" />
+    <MESSAGE value="Added work.clj to use tree-seq" />
+    <MESSAGE value="Added make-example-for-work" />
+    <MESSAGE value="Back from Nelson new filter code moved to work" />
+    <MESSAGE value="fixed bug so filtercode is no longer ignored in make-child&#10;more examples&#10;fixed -main so will run with lein run" />
+    <MESSAGE value="fixed bug in code-cracker-puzzle.work/set-remaining-keys&#10;  no longer overwrites :clue and :word" />
+    <MESSAGE value="tidied up" />
+    <MESSAGE value="using individual letters and finding those in the most words" />
+    <MESSAGE value="fixed simplescores so non completeable words get 1 (as in wordcountscores)&#10;using io.aviso for color and column printing" />
+    <MESSAGE value="score by numinothers&#10;tweaked printing" />
+    <option name="LAST_COMMIT_MESSAGE" value="score by numinothers&#10;tweaked printing" />
+    <option name="PRESELECT_EXISTING_CHANGELIST" value="false" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/project.clj">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -346,10 +472,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -357,7 +480,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -365,10 +487,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -376,7 +495,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -384,10 +502,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -395,7 +510,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -403,10 +517,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -414,7 +525,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -422,10 +532,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -433,45 +540,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -479,10 +547,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -491,7 +556,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -499,10 +563,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -510,7 +571,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -518,10 +578,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -529,7 +586,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -537,10 +593,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -548,7 +601,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -556,10 +608,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -567,7 +616,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -575,10 +623,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -586,7 +631,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -594,10 +638,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -605,7 +646,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -613,10 +653,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -624,7 +661,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -632,10 +668,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -643,7 +676,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -651,10 +683,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -662,7 +691,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -670,10 +698,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -681,7 +706,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -689,10 +713,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -700,7 +721,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="6" column="42" selection-start-line="6" selection-start-column="42" selection-end-line="6" selection-end-column="42" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch" />
+    <entry file="file://$PROJECT_DIR$/test/code_cracker_puzzle/core_test.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/intro.md" />
+    <entry file="file://$PROJECT_DIR$/resources/2of4brifblanksep.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/CCdata.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -711,27 +755,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/project.clj">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state relative-caret-position="273">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/demo.clj" />
+    <entry file="jar://$MAVEN_REPOSITORY$/org/clojure/clojure/1.8.0/clojure-1.8.0.jar!/clojure/lang/Compiler.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="677" column="0" selection-start-line="677" selection-start-column="0" selection-end-line="677" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/clojure/clojure/1.8.0/clojure-1.8.0.jar!/clojure/core.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-45">
+          <caret line="2504" column="6" selection-start-line="2504" selection-start-column="6" selection-end-line="2504" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/example_code.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1215">
+          <caret line="45" column="77" selection-start-line="45" selection-start-column="77" selection-end-line="45" selection-end-column="77" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1" />
     <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/core.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="235" column="0" selection-start-line="235" selection-start-column="0" selection-end-line="235" selection-end-column="0" />
-          <folding>
-            <element signature="e#2064#2493#0" expanded="false" />
-            <marker date="1462524350700" expanded="true" signature="1975:2493" placeholder="..." />
-          </folding>
+        <state relative-caret-position="135">
+          <caret line="5" column="41" selection-start-line="5" selection-start-column="41" selection-end-line="5" selection-end-column="41" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch" />
+    <entry file="file://$PROJECT_DIR$/project.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/code_cracker_puzzle/work.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>
@@ -777,6 +854,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
