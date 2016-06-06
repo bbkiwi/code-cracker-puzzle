@@ -5,13 +5,167 @@
               [clojure.edn :as edn]                         ;safe io
               [clojure.core.matrix :as m]
               [clojure.walk]
-              [code-cracker-puzzle.core :refer :all]
               [clojure.repl :refer :all]
               [io.aviso.ansi :as ioa]
-              [io.aviso.columns :as col]))
+              [io.aviso.columns :as col]
+              [criterium.core :refer [quick-bench]]))
 
 ; why do I need require clojure.repl here?
 ; ANS in project.clj ns desiginated by :main will get it.
+
+(def word-dic-words
+  "string starting with blank consisting of words each followed by blank"
+  ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\WordLists\\2of4brifblanksep.txt")
+  (slurp "resources/2of4brifblanksep.txt"))
+
+;put individual letters in dictionary
+(def word-dic (str " a b c d e f g h i j k l m n o p q r s t u v w x y z " word-dic-words))
+
+(defn in-dictionary?
+  "Returns wordstring with blanks added either side (truthy) if in dic else nil (falsey)"
+  [wordstring dic]
+  ;(println regex-pat)
+  (re-find (re-pattern (str " "  wordstring " ")) dic))
+
+(def CCdata
+  ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")
+  (slurp "resources/CCdata.txt"))
+
+
+(defn clean-letuse
+  "Removes letters that are used in codecracker pattern from letter to
+   be used. letuse = \"\" is short for all letters. Returns string"
+  ([letuse]
+   (clean-letuse letuse ""))
+  ([letuse codecracker-pattern]
+   (let [actual-letuse (if (= letuse "") "abcdefghijklmnopqrstuvwxyz" letuse)]
+     (str/join
+       "" (set/difference (set actual-letuse) (set codecracker-pattern))))))
+
+(defn decode-to-vec
+  "Decodes the clue (coll of  numbers) using assigned-letters-map to
+  a vector of characters"
+  [clue assigned-letters-map]
+  (replace assigned-letters-map clue))
+
+(defn decode
+  "Decodes the clue (coll of  numbers) using assigned-letters-map to
+  a string. Note if some numbers are not keys in the map they will turn to strings."
+  [clue assigned-letters-map]
+  (str/join "" (decode-to-vec clue assigned-letters-map)))
+
+(defn encode
+  "Encodes a string of letters using assigned-letters-map
+  (or default {1 \\a, 2 \\b ...}  to a vector of numbers and
+  characters (if they are not in values in the map)"
+  ([word]
+   (encode word (zipmap (range 1 27) "abcdefghijklmnopqrstuvwxyz")))
+  ([word assigned-letters-map]
+   (replace (set/map-invert assigned-letters-map) (vec word))))
+
+(defn assigned-letters-map->assigned-letters-string
+  [alm]
+  (let [dmap (zipmap (range 1 27) "??????????????????????????")
+        rmap (merge dmap alm)]
+    (str/join "" (replace rmap (range 1 27)))))
+
+(defn make-code-cracker-pat
+  "Take decoded vector and convert."
+  [decoded-vec]
+  (let [distinct-numbers (distinct (filter number? decoded-vec))
+        temp-map (zipmap distinct-numbers (range 1 (inc (count distinct-numbers))))]
+    ;(println temp-map)
+    (str/join "" (replace temp-map decoded-vec))))
+
+(defn letpat
+  [letuse]
+  (if
+    (= letuse "abcdefghijklmnopqrstuvwxyz") #"(\w)"
+                                            (str "([" letuse "])")))
+(defn pat-for-new
+  "Gives pattern for first use of letter n 1...8"
+  [n letuse]
+  (if
+    (= n 1) (letpat letuse)
+            (str "(?!\\" (str/join "|\\" (range 2 (inc n))) ")" (letpat letuse))))
+
+(defn pat-for-old
+  "Gives pattern for subsequent use of letter n 1...8"
+  [n & letuse]  ; second param ignored but want to keep same arg list as pat-for-new
+  (str "\\" (inc n)))
+
+(defn char->num
+  "Convert char \0 ... to number 0 ..."
+  [ch]
+  (- (int ch) (int \0)))
+
+(defn pat-for-symbol
+  "Gives pattern for each symbol in code cracker pattern"
+  [front-pat char-from-pat letuse cleaned-letuse]
+  (cond
+    (= char-from-pat \0) (letpat letuse)
+    (contains? (set "12345678") char-from-pat)
+    (if (contains? (set front-pat) char-from-pat)
+      (pat-for-old (char->num char-from-pat) cleaned-letuse)
+      (pat-for-new (char->num char-from-pat) cleaned-letuse))
+    :else (str char-from-pat)))
+
+; maybe use reduce here
+(defn code-cracker-to-regex-body
+  "This is the recursive routine"
+  [front-pat char-pat rest-pat letuse cleaned-letuse]
+  (let [pfs (pat-for-symbol front-pat char-pat letuse cleaned-letuse)]
+    (if (empty? rest-pat)
+      pfs
+      (str pfs
+           (code-cracker-to-regex-body
+             (str/join "" [front-pat char-pat])
+             (first rest-pat)
+             (str/join "" (rest rest-pat))
+             letuse
+             cleaned-letuse)))))
+
+(defn code-cracker-pat-to-regexpat
+  "Converts code cracker pattern string to regex. Assume letters assigned sequentially from 1 to 8
+  0 is a free letter. Pattern starts with blank which is start of word in the dictionary.
+  The whole word is group 1, then code crackers unknowns are assigned groups 2,...,9.
+  Example \"b12t\"  goes to
+  #\" (b([adefghijklmnopqrsuvwxyz])(?!\\2)([adefghijklmnopqrsuvwxyz])t)(?= )\"
+  Note no checks on validity of code cracker pattern done - code letters must start
+  and 1, introduced consecutively."
+  ;TODO might want code-cracker-pat to be vector and will need to fix
+  [code-cracker-pat letuse]
+  (let
+    [front-pat ""
+     char-pat (first code-cracker-pat)  ; not work if code-cracker-pat is vec
+     rest-pat (str/join "" (rest code-cracker-pat))]
+    (re-pattern (str
+                  " ("
+                  (code-cracker-to-regex-body
+                    front-pat
+                    char-pat
+                    rest-pat
+                    (clean-letuse letuse)
+                    (clean-letuse letuse code-cracker-pat))
+                  ")(?= )"))))
+
+(defn findall
+  "Uses regex-pat which has group 1 equal the words sought to search dictionary dic, a string of words
+   separated by single blanks (also starting and ending with a blank. Returns lazy sequence (possibly empty) of words from group 1.
+   #\" (regexforword)(?= \"   "
+  [regex-pat dic]
+  ;(println regex-pat)
+  (map #(nth % 1) (re-seq regex-pat dic)))
+
+(defn find-all-words
+  "Takes clue (a vector of code numbers) and a partial solution map assigned-letters-map
+   Returns a lazy seq  of each solution word."
+  [clue assigned-letters-map]
+  (let [letuse (clean-letuse "" (assigned-letters-map->assigned-letters-string assigned-letters-map))
+        decoded-vec (decode-to-vec clue assigned-letters-map)
+        code-cracker-pat (make-code-cracker-pat decoded-vec)
+        regexpat (code-cracker-pat-to-regexpat code-cracker-pat letuse)]
+    (findall regexpat word-dic)))
 
 (defn make-sorted-single-letter-clues
   "Find all numbers occuring in a clue and how many clues it appears in
@@ -31,7 +185,6 @@
     ;(println numinothers)
     ;singleclues
     {:singleclues singleclues :numinothers numinothers}))
-
 
 (defn letpat-filter
   [letuse]
@@ -164,13 +317,14 @@
             :completed       completed
             :allgood         allgood})))
 
-
+;TODO ? use merge to handle default params
 (defn make-root
-  "makes root from cc with :encodegmap rootmap or (:encodemap cc)
+  "makes root from cc with :encodemap rootmap
+  or (:encodemap cc) if exists else {}
   adds single letters as clues if asl true"
   [{cc :ccinfo rootmap :rootmap asl :addsingleletters}]
   (let [clues (:clues cc)
-        rootmap (when (not rootmap) (:encodemap cc))
+        rootmap (if (not rootmap) (merge {}(:encodemap cc)) rootmap)
         singleletterclues (if asl (make-sorted-single-letter-clues cc)
                                   {:singleclues '() :numinothers '()})
         numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
@@ -186,6 +340,9 @@
      ;(println augmentedclues)
      (set-remaining-keys rmap)))
 
+(defn update-assigned-letters-map
+  [assigned-letters-map clue word-found]
+  (merge assigned-letters-map (zipmap clue word-found)))
 
 
 (defn make-child
@@ -272,6 +429,7 @@
         cc {:clues clues}]
     ;(println clues)
     (make-root {:ccinfo cc :rootmap {}})))
+
 
 (defn printcctable
   "prints table with each row being a the partial word, it's wordcount, simplescore and clue of cc
@@ -374,6 +532,47 @@
   (def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))
   (show-at-most-n ans 100))
 
+; alternate read
+; (with-open [rdr (clojure.java.io/reader "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")]
+;  (count (line-seq rdr)))
+(import '(java.io BufferedReader StringReader))
+(defn get-cc
+  [numcc]
+  (let [n1 (* (dec numcc) 15)
+        n2 (+ n1 15)
+        cc-date (nth (line-seq (BufferedReader. (StringReader. CCdata))) n1)
+        assigned-letters (str/lower-case (nth (line-seq (BufferedReader. (StringReader. CCdata))) (inc n1)))
+        row-strings (subvec (vec (line-seq (BufferedReader. (StringReader. CCdata)))) (+ n1 2) n2)
+        row-vectors (map #(edn/read-string (str "[" %1 "]")) row-strings)
+        col-vectors (m/transpose row-vectors)
+        clues-in-vec (fn [v] (filter #(and (> (count %) 1) (not (contains? (set %) 0))) (partition-by zero? v)))
+        horizontal-clues (apply concat (map clues-in-vec row-vectors))
+        vertical-clues (apply concat (map clues-in-vec col-vectors))
+        all-clues (concat horizontal-clues vertical-clues)
+        ; TODO why does this fail? It doesnt give a map.
+        ;em (filter #(not= \space (val %))(zipmap (range 1 27) assigned-letters))
+        em (apply hash-map (flatten (filter #(not= \space (val %)) (zipmap (range 1 27) assigned-letters))))
+        nasm (zipmap (range 1 27) "..........................")
+        ;TODO why below causes no error but only wrong answers?
+        ;pw (map #(str/join "" (decode % (merge nasm (:encodemap cc)))) (:clues cc))
+        pw (map #(decode % (merge nasm em)) all-clues)]
+
+    (println cc-date)
+    (println assigned-letters)
+    ;(println row-strings)
+    ;(println row-vectors)
+    ;(println col-vectors)
+    ;(println clues-in-vec)
+    ;(println horizontal-clues)
+    ;(println vertical-clues)
+    ;(edn/read-string (str  "[" (str/join " " row-strings) "]"))
+    {:date         cc-date  ;string
+     :encodemap    em  ; map
+     :partialwords pw  ; lazy seq of strings
+     :clues        all-clues}))  ; lazy seq of cons
+
+
+
 (comment
   ; set up root using assigned encodemap
   (def ccnumber 43)                                         ;3 has bad word, 4 has no bad words, 43 has a few bad words
@@ -420,8 +619,5 @@
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))
   (show-at-most-n ans 1)
   (show-from-root (nth ans 0)))                             ; show chain from root
-
-
-
 
 
