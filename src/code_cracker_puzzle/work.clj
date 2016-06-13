@@ -22,7 +22,7 @@
 (def word-dic (str " a b c d e f g h i j k l m n o p q r s t u v w x y z " word-dic-words))
 
 
-; persistant vec of all words (note removal of any leading blanks from word-dic before splitting)
+; persistent vec of all words (note removal of any leading blanks from word-dic before splitting)
 (def all-words-in-vec (str/split (str/replace-first word-dic #" *" "") #" +"))
 ; set of all words
 (def all-words-in-set (set all-words-in-vec))
@@ -190,10 +190,13 @@
         decoded-vec (decode-to-vec clue assigned-letters-map)
         code-cracker-pat (make-code-cracker-pat decoded-vec)
         regexpat (code-cracker-pat-to-regexpat code-cracker-pat letuse)]
-    (println letuse "\n" code-cracker-pat "\n" regexpat)
+    ;(println letuse "\n" code-cracker-pat "\n" regexpat)
     (findall regexpat word-dic)))
 
-
+;  a clue is a vector of numbers 1..26 represent the alphabet permuted
+;         so 2 and 21 will represent different letters
+; TODO do I really want 0 to be used as a code?
+;         numbers 0, and above 26 correspond to arbitrary letters so 29 can be any letter
 ;  ; Using masks to generate transducers for finding words
 ;  A partial decoded clue (pdc) is a vector of numbers and characters
 ;  e.g. [11 20 \a 11] will be used to find 4 letter words like
@@ -219,62 +222,143 @@
 ;TODO other examples
 ;
 
+(comment
+  ;(quick-bench (doall (applymask-1 [\c nil nil 2 3 nil 2] [1 2 3 4 5 6 7]))) ; mean : 6.888192 µs
+  (defn applymask-1
+    "mask is vec of truthy/nil. Select those elements of word corresponding to truthy
+    if mask is shorter than word it is truncated, if longer padded with truthy
+    word can be string, vec, list. Produces lazy-seq"
+    [mask word]
+    (keep-indexed #(when (nth mask %1 %2) %2) word))
+
+  ; (quick-bench (doall (applymask-2 [\c nil nil 2 3 nil 2] [1 2 3 4 5 6 7]))) ; mean : 17.868987 µs
+  (defn applymask-2
+    "mask is vec of truthy/nil. Select those elements of word corresponding to truthy
+   if mask is shorter than word it is truncated, if longer padded with truthy
+   word can be string, vec, list. Produces lazy-seq"
+    [mask word]
+    (for [[m c] (map vector mask word) :when m] c)))
+
+; fastest
+;(quick-bench (applymask [\c nil nil 2 3 nil 2] [1 2 3 4 5 6 7])) ;mean : 3.912921 µs
 (defn applymask
   "mask is vec of truthy/nil. Select those elements of word corresponding to truthy
   if mask is shorter than word it is truncated, if longer padded with truthy
-  word can be string, vec, list"
-  [mask word]
-  (keep-indexed #(when (nth mask %1 %2) %2) word))
-
-; alternate seems bit slower
-(defn applymask-alt
-  "mask is vec of truthy/nil. Select those elements of word corresponding to truthy
-  if mask is shorter than word it is truncated, if longer padded with truthy
-  word can be string, vec, list"
+  word can be string, vec, list. Produces persistent vector"
   [mask word]
   (reduce-kv #(if (nth mask %2 %3) (conj %1 %3) %1) [] (vec word)))
 
-; variation that selects just the first
+; variation that selects just the first truthy of mask
 (defn applymask-till-match
   "mask is vec of truthy/nil. Select first element of word corresponding to truthy
   if mask is shorter than word it is truncated, if longer padded with truthy
-  word can be string, vec, list"
+  word can be string, vec, list. Produces persistent vector"
   [mask word]
   (reduce-kv #(if (nth mask %2 %3) (reduced (conj %1 %3)) %1) [] (vec word)))
 
-(defn make-mask-from-values
+(defn mask-from-values
   [pdc values]
   (let [set-of-values (if (coll? values) (set values) (conj #{} values))]
-    (println set-of-values)
+    ;(println set-of-values)
     (map set-of-values pdc)))
+
+(defn mask-for-free-clues
+  "will select all codes that are numbers > 26"
+  [pdc]
+  (let [fv (filter #(and (number? %) (> % 26)) pdc)]
+    (mask-from-values pdc fv)))
+
+(defn mask-for-constrained-clues
+  "will select all codes that are numbers 1 to 26"
+  [pdc]
+  (let [cv (filter #(and (number? %) (> % 0) (< % 27)) pdc)]
+    (mask-from-values pdc cv)))
 
 ;TODO use a positional mask
 ; (map #(and %1 %2) [nil 1 1 1 nil] [11 22 33 \t 11])
 ;; (nil 22 33 \t nil) applied and result checked if also specifies a word
 
-(defn make-characteristic-masks
+(defn characteristic-masks-for-numbers
   "pdc is partial decoded clue which is a vector of
-  characters and numbers. The  masks is
-  characteristic function for each distinct value"
+  characters and numbers. The  masks are the
+  characteristic functions for each distinct number"
   [pdc]
-  (let [dv (distinct pdc)
-        mf (partial make-mask-from-values pdc)]
+  (let [dv (distinct (filter number? pdc))
+        mf (partial mask-from-values pdc)]
     (map mf dv)))
 
-(defn make-filter-from-characteristic-mask
+(defn characteristic-masks-for-chars
+  "pdc is partial decoded clue which is a vector of
+  characters and numbers. The  masks are the
+  characteristic functions for each distinct char"
+  [pdc]
+  (let [dv (distinct (filter char? pdc))
+        mf (partial mask-from-values pdc)]
+    (map mf dv)))
+
+
+(defn count-filter-from-characteristic-mask
   "Used for checking that all letters with same code number are the same"
   [cm]
-  (let [same? (fn [word] (->> word (applymask cm) set count (= 1)))]
-    (filter same?)))
+  (let [usethis? (fn [word] (->> word (applymask cm) set count (= 1)))]
+    (filter usethis?)))
 
-(defn make-comp-filter-from-characteristic-masks
+(defn comp-count-filter-from-characteristic-masks
   [cms]
-  (apply comp (map make-filter-from-characteristic-mask cms)))
+  (apply comp (map count-filter-from-characteristic-mask cms)))
 
+(defn value-filter-from-characteristic-mask
+  "Used for checking specified letters are correct
+  mask must have ony chars and nils"
+  [cm]
+  (let
+    [spl (filter char? cm)
+     usethis? (fn [word] (->>
+                           word
+                           (applymask cm)
+                           (= spl)))]
+    ;(println spl)
+    (filter usethis?)))
+
+(defn comp-value-filter-from-characteristic-masks
+  [cms]
+  (apply comp (map value-filter-from-characteristic-mask cms)))
+
+(defn characteristic-mask-for-distinct
+  [pdc]
+  (let [values-that-should-be-distinct
+        (distinct (filter #(or
+                            (char? %)
+                            (and (> % 0)
+                                 (< % 27)))
+                          pdc))]
+    (mask-from-values pdc values-that-should-be-distinct)))
+
+(defn distinct-letters-filter
+  [pdc]
+  (let [dmask (characteristic-mask-for-distinct pdc)
+        ndistinct  (count (distinct (remove nil?  dmask)))
+        usethis? (fn [word] (->> word (applymask dmask) set count (= ndistinct)))]
+    (filter usethis?)))
+
+(defn sub-word-filter
+  "selects if subword given by mask is also a word"
+  [smask]
+  (let [usethis? (fn [word] (->> word (applymask smask) (str/join "")  all-words-in-set))]
+    (filter usethis?)))
+
+(defn letter-to-use-filter
+  [smask lettouse]
+  (let [usethis? (fn [word] (as-> word arg
+                                  (applymask smask arg)
+                                  (set arg)
+                                  (set/difference arg (set lettouse))
+                                  (empty? arg)))]
+    (filter usethis?)))
 
 ;TODO must be a better way to code this
 ; might not need as can use applymask-till-match
-(defn make-simple-masks
+(defn simple-masks-from-characteristic-masks
   "cms is list of characteristic masks
   produces list of simple masks.
   A simple mask has true at first occurence of the distinct code"
@@ -294,7 +378,7 @@
     (map cmf cms)))
 
 
-(defn make-filter-from-simple-mask
+(defn filter-from-simple-mask
   "Used for checking that all letters with a given code number are
   in the correct set of letters to use"
   [sm lettouse]
@@ -303,9 +387,9 @@
     (filter using-correct-letters?)))
 
 ;TODO need to know lettouse for each different mask
-(defn make-comp-filter-from-simple-masks
+(defn comp-filter-from-simple-masks
   [sms]
-  (apply comp (map make-filter-from-simple-mask sms)))
+  (apply comp (map filter-from-simple-mask sms)))
 
 ;TODO need to make or of masks corresponding to 1...26
 ; gen filter that tests cardnality of applymask being same as number of trues in mask
@@ -313,24 +397,59 @@
 
 
 ;TODO using dictionary as set seems fastest
-(defn filteredlist
+(defn filter-from-partial-decoded-clue
+  "creates filter transducer"
   [pdc]
   (let [n (count pdc)]
-    (sequence
-      (comp
-        (filter #(= n (count %)))
-        (make-comp-filter-from-characteristic-masks
-          (make-characteristic-masks pdc)))
-      ;all-words-in-lazy-seq
-      ;all-words-in-vec
-      all-words-in-set)))
+    (comp
+      ; TODO arrange filters with most restrictive first so will run fastest
+      ; selects words of correct length
+      (filter #(= n (count %)))
+      ; selects words with correct letters associated with char in pdc
+      (comp-value-filter-from-characteristic-masks
+          (characteristic-masks-for-chars pdc))
+      ; selects words with number codes well defined i.e. corresponding to unique letter
+      (comp-count-filter-from-characteristic-masks
+          (characteristic-masks-for-numbers pdc))
+      ;TODO select words with number codes being in specified sets
+      ;TODO select words with specified subseq in dictionary
+      ; selects words with the correct number of distinct letters (chars and num 1 ..27
+      (distinct-letters-filter pdc))))
+
+
+
+(defn filteredlist
+  "filters words (set or list but set is fastest) default is all-words-in-set"
+  ([filter-transducer]
+   (filteredlist filter-transducer all-words-in-set))
+  ([filter-transducer words]
+   (sequence filter-transducer words)))
+
 
 (comment
-  (time (find-all-words [1 2 3 2 1] {}))
-  (time (filteredlist [1 2 3 2 1])))
+  (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [1 2 3 4 5])
+                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33 34 35])
+                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33 34 35])
+                  (sub-word-filter [1 1 1 nil nil])
+                  (sub-word-filter [nil 1 1 1 nil])
+                  (sub-word-filter [nil nil 1 1 1])))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33 34 35])
+                  (letter-to-use-filter [1 nil nil nil nil] "abc")
+                  (letter-to-use-filter [nil nil nil nil 1]  "xyz")
+                  (sub-word-filter [nil 1 1 1 nil])))
+
+  (quick-bench (find-all-words [1 2 3 2 1] {})) ;22 ms
+  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1])))) ;4 ms
 
 
-(defn make-sorted-single-letter-clues
+(defn sorted-single-letter-clues
   "Find all numbers occuring in a clue and how many clues it appears in
   Returns list of single number clues for these and the count"
   [cc]
@@ -380,8 +499,8 @@
                              :else input)))
                    [] v2)
         v3 (re-pattern (str/join "" v3))]
-    (println partial-decoded-code-vec new-map letuse)
-    (println cleanletpat freeletpat v1 v2)
+    ;(println partial-decoded-code-vec new-map letuse)
+    ;(println cleanletpat freeletpat v1 v2)
     v3))
 
 
@@ -391,11 +510,28 @@
 ; but have found now way to keep a lazy sequence
 ;TODO the code below must be able to be shortened
 
-(defn filtercode
+(defn filtercode-using-regex
   ""
   [alm nlm otherclue otherwords]
   (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
     (filter #(re-matches repat %) otherwords)))
+
+; using transducers
+(defn filtercode
+  ""
+  [alm nlm otherclue otherwords]
+  (let [freelet  (clean-letuse "")
+        cleanlet (clean-letuse "" (vals nlm))
+        diffm (apply dissoc nlm (keys alm))
+        newchm (decode-to-vec otherclue diffm)
+        pdc (decode-to-vec otherclue nlm)]
+    (println cleanlet diffm newchm pdc)
+    (filteredlist (comp
+                    ;(filter-from-partial-decoded-clue pdc)
+                    (comp-value-filter-from-characteristic-masks
+                      (characteristic-masks-for-chars newchm))
+                    (letter-to-use-filter (mask-for-constrained-clues pdc) cleanlet))
+                  otherwords)))
 
 (defn numinother-score
   [decodedclue oldnuminother]
@@ -494,7 +630,7 @@
   [{cc :ccinfo rootmap :rootmap asl :addsingleletters}]
   (let [clues (:clues cc)
         rootmap (or rootmap (merge {}(:encodemap cc)))
-        singleletterclues (if asl (make-sorted-single-letter-clues cc)
+        singleletterclues (if asl (sorted-single-letter-clues cc)
                                   {:singleclues '() :numinothers '()})
         numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
         augmentedclues (concat  (singleletterclues :singleclues) clues)
@@ -517,7 +653,8 @@
 (defn make-child
   [cc clue word]
   (let [newmap (update-assigned-letters-map (:encodemap cc) clue word)
-        newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
+        ;newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
+        newwords (map #(filtercode-using-regex (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
         updatedcc (merge cc {:encodemap newmap,
                              :wordlists newwords
                              :parent    cc
@@ -654,18 +791,19 @@
 (defn show-at-most-n
   "times and shows info about up to nmax solutions in ans"
   [ans nmax]
-  (time
-    (let [sols (take nmax ans)
-          nshow (count sols)]
-      (doseq [n (range nshow)]
-        (printinfoencoding n (nth ans n))
-        (printcctable (nth ans n))))))
+  (let [sols (take nmax ans)
+        nshow (count sols)]
+    (doseq [n (range nshow)]
+      (printinfoencoding n (nth ans n))
+      (printcctable (nth ans n)))))
 
 
 ;TODO clarify how to set up root and how to use tree-seq
 (comment
   (def root (make-example-for-work "the quick brown fox jumps over the lazy level dog")) ; 96 solutions
   (def root (make-example-for-work "abcd bcde cdef  abcdef")) ; hone ones nest honest ... 12 solutions
+  (def root (make-example-for-work "abcdefg bcdef cde")) ;tragedy raged age ...pirates irate rat ...phoneys honey one ..20 sols
+  (def root (make-example-for-work "abcdefg fedcb")) ; deviant naive ..10 sols
   (def root (make-example-for-work "now is the time for all good men to come to the aid of their party")) ; lots of solutions
   (def root (make-example-for-work "Jived fox nymph grabs quick waltz")) ; might take long time to verify this
   (def root (make-example-for-work "abc cdef fghij jklmna")) ; lots of solutions 0 ... 5431
@@ -805,3 +943,33 @@
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))))
+
+
+
+; parinfer bug?
+(defn foo
+  "try comment out dec with ; then add (println) after it"
+  [x]
+  (let
+    [f (fn [y] (->>
+                 x
+                 (+ y)
+                 dec))]
+    (println x)
+    f))
+
+(defn test-sol
+  [root]
+  (let [ans (filter
+              all-completed-and-all-good?
+              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))]
+    (show-at-most-n ans 10)))
+
+(defn bench-test-sol
+  [root]
+  (let [ans (doall (filter
+                     all-completed-and-all-good?
+                     (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))]))
+
+
+;TODO in make-child filtercode using reg-ex 71 ms, using transducers 232.ms
