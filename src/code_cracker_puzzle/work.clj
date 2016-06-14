@@ -274,6 +274,12 @@
   (let [cv (filter #(and (number? %) (> % 0) (< % 27)) pdc)]
     (mask-from-values pdc cv)))
 
+(defn mask-for-char-clues
+  "will select all codes that are chars"
+  [pdc]
+  (let [cv (filter char? pdc)]
+    (mask-from-values pdc cv)))
+
 ;TODO use a positional mask
 ; (map #(and %1 %2) [nil 1 1 1 nil] [11 22 33 \t 11])
 ;; (nil 22 33 \t nil) applied and result checked if also specifies a word
@@ -356,6 +362,16 @@
                                   (empty? arg)))]
     (filter usethis?)))
 
+(defn letter-to-avoid-filter
+  [smask lettoavoid]
+  (let [usethis? (fn [word] (as-> word arg
+                                  (applymask smask arg)
+                                  (set arg)
+                                  (set/intersection arg (set lettoavoid))
+                                  (empty? arg)))]
+    (filter usethis?)))
+
+
 ;TODO must be a better way to code this
 ; might not need as can use applymask-till-match
 (defn simple-masks-from-characteristic-masks
@@ -405,9 +421,11 @@
       ; TODO arrange filters with most restrictive first so will run fastest
       ; selects words of correct length
       (filter #(= n (count %)))
-      ; selects words with correct letters associated with char in pdc
-      (comp-value-filter-from-characteristic-masks
-          (characteristic-masks-for-chars pdc))
+      ;; selects words with correct letters associated with char in pdc
+      ;(comp-value-filter-from-characteristic-masks
+      ;    (characteristic-masks-for-chars pdc))
+      ; selects words with correct letters associated with char in pdc faster  than above
+      (value-filter-from-characteristic-mask (mask-from-values pdc (filter char? pdc)))
       ; selects words with number codes well defined i.e. corresponding to unique letter
       (comp-count-filter-from-characteristic-masks
           (characteristic-masks-for-numbers pdc))
@@ -428,9 +446,14 @@
 
 (comment
   (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))
+  (filteredlist (value-filter-from-characteristic-mask (mask-for-char-clues [3 1 2 5]))
+                ["a" "honk" "hawk" "hack" "hark" "hick" "hank" "husk" "heck" "hunk" "hulk" "hook" "hock"])
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [1 2 3 4 5])
-                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
+                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz"))) ;150ms
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [1 2 3 4 5])
+                  (letter-to-avoid-filter [1  1 1 1 1] "aeiou"))) ;131 ms
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [31 32 33 34 35])
                   (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
@@ -445,8 +468,15 @@
                   (letter-to-use-filter [nil nil nil nil 1]  "xyz")
                   (sub-word-filter [nil 1 1 1 nil])))
 
-  (quick-bench (find-all-words [1 2 3 2 1] {})) ;22 ms
-  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1])))) ;4 ms
+  (quick-bench (find-all-words [31 32 33 34] {})) ;                                .76  ms
+  (quick-bench (filteredlist (filter-from-partial-decoded-clue [31 32 33 34]))) ;  .18 ms
+  (quick-bench (find-all-words [1 2 3 2 1] {})) ;                               22 ms
+  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))) ;  4 ms
+  (quick-bench (find-all-words [\a 1 2 3 4 5] {})) ;                               .85 ms
+  (quick-bench (filteredlist (filter-from-partial-decoded-clue [\a 1 2 3 4 5]))) ; .40 ms
+  (quick-bench (find-all-words [1 2 3 4 3 \s] {})) ;                                4 ms
+  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 4 3 \s])))) ; 22 ms
+
 
 
 (defn sorted-single-letter-clues
@@ -456,7 +486,7 @@
   (let [clues (:clues cc)
         sortedpairs (sort
                       #(> (last %1) (last %2))
-                      (remove
+                      (removepartialwords
                         #(zero? (last %))
                         (map
                           (fn [n] [n (count (keep (fn [clue] ((set clue) n)) clues))])
@@ -473,13 +503,14 @@
   (if
     (= letuse "abcdefghijklmnopqrstuvwxyz") #"."
                                             (str "[" letuse "]")))
-
+;TODO the code below must be able to be shortened
 (defn partial-decoded-code-vec-to-regexpat-filter
   "Given partially decoded code cracker clue and new encoding map
   and letter to use produce the regex used in filtercode
   code vals 0 and >26 are treated as free"
   [partial-decoded-code-vec new-map letuse]
-  (let [cleanletpat (letpat-filter(clean-letuse letuse (vals new-map)))
+  (let [newchars (keep new-map (range 1 27)) ;chars added correponding to constrained letters
+        cleanletpat (letpat-filter(clean-letuse letuse newchars))
         freeletpat  (letpat-filter(clean-letuse ""))
         v1 (reduce (fn [res input]
                      (conj res
@@ -503,35 +534,71 @@
     ;(println cleanletpat freeletpat v1 v2)
     v3))
 
-
-;TODO  in filtercode wanted to use transducer but cant see how to use it to keep a lazy seq
-; tried with filtercode producing (remove #(nil? (re-matches repat %))) called it ftran
-; tried (transduce ftran (completing #(cons %2 %1)) [] (lazy-seq ["texxx" "abcde" "te" "atexj" "te;lk"]))
-; but have found now way to keep a lazy sequence
-;TODO the code below must be able to be shortened
-
 (defn filtercode-using-regex
   ""
   [alm nlm otherclue otherwords]
-  (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
-    (filter #(re-matches repat %) otherwords)))
+  ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
+  (if (empty? otherwords)
+    otherwords
+    (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
+      ;(println repat)
+      (filter #(re-matches repat %) otherwords))))
 
 ; using transducers
+; speed depends on type of otherwords but fastest when it is lazy-seq, however at least 100 times slower than regex
 (defn filtercode
-  ""
+  "removes words from otherwords that no longer fit otherclue when the assigned letter map als is
+  updated to a new letter map nlm"
   [alm nlm otherclue otherwords]
-  (let [freelet  (clean-letuse "")
-        cleanlet (clean-letuse "" (vals nlm))
-        diffm (apply dissoc nlm (keys alm))
-        newchm (decode-to-vec otherclue diffm)
-        pdc (decode-to-vec otherclue nlm)]
-    (println cleanlet diffm newchm pdc)
-    (filteredlist (comp
-                    ;(filter-from-partial-decoded-clue pdc)
-                    (comp-value-filter-from-characteristic-masks
-                      (characteristic-masks-for-chars newchm))
-                    (letter-to-use-filter (mask-for-constrained-clues pdc) cleanlet))
-                  otherwords)))
+  ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
+  (if (empty? otherwords)
+    otherwords
+    (let [;freelet  (clean-letuse "")
+          ;cleanlet (clean-letuse "" (vals nlm))
+          diffm (apply dissoc nlm (keys alm))
+          ;newchm (decode-to-vec otherclue diffm)
+          newchars (keep diffm (range 1 27))                ;chars added correponding to constrained letters
+          pdc (decode-to-vec otherclue nlm)
+          maskfornewchars (mask-from-values pdc newchars)
+          maskforconst (mask-for-constrained-clues pdc)]
+      ;(println cleanlet diffm newchm newchars pdc)
+      ;(println maskfornewchars maskforconst)
+      (filteredlist (comp
+                      ;(filter-from-partial-decoded-clue pdc) ; not needed
+                      ; selects words with correct letters associated with newchars in pdc
+                      ;(value-filter-from-characteristic-mask (mask-for-char-clues pdc)) ; next fastest?
+                      (value-filter-from-characteristic-mask maskfornewchars) ;fastest?
+                      ;(comp-value-filter-from-characteristic-masks ;slowest
+                      ;  (characteristic-masks-for-chars newchm))
+                      ; selects words with constrained letters in correct set
+                      ;(letter-to-use-filter maskforconst cleanlet)
+                      ; selects words with constrained letters avoiding newchars should be faster
+                      (letter-to-avoid-filter maskforconst newchars))
+                    otherwords))))
+
+;(quick-bench (filtercode-using-regex {1 \a 2 \b } {1 \a 2 \b 3 \c 10 \d} [1 2 3 10  4] ["abccd" "abccf" "abcde" "abcdf"]))
+;Execution time mean : 439.422050 µs
+;(quick-bench (filtercode {1 \a 2 \b } {1 \a 2 \b 3 \c 10 \d} [1 2 3 10  4] ["abccd" "abccf" "abcde" "abcdf"]))
+;Execution time mean : 102.623491 µs
+
+
+(defn compare-fc
+  [alm nlm otherclue]
+  (let [pdc (decode-to-vec otherclue alm)
+        otherwords (filteredlist (filter-from-partial-decoded-clue pdc))
+        fc (filtercode alm nlm otherclue otherwords)
+        fcr (filtercode-using-regex alm nlm otherclue otherwords)]
+    (println "fc   " fc)
+    (if (= fc fcr)
+      (println "filtercode and filtercode-using-regex same result")
+      (println "fcrx " fcr))
+    (println "fc quick-bench:")
+    (quick-bench (filtercode alm nlm otherclue otherwords))
+    (println "fc rx quick-bench")
+    (quick-bench (filtercode-using-regex alm nlm otherclue otherwords))))
+
+
+
 
 (defn numinother-score
   [decodedclue oldnuminother]
@@ -634,7 +701,9 @@
                                   {:singleclues '() :numinothers '()})
         numinothers (concat (map #(/ %)(singleletterclues :numinothers)) (repeat (count clues) 1))
         augmentedclues (concat  (singleletterclues :singleclues) clues)
-        wordlists (map #(find-all-words % rootmap) augmentedclues)
+        pdaugmentedclues (map #(decode-to-vec % rootmap) augmentedclues)
+        ;wordlists (map #(find-all-words % rootmap) augmentedclues)
+        wordlists (doall (map #(filteredlist (filter-from-partial-decoded-clue %)) pdaugmentedclues))
         rmap (merge cc
                      {:clues augmentedclues
                       :numinothers numinothers
@@ -650,10 +719,9 @@
   (merge assigned-letters-map (zipmap clue word-found)))
 
 
-(defn make-child
+(defn make-child-rx
   [cc clue word]
   (let [newmap (update-assigned-letters-map (:encodemap cc) clue word)
-        ;newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
         newwords (map #(filtercode-using-regex (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
         updatedcc (merge cc {:encodemap newmap,
                              :wordlists newwords
@@ -666,17 +734,34 @@
     ;(println (map #(take maxn %) newwords)) ; if this is uncommented will
     (set-remaining-keys updatedcc)))
 
+(defn make-child-tr
+  [cc clue word]
+  (let [newmap (update-assigned-letters-map (:encodemap cc) clue word)
+        newwords (map #(filtercode (:encodemap cc) newmap %1 %2) (:clues cc) (:wordlists cc))
+        updatedcc (merge cc {:encodemap newmap,
+                             :wordlists newwords
+                             :parent    cc
+                             :depth     (inc (:depth cc))
+                             :clue      clue
+                             :word      word})]
+    ;(println (inc (:depth cc)) (:encodemap cc) clue word newmap)
+    ;(println (map #(take maxn %) (:wordlists cc)))
+    ;(println (map #(take maxn %) newwords)) ; if this is uncommented will
+    (set-remaining-keys updatedcc)))
+
+
+
 (defn children-from-clue
   "Make list of children from clue of given index using all words in its wordlist
   Note orderof list correponds to reverse order of words"
-  [cc clue-index]
+  [make-child cc clue-index]
   (reduce #(conj %1 (make-child cc (nth (:clues cc) clue-index) %2)) (lazy-seq) (nth (:wordlists cc) clue-index)))
 
 (defn children-from-clue-indicies
   "take list of indicies of non-completed-good-clues and combines all their children"
-  [cc clue-indicies]
+  [make-child cc clue-indicies]
   ;(println clue-indicies (:depth cc) (:wordcountscores cc))
-  (reduce #(concat %1 (lazy-seq (children-from-clue cc %2))) (lazy-seq) clue-indicies))
+  (reduce #(concat %1 (lazy-seq (children-from-clue make-child cc %2))) (lazy-seq) clue-indicies))
 
 (defn children-from-top-clues
   "takes children of the kbest best clues wordcountscores.
@@ -685,19 +770,19 @@
   will produce same sols as using clue2 then clue1.
   e.g. to use this in a tree-seq call (partial children-from-top-clues 3)
   Note (partial children-from-top-clues 1) is slower than children-from-best-clue"
-  [kbest cc]
+  [make-child kbest cc]
   (let [cm (zipmap (range (count (cc :clues))) (cc :wordcountscores))
         ;scm (sort #(< (last %1) (last %2)) cm)
         scm (sort-by last cm)                               ; better than above
         sind (keys scm)]
-    (children-from-clue-indicies cc (take kbest sind))))
+    (children-from-clue-indicies make-child cc (take kbest sind))))
 
 
 (defn children-from-best-clue
   "takes children of the best index using key (:wordcountscores, :simplescores, ...)
   since 0 is smallest possible  scan indices keeping track of min found
   but stop if find 0"
-  [key cc]
+  [make-child key cc]
   (let [bind (first (reduce-kv
                        (fn [acc ind val]
                          (cond
@@ -706,12 +791,14 @@
                            :else acc))
                        [nil 4]  ; 4 is bigger than any wordcountscores
                        (vec (cc key))))]
-     (children-from-clue cc bind)))
+     (children-from-clue make-child cc bind)))
 
 
 (defn children-from-best-clue-using
-  [key]
-  (partial children-from-best-clue key))
+  ([make-child key]
+   (partial children-from-best-clue make-child key))
+  ([key]
+   (partial children-from-best-clue make-child-tr key)))
 
 
 (defn nice-print
@@ -837,7 +924,7 @@
   ;slower
   (def ans (filter
              all-completed-and-all-good?
-             (tree-seq non-completed-and-all-good? (partial children-from-top-clues 1) root)))
+             (tree-seq non-completed-and-all-good? (partial children-from-top-clues make-child-tr 1) root)))
   (nice-print ans 0)                                        ;
   (show-at-most-n ans 10)
   (show-from-root (nth ans 0))                              ; show chain from root
@@ -925,7 +1012,7 @@
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :simplescores) root)))
   (def ans (filter
              all-completed-and-all-good?
-             (tree-seq non-completed-and-all-good? (partial children-from-top-clues 1) root)))
+             (tree-seq non-completed-and-all-good? (partial children-from-top-clues make-child-tr 1) root)))
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :numinothers) root)))
@@ -959,17 +1046,31 @@
     f))
 
 (defn test-sol
-  [root]
+  [root make-child]
   (let [ans (filter
               all-completed-and-all-good?
-              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))]
+              (tree-seq non-completed-and-all-good? (children-from-best-clue-using make-child :wordcountscores) root))]
     (show-at-most-n ans 10)))
 
 (defn bench-test-sol
-  [root]
+  [root make-child]
   (let [ans (doall (filter
                      all-completed-and-all-good?
-                     (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))]))
+                     (tree-seq non-completed-and-all-good? (children-from-best-clue-using make-child :wordcountscores) root)))]))
 
 
-;TODO in make-child filtercode using reg-ex 71 ms, using transducers 232.ms
+
+(comment
+  (test-sol root make-child-rx)
+  (test-sol root make-child-tr)
+  (quick-bench (bench-test-sol root make-child-rx))
+  (quick-bench (bench-test-sol root make-child-tr))
+  (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp"))
+  (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}}))
+  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 71 ms, using transducers 144 ms
+  (def ccnumber 1)
+  (def root (make-root {:ccinfo (get-cc ccnumber) :rootmap {}}))
+  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 387 ms, using transducers 1027 ms
+  (def root (make-example-from-clues [[31 32 33 34]])) ; find all 4 letter words
+  ;TODO Why, the tree is only depth 1 and wordlist has the answers rx 10 sec tr 2.7 secs
+  nil)
