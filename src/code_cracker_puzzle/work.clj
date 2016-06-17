@@ -353,6 +353,11 @@
   (let [usethis? (fn [word] (->> word (applymask smask) (str/join "")  all-words-in-set))]
     (filter usethis?)))
 
+;TODO want intersecting clues filter as a more general case of sub-word-filter
+;   e.g. [1 2 3 4 5] [4 3 2]   or [30 31 32 33 34] [30 32 34 34] [33 31 30] i.e have one long clue and others using some
+;         of the same numbers
+;   but maybe groups of clues like [1 2 3 4 5] [2 3 4 10 10]
+
 (defn letter-to-use-filter
   [smask lettouse]
   (let [usethis? (fn [word] (as-> word arg
@@ -431,6 +436,7 @@
           (characteristic-masks-for-numbers pdc))
       ;TODO select words with number codes being in specified sets
       ;TODO select words with specified subseq in dictionary
+      ;TODO select words with other combinations of letters in clue being words
       ; selects words with the correct number of distinct letters (chars and num 1 ..27
       (distinct-letters-filter pdc))))
 
@@ -486,7 +492,7 @@
   (let [clues (:clues cc)
         sortedpairs (sort
                       #(> (last %1) (last %2))
-                      (removepartialwords
+                      (remove
                         #(zero? (last %))
                         (map
                           (fn [n] [n (count (keep (fn [clue] ((set clue) n)) clues))])
@@ -509,8 +515,9 @@
   and letter to use produce the regex used in filtercode
   code vals 0 and >26 are treated as free"
   [partial-decoded-code-vec new-map letuse]
-  (let [newchars (keep new-map (range 1 27)) ;chars added correponding to constrained letters
-        cleanletpat (letpat-filter(clean-letuse letuse newchars))
+  (let [newchars (vals new-map)
+        newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
+        cleanletpat (letpat-filter(clean-letuse letuse newcharsfromconstrained))
         freeletpat  (letpat-filter(clean-letuse ""))
         v1 (reduce (fn [res input]
                      (conj res
@@ -538,6 +545,7 @@
   ""
   [alm nlm otherclue otherwords]
   ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
+  ;TODO should be count of 1 or less??
   (if (empty? otherwords)
     otherwords
     (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
@@ -551,13 +559,15 @@
   updated to a new letter map nlm"
   [alm nlm otherclue otherwords]
   ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
+  ;TODO should be count of 1 or less???
   (if (empty? otherwords)
     otherwords
     (let [;freelet  (clean-letuse "")
           ;cleanlet (clean-letuse "" (vals nlm))
           diffm (apply dissoc nlm (keys alm))
           ;newchm (decode-to-vec otherclue diffm)
-          newchars (keep diffm (range 1 27))                ;chars added correponding to constrained letters
+          newchars (vals diffm)
+          newcharsfromconstrained (keep diffm (range 1 27))   ;chars added correponding to constrained letters
           pdc (decode-to-vec otherclue nlm)
           maskfornewchars (mask-from-values pdc newchars)
           maskforconst (mask-for-constrained-clues pdc)]
@@ -573,7 +583,7 @@
                       ; selects words with constrained letters in correct set
                       ;(letter-to-use-filter maskforconst cleanlet)
                       ; selects words with constrained letters avoiding newchars should be faster
-                      (letter-to-avoid-filter maskforconst newchars))
+                      (letter-to-avoid-filter maskforconst newcharsfromconstrained))
                     otherwords))))
 
 ;(quick-bench (filtercode-using-regex {1 \a 2 \b } {1 \a 2 \b 3 \c 10 \d} [1 2 3 10  4] ["abccd" "abccf" "abcde" "abcdf"]))
@@ -597,7 +607,9 @@
     (println "fc rx quick-bench")
     (quick-bench (filtercode-using-regex alm nlm otherclue otherwords))))
 
-
+; failing to work for unconstrained letters should find none but gets lots!
+(comment
+  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31]))
 
 
 (defn numinother-score
@@ -669,7 +681,8 @@
   (every? #(or (< % 1) (= % 3)) (:wordcountscores cc)))     ; all good words
 
 (defn set-remaining-keys
-  "Sets values for keys :wordlists :partialwords :decodedclues :simplescores :wordcountscores"
+  "Sets values for keys :partialwords :decodedclues :simplescores :wordcountscores
+   :numinothers :completed :allgood"
   [cc]
   (when (not (:depth cc)) (println "Warning set-remaining-keys got cc with no depth. Setting up root?"))
   (let [dotmap (zipmap (range 1 27) (repeat 27 \.))
@@ -718,6 +731,9 @@
   [assigned-letters-map clue word-found]
   (merge assigned-letters-map (zipmap clue word-found)))
 
+;TODO refactor so wordlists etc. indexed by clue
+;TODO may want to handle partial decoded clues that are all chars as special case
+;     as wordlist can only be given clue (if it a word)
 
 (defn make-child-rx
   [cc clue word]
@@ -731,7 +747,7 @@
                              :word      word})]
     ;(println (inc (:depth cc)) (:encodemap cc) clue word newmap)
     ;(println (map #(take maxn %) (:wordlists cc)))
-    ;(println (map #(take maxn %) newwords)) ; if this is uncommented will
+    ;(println (map #(take maxn %) newwords))
     (set-remaining-keys updatedcc)))
 
 (defn make-child-tr
@@ -746,7 +762,7 @@
                              :word      word})]
     ;(println (inc (:depth cc)) (:encodemap cc) clue word newmap)
     ;(println (map #(take maxn %) (:wordlists cc)))
-    ;(println (map #(take maxn %) newwords)) ; if this is uncommented will
+    ;(println (map #(take maxn %) newwords))
     (set-remaining-keys updatedcc)))
 
 
@@ -1023,10 +1039,49 @@
   (show-at-most-n ans 1)
   (show-from-root (nth ans 0)))                             ; show chain from root
 
-;TODO
-(comment ; finding some sols to last clue that are not in dic! i.e. nen
+(defn free-grid
+  "make clues for nxn grid of all free letters"
+  [n]
+  (let [nsq (* n n)
+        rows (map vec (partition n (range 30 (+ 30 nsq))))
+        cols (m/transpose rows)]
+    (concat rows cols)))
+
+(defn diagsame-grid
+  "make clues for nxn grid of letters constrained so same
+  code when rowindex+colindex same"
+  [n]
+  (let [nsq (* n n)
+        rows (vec (map vec (partition n (range nsq))))
+        cols (m/transpose rows)
+        mat (map (fn [r c] (vec (map #(+ %1 %2) r c))) rows cols)
+        dv  (distinct (flatten mat))
+        mp (zipmap dv (range 30 (+ 30 (count dv))))]
+    (clojure.walk/prewalk-replace mp mat)))
+
+(defn sym-grid
+  "make clues for nxn grid of letters constrained by transpose"
+  [n]
+  (let [nsq (* n n)
+        rows (vec (map vec (partition n (range nsq))))
+        cols (m/transpose rows)
+        mat (map (fn [r c] (vec (map #(min %1 %2) r c))) rows cols)
+        dv  (distinct (flatten mat))
+        mp (zipmap dv (range 30 (+ 30 (count dv))))]
+    (println mat)
+    (clojure.walk/prewalk-replace mp mat)))
+
+;TODO these examples are failing
+(comment
+  (def root (make-example-from-clues [[1 2 3 4 5] [ 5 4 3 2 1]])) ; ok
+  (def root (make-example-from-clues [[31 32 33 34 35] [ 35 34 33 32 31]])) ; ok
   (def root (make-example-from-clues [[30 31 32] [33 31 34] [30 34 32] [32 34 32]]))
-  (def root (make-example-from-clues [[27] [28]])) ; not allowing both to be same???
+  (def root (make-example-from-clues (free-grid 5)))
+  (def root (make-example-from-clues (sym-grid 5)))
+  (def root (make-example-from-clues (diagsame-grid 3)))
+  (def root (make-root {:ccinfo root :rootmap {39 \e}})) ; middle of above
+  (def root (make-example-from-clues (diagsame-grid 3)))
+  (def root (make-example-from-clues [[27] [28]])) ; ok 676 sols all possible combos of 2 letters
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))))
