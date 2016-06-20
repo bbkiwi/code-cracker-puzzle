@@ -353,6 +353,13 @@
   (let [usethis? (fn [word] (->> word (applymask smask) (str/join "")  all-words-in-set))]
     (filter usethis?)))
 
+(defn contained-letters-clue-filter
+  "clclue must be a clue using only numbers found within clue
+  selects if the word specified by clclue is a word"
+  [clue clclue]
+  (let [usethis? (fn [word] (->> clclue (replace (zipmap clue word)) (str/join "") all-words-in-set))]
+    (filter usethis?)))
+
 ;TODO want intersecting clues filter as a more general case of sub-word-filter
 ;   e.g. [1 2 3 4 5] [4 3 2]   or [30 31 32 33 34] [30 32 34 34] [33 31 30] i.e have one long clue and others using some
 ;         of the same numbers
@@ -443,23 +450,52 @@
 
 
 (defn filteredlist
-  "filters words (set or list but set is fastest) default is all-words-in-set"
+  "filters words default is all-words-in-set
+  words can be set or list, set is faster, but list maintains alphabetic order"
   ([filter-transducer]
-   (filteredlist filter-transducer all-words-in-set))
+   ;(filteredlist filter-transducer all-words-in-set)
+   (filteredlist filter-transducer all-words-in-lazy-seq))
   ([filter-transducer words]
    (sequence filter-transducer words)))
+
+;TODO very slow
+(defn other-clue-filter
+  "to be applied to word list associated with clue
+  selects word if partially decode otherclue has matches"
+  [clue otherclue]
+  (let [usethis? (fn
+                   [word] ;word will be in wordlist associated with clue
+                   (let [nmap (zipmap clue word)
+                         pdc (replace nmap otherclue)
+                         filtr (filter-from-partial-decoded-clue pdc)
+                         matches (filteredlist filtr)]
+                     (seq matches)))] ;(seq empty) is nil=falsey (seq non-empty) is truthy
+    (filter usethis?)))
+
+;TODO not working here finding a, b, long words too
+; other-clue-filter is to be applied to word list assoi
+(comment
+  (def f (other-clue-filter [1 2 3 4 5] [2 3 6 6]))
+  (filteredlist f #{"crats" "brats" "house"})
+  (filteredlist f (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35]))))
+
 
 
 (comment
   (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))
-  (filteredlist (value-filter-from-characteristic-mask (mask-for-char-clues [3 1 2 5]))
-                ["a" "honk" "hawk" "hack" "hark" "hick" "hank" "husk" "heck" "hunk" "hulk" "hook" "hock"])
+  (filteredlist (filter-from-partial-decoded-clue [31 \l \a \p 35]))
+  (filteredlist (filter-from-partial-decoded-clue [\h 31 32 \k]))
+  (filteredlist (filter-from-partial-decoded-clue [\h 31 2 \k]))
+  (filteredlist (filter-from-partial-decoded-clue [\h 31 31 \k]))
+  (filteredlist (filter-from-partial-decoded-clue [\h 1 2 \k]))
+  ; this just checks for correct chars only nums are ignored
+  (filteredlist (value-filter-from-characteristic-mask (mask-for-char-clues [\h 1 2 \k])))
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [1 2 3 4 5])
-                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz"))) ;150ms
+                  (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [1 2 3 4 5])
-                  (letter-to-avoid-filter [1  1 1 1 1] "aeiou"))) ;131 ms
+                  (letter-to-avoid-filter [1  1 1 1 1] "aeiou")))
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [31 32 33 34 35])
                   (letter-to-use-filter [1  1 1 1 1] "ybcdfghjklmnpqrstvwxz")))
@@ -470,18 +506,37 @@
                   (sub-word-filter [nil nil 1 1 1])))
   (filteredlist (comp
                   (filter-from-partial-decoded-clue [31 32 33 34 35])
+                  (contained-letters-clue-filter [31 32 33 34 35] [32 33 34])
+                  (contained-letters-clue-filter [31 32 33 34 35] [34 33 32])))
+  ;TODO not working ..hangs
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33 34 35])
+                  (other-clue-filter [31 32 33 34 35] [32 33 34])
+                  (other-clue-filter [31 32 33 34 35] [34 33 32])))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33])
+                  ;(contained-letters-clue-filter [31 32 33] [32 33 31])
+                  ;(contained-letters-clue-filter [31 32 33] [33 31 32])
+                  (contained-letters-clue-filter [31 32 33] [31 33 32])
+                  (contained-letters-clue-filter [31 32 33] [33 32 31])
+                  (contained-letters-clue-filter [31 32 33] [32 31 33])))
+  (filteredlist (comp
+                  (filter-from-partial-decoded-clue [31 32 33 34 35])
                   (letter-to-use-filter [1 nil nil nil nil] "abc")
                   (letter-to-use-filter [nil nil nil nil 1]  "xyz")
                   (sub-word-filter [nil 1 1 1 nil])))
 
-  (quick-bench (find-all-words [31 32 33 34] {})) ;                                .76  ms
-  (quick-bench (filteredlist (filter-from-partial-decoded-clue [31 32 33 34]))) ;  .18 ms
-  (quick-bench (find-all-words [1 2 3 2 1] {})) ;                               22 ms
-  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))) ;  4 ms
-  (quick-bench (find-all-words [\a 1 2 3 4 5] {})) ;                               .85 ms
-  (quick-bench (filteredlist (filter-from-partial-decoded-clue [\a 1 2 3 4 5]))) ; .40 ms
-  (quick-bench (find-all-words [1 2 3 4 3 \s] {})) ;                                4 ms
-  (quick-bench (filteredlist (filter-from-partial-decoded-clue [1 2 3 4 3 \s])))) ; 22 ms
+  ; need doall infront of lazy seq for timing otherwise it is set up time
+  ; find-all-words using reg ex is faster!
+
+  (quick-bench (doall (find-all-words [31 32 33 34] {})))                             ;   21 ms
+  (quick-bench (doall (filteredlist (filter-from-partial-decoded-clue [31 32 33 34])))) ;    24 ms
+  (quick-bench (doall (find-all-words [1 2 3 2 1] {})))                              ;   16 ms
+  (quick-bench (doall (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1])))) ;      21 ms
+  (quick-bench (doall (find-all-words [\a 1 2 3 4 5] {}))) ;                               9 ms
+  (quick-bench (doall (filteredlist (filter-from-partial-decoded-clue [\a 1 2 3 4 5])))) ;   23 ms
+  (quick-bench (doall (find-all-words [1 2 3 4 3 \s] {}))) ;                               17 ms
+  (quick-bench (doall (filteredlist (filter-from-partial-decoded-clue [1 2 3 4 3 \s]))))) ;  28 ms
 
 
 
@@ -569,7 +624,9 @@
           newchars (vals diffm)
           newcharsfromconstrained (keep diffm (range 1 27))   ;chars added correponding to constrained letters
           pdc (decode-to-vec otherclue nlm)
-          maskfornewchars (mask-from-values pdc newchars)
+          pdcbydiffm (decode-to-vec otherclue diffm)
+          ;maskfornewchars (mask-from-values pdc newchars)
+          maskfornewchars (mask-from-values pdcbydiffm newchars)
           maskforconst (mask-for-constrained-clues pdc)]
       ;(println cleanlet diffm newchm newchars pdc)
       ;(println maskfornewchars maskforconst)
@@ -586,11 +643,6 @@
                       (letter-to-avoid-filter maskforconst newcharsfromconstrained))
                     otherwords))))
 
-;(quick-bench (filtercode-using-regex {1 \a 2 \b } {1 \a 2 \b 3 \c 10 \d} [1 2 3 10  4] ["abccd" "abccf" "abcde" "abcdf"]))
-;Execution time mean : 439.422050 µs
-;(quick-bench (filtercode {1 \a 2 \b } {1 \a 2 \b 3 \c 10 \d} [1 2 3 10  4] ["abccd" "abccf" "abcde" "abcdf"]))
-;Execution time mean : 102.623491 µs
-
 
 (defn compare-fc
   [alm nlm otherclue]
@@ -603,13 +655,20 @@
       (println "filtercode and filtercode-using-regex same result")
       (println "fcrx " fcr))
     (println "fc quick-bench:")
-    (quick-bench (filtercode alm nlm otherclue otherwords))
+    (quick-bench (doall (filtercode alm nlm otherclue otherwords)))
     (println "fc rx quick-bench")
-    (quick-bench (filtercode-using-regex alm nlm otherclue otherwords))))
+    (quick-bench (doall (filtercode-using-regex alm nlm otherclue otherwords)))))
 
-; failing to work for unconstrained letters should find none but gets lots!
+
+; fc usually slower by 10-20 times!
 (comment
-  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31]))
+  (compare-fc {} {} [1 2 3 4 5]) ;fc 8.8 ms fc rx 0.47 ms
+  (compare-fc {1 \m 5 \o} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 17 micro sec fcrx 49 micro sec
+  (compare-fc {1 \m } {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 204 micro sec fcrx 62 micro sec
+  (compare-fc {} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 3700 micro sec fcrx 264 micro sec
+  (compare-fc {} {6 \p 7 \r 8 \e 9 \a} [1 2 3 4 5]) ; fc 12 ms fc rx 0.35 ms
+  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [31 32 33 34 35])
+  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31])) ; fc much slower than fc rx
 
 
 (defn numinother-score
@@ -811,10 +870,12 @@
 
 
 (defn children-from-best-clue-using
+  "2-arity childeren-from-best clue make-child key
+  1-arity  childeren-from-best clue make-child-rx key"
   ([make-child key]
    (partial children-from-best-clue make-child key))
   ([key]
-   (partial children-from-best-clue make-child-tr key)))
+   (partial children-from-best-clue make-child-rx key)))
 
 
 (defn nice-print
@@ -899,6 +960,14 @@
     (doseq [n (range nshow)]
       (printinfoencoding n (nth ans n))
       (printcctable (nth ans n)))))
+
+(defn show-pdc-at-most-n
+  "times and shows info about up to nmax solutions in ans"
+  [ans nmax]
+  (let [sols (take nmax ans)
+        nshow (count sols)]
+    (doseq [n (range nshow)]
+      (println n ((nth ans n) :partialwords)))))
 
 
 ;TODO clarify how to set up root and how to use tree-seq
@@ -1047,6 +1116,24 @@
         cols (m/transpose rows)]
     (concat rows cols)))
 
+
+(defn free-cube
+  "make clues for nxnxn cube of all free letters"
+  [n]
+  (let [nsq (* n n)
+        ncube (* nsq n)
+        in (range n)
+        c1 (map vec (partition n (range 30 (+ 30 ncube))))
+        cube (map vec (partition n c1))
+        coor-fn (fn [x y z] (nth (nth (nth cube x) y) z))
+        coor3 (for [x in y in] (vec (map #(coor-fn x y %) in)))
+        coor2 (for [x in z in] (vec (map #(coor-fn x % z) in)))
+        coor1 (for [y in z in] (vec (map #(coor-fn % y z) in)))]
+    ;(println cube)
+    (concat coor3 coor2 coor1)))
+
+
+
 (defn diagsame-grid
   "make clues for nxn grid of letters constrained so same
   code when rowindex+colindex same"
@@ -1071,7 +1158,7 @@
     (println mat)
     (clojure.walk/prewalk-replace mp mat)))
 
-;TODO these examples are failing
+
 (comment
   (def root (make-example-from-clues [[1 2 3 4 5] [ 5 4 3 2 1]])) ; ok
   (def root (make-example-from-clues [[31 32 33 34 35] [ 35 34 33 32 31]])) ; ok
@@ -1081,24 +1168,12 @@
   (def root (make-example-from-clues (diagsame-grid 3)))
   (def root (make-root {:ccinfo root :rootmap {39 \e}})) ; middle of above
   (def root (make-example-from-clues (diagsame-grid 3)))
+  (def root (make-example-from-clues (free-cube 3)))
+  (def root (make-example-from-clues (free-cube 4))) ; none found yet  after long time
   (def root (make-example-from-clues [[27] [28]])) ; ok 676 sols all possible combos of 2 letters
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))))
-
-
-
-; parinfer bug?
-(defn foo
-  "try comment out dec with ; then add (println) after it"
-  [x]
-  (let
-    [f (fn [y] (->>
-                 x
-                 (+ y)
-                 dec))]
-    (println x)
-    f))
 
 (defn test-sol
   [root make-child]
@@ -1111,7 +1186,8 @@
   [root make-child]
   (let [ans (doall (filter
                      all-completed-and-all-good?
-                     (tree-seq non-completed-and-all-good? (children-from-best-clue-using make-child :wordcountscores) root)))]))
+                     (tree-seq non-completed-and-all-good? (children-from-best-clue-using make-child :wordcountscores) root)))]
+    (count ans)))
 
 
 
@@ -1122,10 +1198,10 @@
   (quick-bench (bench-test-sol root make-child-tr))
   (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp"))
   (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}}))
-  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 71 ms, using transducers 144 ms
+  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 6 ms, using transducers 80 ms
   (def ccnumber 1)
   (def root (make-root {:ccinfo (get-cc ccnumber) :rootmap {}}))
-  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 387 ms, using transducers 1027 ms
+  ;TODO in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 31 ms, using transducers 127 ms
   (def root (make-example-from-clues [[31 32 33 34]])) ; find all 4 letter words
-  ;TODO Why, the tree is only depth 1 and wordlist has the answers rx 10 sec tr 2.7 secs
+  ;TODO Why, the tree is only depth 1 and wordlist has the answers rx 500 msec tr 6 secs
   nil)
