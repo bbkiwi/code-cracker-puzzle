@@ -53,6 +53,13 @@
                      (tree-seq non-completed-and-all-good? (children-from-best-clue-using make-child :wordcountscores) root)))]
     (count ans)))
 
+(defn remove-vowels-from-sentence
+  [sentence]
+  (let [lcwords (str/split (str/lower-case sentence) #" +")
+        novowel (map vowelless lcwords)
+        novowsent (str/join " "(map str/join novowel))]
+    (println novowsent)
+    (map get-by-vowelless novowel)))
 
 
 
@@ -282,3 +289,42 @@
                                       (contained-all-but-one-letters-clue-filter [31 32 33 34 35] [1 31 32 33 1]))))) ;329 ms
   (def root (make-example-from-clues [[31 32 33 34 35] [1 31 32 33 1]])) ; 1.95 sec rx, ? sec tr
   nil)
+
+
+
+(comment
+  (get-by-letters "apple")                                  ;=> ("peal" "paella" "leap" "lapel" "apple" "appeal" "plea" "pale")
+  ;(quick-bench (get-by-letters "apple"))
+  (get-by-ccvec ((comp make-code-cracker-vector encode) "level"))
+  (get-by-ccvec [1 2 3 3 1])                                ;=> ("shoos" "yummy" "tweet" "setts" "sills" "sells" "yukky" "yuppy")
+  (get-by-vcstr "VCVCVCVCVCVCV")                            ;=> ("unimaginative")
+  (get-by-vowelless "ppl")                                  ;=> ("pupal" "pupil" "papal" "apple" "people" "appeal" "appal")
+  (get-by-vowelless (vowelless "banana"))
+  (remove-vowels-from-sentence "this is a very simple sentence that anyone can understand")
+  (remove-vowels-from-sentence "notched rutabagas flanked weathered paleontologists")
+
+  (apply max (map count (vals by-vowelless)))               ;=> 26
+  (get-by-count 26)                                         ; 26 words so all with same "rs"
+  (map #(count (get-by-count %)) (range 1 27))
+  ;=> (38013 9690 3831 2260 1550 1026 784 648 477 380 451 228 247 196 255 96 85 54 19 60 21 22 0 0 0 26)
+  (apply + *1)                                              ;=> 60419
+  (count all-words-in-set)                                  ;=> 60419
+  (map #(/ (count (get-by-count %)) %) (range 1 27))
+  ;=> (38013 4845 1277 565 310 171 112 81 53 38 41 19 19 14 17 6 5 3 1 3 1 1 0 0 0 1)
+  (map str/join (distinct (map vowelless (get-by-count 20)))) ;=> ("bt" "prs" "ld")
+  (map get-by-vowelless (map str/join (distinct (map vowelless (get-by-count 20)))))
+
+  (apply max (map count (vals by-sortedletters)))               ;=> 7
+  (get-by-anagram-count 7)                                      ; 7 words all anagrams of "reaps"
+  (map #(count (get-by-anagram-count %)) (range 1 8))
+  ;=> (53135 5470 1272 396 85 54 7)
+  (apply + *1)                                              ;=> 60419
+  (count all-words-in-set)                                  ;=> 60419
+  (map #(/ (count (get-by-anagram-count %)) %) (range 1 8))
+  ;=> (53135 2735 424 99 17 9 1)
+  (map str/join (distinct (map sort (get-by-anagram-count 6)))) ;=> ("eimrst" "acerst" "aelps" "aelpst" "aprst" "adeprs" "opst" "aers" "aelst")
+  (map get-by-sortedletters (map str/join (distinct (map sort (get-by-anagram-count 6))))))
+
+
+
+

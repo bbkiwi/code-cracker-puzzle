@@ -58,7 +58,7 @@
     (str/join "" (replace rmap (range 1 27)))))
 
 ;TODO remove restriction that a code can have at most 8 distinct code numbers
-(defn make-code-cracker-pat
+(defn make-code-cracker-vector
   "Take decoded vector and convert.
   The vector should consist of pos integers and characters
   1 ... 26 correspond to a permutation of the alphabet
@@ -68,7 +68,15 @@
         distinct-range-numbers (distinct (filter number? freemarked))
         temp-map (zipmap distinct-range-numbers (range 1 (inc (count distinct-range-numbers))))]
     ;(println decoded-vec freemarked  temp-map)
-    (str/join "" (replace temp-map freemarked))))
+    (replace temp-map freemarked)))
+
+(defn make-code-cracker-pat
+  "Take decoded vector and convert to code-cracker-pat string
+  The vector should consist of pos integers and characters
+  1 ... 26 correspond to a permutation of the alphabet
+  code numbers > 26 go to F meaning free"
+  [decoded-vec]
+  (str/join "" (make-code-cracker-vector decoded-vec)))
 
 (defn letpat
   "part of regex to find group matching letuse"
@@ -806,5 +814,77 @@
    (partial children-from-best-clue make-child-rx key)))
 
 
+; Relations
+(defn relation
+  [f vs in-key out-key]
+  (reduce (fn [rel inp] (conj rel {in-key inp out-key (f inp)})) #{} vs))
+
+(def word-letters-rel (relation set all-words-in-set :word :letters))
+(def by-letters (set/index word-letters-rel [:letters]))
+(defn get-by-letters
+  [letters]
+  (map :word (get by-letters {:letters (set letters)})))
+
+; anagrams
+(def word-sortedletters-rel (relation sort all-words-in-set :word :sortedletters))
+(def by-sortedletters (set/index word-sortedletters-rel [:sortedletters]))
+(defn get-by-sortedletters
+  [sortedletters]
+  (map :word (get by-sortedletters {:sortedletters (seq sortedletters)})))
 
 
+(def word-codecracker-rel (relation (comp make-code-cracker-vector encode) all-words-in-set :word :ccvec))
+(def by-ccvec (set/index word-codecracker-rel [:ccvec]))
+(defn get-by-ccvec
+  [ccvec]
+  (map :word (get by-ccvec {:ccvec ccvec})))
+
+(def vcstr (partial replace (merge (zipmap "aeiou" (repeat 5 \V)) (zipmap "bcdfghjklmnpqrstvwxy" (repeat \C)))))
+(def word-vcstr-rel (relation vcstr all-words-in-set :word :vcstr))
+(def by-vcstr (set/index word-vcstr-rel [:vcstr]))
+(defn get-by-vcstr
+  [vcstr]
+  (map :word (get by-vcstr {:vcstr (seq vcstr)})))
+
+(def vowelless (partial remove {\a 1 \e 1 \i 1 \o 1 \u 1}))
+(def word-novowels-rel (relation  vowelless all-words-in-set :word :vowelless))
+;(def word-novowels-rel (relation  vowelless #{"happy" "hippy" "dog" "tarot" "trout" "trait" "tort"} :word :vowelless))
+(def by-vowelless (set/index word-novowels-rel [:vowelless]))
+(defn get-by-vowelless
+  [vowelless]
+  (map :word (get by-vowelless {:vowelless (seq vowelless)})))
+
+(def vowelless-count-rel
+  (relation
+    #(count (by-vowelless {:vowelless %}))
+    (map :vowelless (keys by-vowelless))
+    :vowelless
+    :count))
+
+; a bit tricky as have lists as values of maps
+(comment
+  (def k (keys by-vowelless))
+  (nth k 0)
+  ((nth k 0) by-vowelless)                                  ; only keys starting with : act as fcns
+  (by-vowelless (nth k 0))
+  (by-vowelless {:vowelless (\t \r \t)}) ;java.lang.ClassCastException: java.lang.Character cannot be cast to clojure.lang.IFn
+  (by-vowelless {:vowelless '(\t \r \t)}))
+
+(def word-vowelless-count-rel (set/join vowelless-count-rel word-novowels-rel))
+(def by-count (set/index word-vowelless-count-rel [:count]))
+(defn get-by-count
+  [count]
+  (map :word (get by-count {:count count})))
+
+(def sortedletters-count-rel
+  (relation
+    #(count (by-sortedletters {:sortedletters %}))
+    (map :sortedletters (keys by-sortedletters))
+    :sortedletters
+    :count))
+
+(def word-sortedletters-count-rel (set/join sortedletters-count-rel word-sortedletters-rel))
+(def by-anagram-count (set/index word-sortedletters-count-rel [:count]))
+(defn get-by-anagram-count
+  [count]
+  (map :word (get by-anagram-count {:count count})))
