@@ -1,12 +1,14 @@
 (ns code-cracker-puzzle.core
     (:gen-class)
     (:require
+      [code-cracker-puzzle.bill-utils :refer :all]
       [code-cracker-puzzle.work :refer :all]
+      [code-cracker-puzzle.data-assembly :refer :all]
+      [code-cracker-puzzle.output-routines :refer :all]
+      [code-cracker-puzzle.test-examples :refer :all]
       [clojure.edn :as edn]))
 
 
-
-(defn myvars [] (keys (ns-interns *ns*))) ; use (myvars) to see what's in *ns*
 
 
 (defn -main
