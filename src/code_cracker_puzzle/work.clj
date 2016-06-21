@@ -20,8 +20,6 @@
   ;(println regex-pat)
   (re-find (re-pattern (str " " wordstring " ")) dic))
 
-
-
 (defn clean-letuse
   "Removes letters that are used in codecracker pattern from letter to
    be used. letuse = \"\" is short for all letters. Returns string"
@@ -62,34 +60,41 @@
 ;TODO remove restriction that a code can have at most 8 distinct code numbers
 (defn make-code-cracker-pat
   "Take decoded vector and convert.
-  The vector should consist of pos integers and characters"
+  The vector should consist of pos integers and characters
+  1 ... 26 correspond to a permutation of the alphabet
+  code numbers > 26 go to F meaning free"
   [decoded-vec]
-  (let [distinct-range-numbers (distinct (filter number? decoded-vec))
+  (let [freemarked (map (fn [v] (if (and (number? v) (> v 26)) \F v)) decoded-vec)
+        distinct-range-numbers (distinct (filter number? freemarked))
         temp-map (zipmap distinct-range-numbers (range 1 (inc (count distinct-range-numbers))))]
-    ;(println temp-map)
-    (str/join "" (replace temp-map decoded-vec))))
+    ;(println decoded-vec freemarked  temp-map)
+    (str/join "" (replace temp-map freemarked))))
 
 (defn letpat
+  "part of regex to find group matching letuse"
   [letuse]
   (if
     (= letuse "abcdefghijklmnopqrstuvwxyz") #"(\w)"
                                             (str "([" letuse "])")))
 (defn letpat-free
+  "part of regex to find match to letuse"
   [letuse]
   (if
     (= letuse "abcdefghijklmnopqrstuvwxyz") #"\w"
                                             (str "[" letuse "]")))
 
 (defn pat-for-new
-  "Gives pattern for first use of letter n 1...8"
+  "Gives pattern for first use of letter n 1...8
+  restricted as named groups only single digit"
   [n letuse]
   (if
     (= n 1) (letpat letuse)
             (str "(?!\\" (str/join "|\\" (range 2 (inc n))) ")" (letpat letuse))))
 
 (defn pat-for-old
-  "Gives pattern for subsequent use of letter n 1...8"
-  [n & letuse]                                              ; second param ignored but want to keep same arg list as pat-for-new
+  "Gives pattern for subsequent use of letter n 1...8
+     second param ignored but want to keep same arg list as pat-for-new"
+  [n & letuse]
   (str "\\" (inc n)))
 
 (defn char->num
@@ -105,8 +110,8 @@
   "Gives pattern for each symbol in code cracker pattern"
   [front-pat char-from-pat letuse cleaned-letuse]
   (cond
-    (= char-from-pat \0) (letpat-free (clean-letuse ""))    ; any letter
-    ;(= char-from-pat \0) (letpat-free letuse) ;   those not assigned
+    (= char-from-pat \F) (letpat-free (clean-letuse ""))    ; any letter
+    ;(= char-from-pat \F) (letpat-free letuse) ;   those not assigned
     (contains? (set "12345678") char-from-pat)
     (if (contains? (set front-pat) char-from-pat)
       (pat-for-old (char->num char-from-pat) cleaned-letuse)
@@ -130,7 +135,7 @@
 
 (defn code-cracker-pat-to-regexpat
   "Converts code cracker pattern string to regex. Assume letters assigned sequentially from 1 to 8.
-  1...27 correspond to a permutation of the alphabet, 0 or higher numbers are free to be any letter.
+  F means free, lower case chars mean match that letter.
   Pattern starts with blank which is start of word in the dictionary.
   The whole word is group 1, then code crackers unknowns are assigned groups 2,...,9.
   Example \"b12t\"  goes to
@@ -174,8 +179,7 @@
 
 ;  a clue is a vector of numbers 1..26 represent the alphabet permuted
 ;         so 2 and 21 will represent different letters
-; TODO do I really want 0 to be used as a code?
-;         numbers 0, and above 26 correspond to arbitrary letters so 29 can be any letter
+;         numbers above 26 correspond to arbitrary letters so 29 can be any letter
 ;  ; Using masks to generate transducers for finding words
 ;  A partial decoded clue (pdc) is a vector of numbers and characters
 ;  e.g. [11 20 \a 11] will be used to find 4 letter words like
@@ -520,7 +524,7 @@
 (defn partial-decoded-code-vec-to-regexpat-filter
   "Given partially decoded code cracker clue and new encoding map
   and letter to use produce the regex used in filtercode
-  code vals 0 and >26 are treated as free"
+  code vals > 26 are treated as free"
   [partial-decoded-code-vec new-map letuse]
   (let [newchars (vals new-map)
         newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
@@ -530,7 +534,7 @@
                      (conj res
                            (cond
                              ((set "abcdefghijklmnopqrstuvwxyz") input) \.
-                             (or (zero? input) (> input 26)) input
+                             (> input 26) input
                              ((set res) input) \.
                              :else input)))
                    [] partial-decoded-code-vec)
@@ -538,7 +542,7 @@
         v3 (reduce (fn [res input]
                      (conj res
                            (cond
-                             (number? input) (if (or (zero? input) (> input 26))
+                             (number? input) (if (> input 26)
                                                freeletpat
                                                cleanletpat)
                              :else input)))
@@ -780,7 +784,7 @@
 (defn children-from-best-clue
   "takes children of the best index using key (:wordcountscores, :simplescores, ...)
   since 0 is smallest possible  scan indices keeping track of min found
-  but stop if find 0"
+  but stop if find 0. Assumes values of key sorted upon are all < 4"
   [make-child key cc]
   (let [bind (first (reduce-kv
                       (fn [acc ind val]

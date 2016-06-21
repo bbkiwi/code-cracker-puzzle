@@ -76,6 +76,10 @@
 
 
 (comment
+  (find-all-words [1 2 3 4 5 6 7 8 9 10 11 12 13] {}) ; fails as more than 8 distinct and regex cant deal with it.
+  (filteredlist (filter-from-partial-decoded-clue [1 2 3 4 5 6 7 8 9 10 11 12 13])) ; ("draughtswomen" "unpredictably") more than 8 distinct
+  (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35 36 37 38 39 40 41 42 43])) ; 1800 13 letter words
+  (find-all-words [31 32 33 34 35 36 37 38 39 40 41 42 43] {}) ; ok
   (filteredlist (filter-from-partial-decoded-clue [1 2 3 2 1]))
   (filteredlist (filter-from-partial-decoded-clue [31 \l \a \p 35]))
   (filteredlist (filter-from-partial-decoded-clue [\h 31 32 \k]))
