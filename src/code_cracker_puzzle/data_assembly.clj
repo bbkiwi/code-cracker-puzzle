@@ -4,7 +4,6 @@
               [clojure.string :as str]
               ;[clojure.set :as set]
               [clojure.edn :as edn]                         ;safe io
-              [clojure.core.matrix :as m]
               [clojure.walk]
               [clojure.repl :refer :all]
               ;[io.aviso.ansi :as ioa]
@@ -24,6 +23,8 @@
 (def all-words-in-vec (str/split (str/replace-first word-dic #" *" "") #" +"))
 ; set of all words
 (def all-words-in-set (set all-words-in-vec))
+; a small sub set for testing use
+(def some-words-in-set (set (take 400 all-words-in-set)))
 ; lazy seq of all words
 (def all-words-in-lazy-seq (lazy-seq all-words-in-vec))
 ;(declare findall)
@@ -32,6 +33,11 @@
 (def CCdata
   ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")
   (slurp "resources/CCdata.txt"))
+
+(defn transpose
+  "own version of m/transpose [clojure.core.matrix :as m]"
+  [row-vectors]
+  (apply map (fn [& row] (vec row)) row-vectors))
 
 ; alternate read
 ; (with-open [rdr (clojure.java.io/reader "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")]
@@ -45,7 +51,7 @@
         assigned-letters (str/lower-case (nth (line-seq (BufferedReader. (StringReader. CCdata))) (inc n1)))
         row-strings (subvec (vec (line-seq (BufferedReader. (StringReader. CCdata)))) (+ n1 2) n2)
         row-vectors (map #(edn/read-string (str "[" %1 "]")) row-strings)
-        col-vectors (m/transpose row-vectors)
+        col-vectors (transpose row-vectors)
         clues-in-vec (fn [v] (filter #(and (> (count %) 1) (not (contains? (set %) 0))) (partition-by zero? v)))
         horizontal-clues (apply concat (map clues-in-vec row-vectors))
         vertical-clues (apply concat (map clues-in-vec col-vectors))
@@ -70,8 +76,15 @@
   [n]
   (let [nsq (* n n)
         rows (map vec (partition n (range 30 (+ 30 nsq))))
-        cols (m/transpose rows)]
+        cols (transpose rows)]
     (concat rows cols)))
+
+(defn asym-grid
+  "make clues for nxn grid of all free letters
+  except first anti-diagonal which will prevent
+  symmetric solutions"
+  [n]
+  (clojure.walk/prewalk-replace {31 1 (+ 30 n) n} (free-grid n)))
 
 
 (defn free-cube
@@ -89,7 +102,12 @@
     ;(println cube)
     (concat coor3 coor2 coor1)))
 
-
+(defn asym-cube
+  "make clues for nxnxn cube of all free letters
+  except first anti-slice which will prevent
+  symmetric solutions"
+  [n]
+  (clojure.walk/prewalk-replace {31 1 (+ 30 n) n (+ 30 (* n n)) (* n n)} (free-cube n)))
 
 (defn diagsame-grid
   "make clues for nxn grid of letters constrained so same
@@ -97,7 +115,7 @@
   [n]
   (let [nsq (* n n)
         rows (vec (map vec (partition n (range nsq))))
-        cols (m/transpose rows)
+        cols (transpose rows)
         mat (map (fn [r c] (vec (map #(+ %1 %2) r c))) rows cols)
         dv (distinct (flatten mat))
         mp (zipmap dv (range 30 (+ 30 (count dv))))]
@@ -108,7 +126,7 @@
   [n]
   (let [nsq (* n n)
         rows (vec (map vec (partition n (range nsq))))
-        cols (m/transpose rows)
+        cols (transpose rows)
         mat (map (fn [r c] (vec (map #(min %1 %2) r c))) rows cols)
         dv (distinct (flatten mat))
         mp (zipmap dv (range 30 (+ 30 (count dv))))]

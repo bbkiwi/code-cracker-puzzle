@@ -81,5 +81,7 @@
     (doseq [n (range nshow)]
       (println n ((nth ans n) :partialwords)))))
 
-
+(defn at-most-one-bad?
+  [sol]
+  (< (count (filter #(= % 2) (:simplescores sol))) 2))
 

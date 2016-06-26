@@ -7,22 +7,49 @@
               [clojure.string :as str]
               [clojure.walk]
               [clojure.repl :refer :all]
-              [criterium.core :refer [quick-bench]]))
+              [criterium.core :refer [quick-bench]]
+              [clojure.set :as set]))
 
+;TODO check and fix fcrels for clues having non free letters
 (defn compare-fc
   [alm nlm otherclue]
   (let [pdc (decode-to-vec otherclue alm)
         otherwords (filteredlist (filter-from-partial-decoded-clue pdc))
+        otherwordsrel (filtercode-using-rels {30 \x} alm otherclue otherwords) ;hack TODO fix
         fc (filtercode alm nlm otherclue otherwords)
-        fcr (filtercode-using-regex alm nlm otherclue otherwords)]
+        fcr (filtercode-using-regex alm nlm otherclue otherwords)
+        fcrels (filtercode-using-rels alm nlm otherclue otherwords)
+        fcrels (set/intersection fcrels otherwordsrel)]
+    (println "fc   count " (count fc) fc)
+    (println "otherwordsrel   count " (count otherwordsrel) otherwordsrel)
+    (println "fcrels   count " (count fcrels) fcrels)
+    (if (= fc fcr)
+      (println "filtercode and filtercode-using-regex same result")
+      (println "fcrx  count " (count fcr) fcr))))
+
+
+(defn compare-and-benchmark-fc
+  [alm nlm otherclue]
+  (let [pdc (decode-to-vec otherclue alm)
+        otherwords (filteredlist (filter-from-partial-decoded-clue pdc))
+        otherwordsrel (filtercode-using-rels {} alm otherclue otherwords)
+        fc (filtercode alm nlm otherclue otherwords)
+        fcr (filtercode-using-regex alm nlm otherclue otherwords)
+        fcrels (filtercode-using-rels alm nlm otherclue otherwords)
+        fcrels (set/intersection fcrels otherwordsrel)]
     (println "fc   " fc)
+    (println "fcrels   count " (count fcrels) fcrels)
     (if (= fc fcr)
       (println "filtercode and filtercode-using-regex same result")
       (println "fcrx " fcr))
     (println "fc quick-bench:")
     (quick-bench (doall (filtercode alm nlm otherclue otherwords)))
     (println "fc rx quick-bench")
-    (quick-bench (doall (filtercode-using-regex alm nlm otherclue otherwords)))))
+    (quick-bench (doall (filtercode-using-regex alm nlm otherclue otherwords)))
+    (println "fc rels quick-bench")
+    (quick-bench (set/intersection
+                   (filtercode-using-rels alm nlm otherclue otherwords)
+                   otherwordsrel))))
 
 (defn make-example-for-work
   "Breaks sentence into lower case words and encodes via 1 \\a, 2 \\b ...
@@ -63,26 +90,52 @@
 
 
 
-
-; fc usually slower by 10-20 times!
+; compares filtercode and filtercode-using-regex
+; filtercode-using-regex usually faster by 10-20 times!
+; filtercode-using-rels even slower!!
 (comment
-  (compare-fc {} {} [1 2 3 4 5])                            ;fc 8.8 ms fc rx 0.47 ms
-  (compare-fc {1 \m 5 \o} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 17 micro sec fcrx 49 micro sec
-  (compare-fc {1 \m} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 204 micro sec fcrx 62 micro sec
-  (compare-fc {} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5])    ; fc 3700 micro sec fcrx 264 micro sec
-  (compare-fc {} {6 \p 7 \r 8 \e 9 \a} [1 2 3 4 5])         ; fc 12 ms fc rx 0.35 ms
-  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [31 32 33 34 35])
-  (compare-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31])) ; fc much slower than fc rx
+  (compare-and-benchmark-fc {} {} [1 2 3 4 5])              ;fc 8.8 ms fc rx 0.47 ms
+  (compare-and-benchmark-fc {1 \m 5 \o} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 17 micro sec fcrx 49 micro sec
+  (compare-and-benchmark-fc {1 \m} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 204 micro sec fcrx 62 micro sec
+  (compare-and-benchmark-fc {} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 3700 micro sec fcrx 264 micro sec
+  (compare-and-benchmark-fc {} {6 \p 7 \r 8 \e 9 \a} [1 2 3 4 5]) ; fc 12 ms fc rx 0.35 ms
+  (compare-and-benchmark-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [31 32 33 34 35])
+
+  (compare-and-benchmark-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [31 32 33 34 35])
+  (compare-and-benchmark-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31]) ; fc much slower than fc rx
+
+
+  (comment
+    (def f (other-clue-filter [1 2 3 4 5] [2 3 6 6]))
+    (filteredlist f #{"crats" "brats" "house"})
+    (filteredlist f (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35])))))
+
 
 
 (comment
-  (def f (other-clue-filter [1 2 3 4 5] [2 3 6 6]))
-  (filteredlist f #{"crats" "brats" "house"})
-  (filteredlist f (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35]))))
+  (quick-bench (findall #" +(a\w*)(?= )" word-dic)) ;269 ns using quick-bench
+  (quick-bench (get-by-pos-char 1 \a)) ;414 ns
+  (quick-bench (get-by-pos-char-map {1 \a})) ;771 ns
+  (quick-bench (filteredlist (letter-to-use-filter [1 nil nil nil nil nil nil nil nil] "a"))) ;1000 ns
 
+;TODO more exaustive testing of timing - how to programitally get quick bench results?
+  (findall #" +(aq\w\wd\w\w\ws\w*)(?= )" word-dic) ;301.708573 µs
+  (get-by-pos-char-map {1 \a 2 \q 5 \d 9 \s}) ; 61.194255 µs   first attempt was 5.123335 ms
+  (find-all-words [\a \q 33 34 \d 36 37 38 \s] {}) ;408.841643 µs
 
+  (findall #" +(\w\w\w\wa)(?= )" word-dic) ; 244.821262 µs
+  (get-by-pos-char-map {5 \a 6 nil}) ;998.663606 µs
+  (find-all-words [31 32 33 34 \a] {}) ;322.542646 µs
 
-(comment
+  (findall #" +(a\w\w\w\w)(?= )" word-dic) ;2.116498 µs
+  (get-by-pos-char-map {1 \a 6 nil}) ;839.849934 µs with map word: and same time without
+  (find-all-words [\a 32 33 34 35] {}) ;79.288385 µs
+
+  ;TODO FIX
+  (find-all-words [31 31 31] {}) ; WRONG
+  (find-all-words [1 2 2 33 33 3] {}) ; WRONG
+  (filteredlist (filter-from-partial-decoded-clue [1 2 2 33 33 3]))
+
   (find-all-words [1 2 3 4 5 6 7 8 9 10 11 12 13] {}) ; fails as more than 8 distinct and regex cant deal with it.
   (filteredlist (filter-from-partial-decoded-clue [1 2 3 4 5 6 7 8 9 10 11 12 13])) ; ("draughtswomen" "unpredictably") more than 8 distinct
   (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35 36 37 38 39 40 41 42 43])) ; 1800 13 letter words
@@ -256,17 +309,32 @@
   (def root (make-example-from-clues [[31 32 33 34 35] [35 34 33 32 31]])) ; ok
   (def root (make-example-from-clues [[30 31 32] [33 31 34] [30 34 32] [32 34 32]]))
   (def root (make-example-from-clues (free-grid 5)))
+  ; 5x5 in the Press puzzle page has eider (for 4th clue) as one of the words and this is not in word-dic
+  ; using non-completed-some-could-be-bad?  and :wordscores in method below misses sol as 4th clue is sloved by elder in word-dic
+  ;  however using :simplescores will find it among the other 332 found
+  (def root (make-root {:ccinfo root :rootmap {31 \e 33 \f 35 \r 37 \v 39 \e 41 \r 43 \s 45 \e 47 \d 49 \r 51 \e 53 \d}}))
+  (show-pdc-at-most-n (filter at-most-one-bad? ans) 400)
+  ; however by specifying 46 as \i it will find the solution
+  (def root (make-root {:ccinfo root :rootmap {31 \e 33 \f 35 \r 37 \v 39 \e 41 \r 43 \s 45 \e 47 \d 49 \r 51 \e 53 \d 46 \i}})) ;finds
+
+  (def root (make-example-from-clues (asym-grid 5)))
   (def root (make-example-from-clues (sym-grid 5)))
   (def root (make-example-from-clues (diagsame-grid 3)))
   (def root (make-root {:ccinfo root :rootmap {39 \e}}))    ; middle of above
   (def root (make-example-from-clues (diagsame-grid 3)))
   (def root (make-example-from-clues (free-cube 3)))
   (def root (make-example-from-clues (free-cube 4)))        ; none found yet  after long time
+  (def root (make-example-from-clues (asym-cube 4)))        ; none found after 1 hour
   (def root (make-example-from-clues [[27] [28]]))          ; ok 676 sols all possible combos of 2 letters
   (def ans (filter
              all-completed-and-all-good?
              (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root)))
+  ; try this if bad words as in 5x5 example above
+  (def ans (filter
+             (complement non-completed-some-could-be-bad?)
+             (tree-seq non-completed-some-could-be-bad? (children-from-best-clue-using :wordcountscores) root)))
   (show-pdc-at-most-n ans 10))
+
 
 
 
@@ -277,10 +345,10 @@
   (quick-bench (bench-test-sol root make-child-tr))
   (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp"))
   (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}}))
-  ;     in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 6 ms, using transducers 80 ms
+  ;     in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 4.7 ms, using transducers 80 ms
   (def ccnumber 1)
   (def root (make-root {:ccinfo (get-cc ccnumber) :rootmap {}}))
-  ;     in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 31 ms, using transducers 127 ms
+  ;     in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 23 ms, using transducers 127 ms
   (def root (make-example-from-clues [[31 32 33 34]]))      ; find all 4 letter words
   ;TODO Why, the tree is only depth 1 and wordlist has the answers rx 500 msec tr 6 secs
 
@@ -290,14 +358,50 @@
   (def root (make-example-from-clues [[31 32 33 34 35] [1 31 32 33 1]])) ; 1.95 sec rx, ? sec tr
   nil)
 
+;TODO check if this is much of an improvement over just filtering dictionary directly
+; as (count (keys by-letters)) ;=> 34766
+;(count all-words-in-set) ;=> 60419
+(defn words-from-letterset
+  "find all words with all letters from letterset"
+  [letterset]
+  (let [letterset (set letterset)
+        keys (keys by-letters)
+        keystouse (filter (fn [key] (empty? (set/difference (:letters key) letterset))) keys)]
+    ;(println letterset keystouse)
+    (sort (flatten (seq (reduce #(conj %1 (get-by-letters (:letters %2))) #{} keystouse))))))
 
+(defn words-meet-letterset
+  "find all words with at least one letter from letterset"
+  [letterset]
+  (let [letterset (set letterset)
+        keys (keys by-letters)
+        keystouse (filter (fn [key] (seq (set/intersection (:letters key) letterset))) keys)]
+    ;(println letterset keystouse)
+    (sort (flatten (seq (reduce #(conj %1 (get-by-letters (:letters %2))) #{} keystouse))))))
 
 (comment
+
+
+  ; find all words with ta in 3rd and 4th pos and contains a z
+  (set/intersection
+    (set (get-by-pos-letter-map {4 \a 3 \t}))
+    (set (words-meet-letterset "z")))
+
+  ; find all words using same set of letters as in "apple"
   (get-by-letters "apple")                                  ;=> ("peal" "paella" "leap" "lapel" "apple" "appeal" "plea" "pale")
   ;(quick-bench (get-by-letters "apple"))
-  (get-by-ccvec ((comp make-code-cracker-vector encode) "level"))
+
+
+  ; find all words with this code-cracker-patter
   (get-by-ccvec [1 2 3 3 1])                                ;=> ("shoos" "yummy" "tweet" "setts" "sills" "sells" "yukky" "yuppy")
+  ; find all words with same code-cracker pattern as "level"
+  (get-by-ccvec ((comp make-code-cracker-vector encode) "level"))
+  ; find all words with a pattern of Vowels and Consanants
   (get-by-vcstr "VCVCVCVCVCVCV")                            ;=> ("unimaginative")
+  (get-by-sortedletters (sort "warder"))                    ;=> ("redraw" "reward" "drawer" "warder") anagrams
+  (set/intersection
+    (set (get-by-anagram-count 4))
+    (set (get-by-ccvec [1 2 3 4 5 3])))                     ;=> #{"warder" "bastes"}
   (get-by-vowelless "ppl")                                  ;=> ("pupal" "pupil" "papal" "apple" "people" "appeal" "appal")
   (get-by-vowelless (vowelless "banana"))
   (remove-vowels-from-sentence "this is a very simple sentence that anyone can understand")

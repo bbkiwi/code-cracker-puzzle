@@ -174,6 +174,7 @@
   ;(println regex-pat)
   (map #(nth % 1) (re-seq regex-pat dic)))
 
+;TODO Fails for clues with repeated free letters
 (defn find-all-words
   "Takes clue (a vector of code numbers) and a partial solution map assigned-letters-map
    Returns a lazy seq  of each solution word."
@@ -342,14 +343,8 @@
 
 (defn contained-letters-clue-filter
   "clclue must be a clue using only numbers found within clue
-  selects if the word specified by clclue is a word"
-  [clue clclue]
-  (let [usethis? (fn [word] (->> clclue (replace (zipmap clue word)) (str/join "") all-words-in-set))]
-    (filter usethis?)))
-
-(defn contained-all-but-one-letters-clue-filter
-  "clclue must be a clue using only numbers found within clue plus one more
-  selects if the word specified by clclue will match word"
+  selects if the word specified by clclue is a word
+  note: will always reject word  if clclue has a number NOT within clue"
   [clue clclue]
   (let [usethis? (fn [word] (->> clclue (replace (zipmap clue word)) (str/join "") all-words-in-set))]
     (filter usethis?)))
@@ -414,24 +409,26 @@
 
 ;TODO must be a better way to code this
 ; might not need as can use applymask-till-match
+
+(defn simple-mask-from-characteristic-mask
+  "returns mask up to  first truthy in cm padded by nil
+  to be used with cm produced from for one number in clue "
+  [cm]
+  (let [sp (split-with (complement identity) cm)
+        fir (first sp)
+        lst (last sp)]
+    (println sp fir lst)
+    (concat fir [(first lst)] (repeat (dec (count lst)) nil))))
+
+
+; (simple-masks-from-characteristic-masks (characteristic-masks-for-numbers [10 20 10 40 40]))
 (defn simple-masks-from-characteristic-masks
   "cms is list of characteristic masks
   produces list of simple masks.
+  cms produced by characteristic-masks-for-numbers
   A simple mask has true at first occurence of the distinct code"
   [cms]
-  (let [;cmf (fn [cm] (map #(= true %) (next (reductions #(if %1 "F" %2) false cm))))
-        ;cmf (fn f [cm]
-        ;      (let [fir (first cm)
-        ;            res (rest cm)]
-        ;        (if fir
-        ;          (cons fir (repeat (count res) false))
-        ;          (cons fir (f res)))))
-        cmf (fn [cm]
-              (let [sp (split-with false? cm)
-                    fir (first sp)
-                    lst (last sp)]
-                (concat fir '(true) (repeat (dec (count lst)) false))))]
-    (map cmf cms)))
+  (map simple-mask-from-characteristic-mask cms))
 
 
 (defn filter-from-simple-mask
@@ -464,7 +461,7 @@
       ;; selects words with correct letters associated with char in pdc
       ;(comp-value-filter-from-characteristic-masks
       ;    (characteristic-masks-for-chars pdc))
-      ; selects words with correct letters associated with char in pdc faster  than above
+      ; selects words with correct letters associated with char in pdc.  faster  than above
       (value-filter-from-characteristic-mask (mask-from-values pdc (filter char? pdc)))
       ; selects words with number codes well defined i.e. corresponding to unique letter
       (comp-count-filter-from-characteristic-masks
@@ -528,48 +525,155 @@
   (if
     (= letuse "abcdefghijklmnopqrstuvwxyz") #"."
                                             (str "[" letuse "]")))
+
+(defn replace-duplicates
+  [v r]
+  (reduce-kv (fn [res ind input]
+               (conj res
+                     (cond
+                       ((set (take ind v)) input) r
+                       :else input)))
+             [] (vec v)))
+
+(defn constant-map
+  [keys const]
+  (zipmap keys (repeat (count keys) const)))
+
+
+(defn partial-decoded-code-vec-to-regexpat-for-filter
+  "Given partially decoded code cracker clue and new encoding map extending the one that
+  partially decoded the clue
+  and letuse to use produce an efficient regex used in filtercode-using-regex
+  code vals > 26 are treated as free"
+  [partial-decoded-code-vec new-map letuse]
+  (let [mdot (constant-map partial-decoded-code-vec \.)
+        nodup (replace-duplicates partial-decoded-code-vec \.)
+        ;newchars (vals new-map)
+        newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
+        cleanletpat (letpat-filter (clean-letuse letuse newcharsfromconstrained))
+        freeletpat \. ;(letpat-filter (clean-letuse ""))
+        ;char-in-nodup (filter char? nodup)
+        num-in-clue (filter number? partial-decoded-code-vec)
+        free-in-clue (filter #(> % 26) num-in-clue)
+        rmap (merge mdot  (constant-map num-in-clue cleanletpat) (constant-map free-in-clue freeletpat) new-map)
+        v1 (replace rmap nodup)]
+    ;(println nodup rmap v1)
+    (re-pattern (str/join "" v1))))
+
+
 ;TODO the code below must be able to be shortened
-(defn partial-decoded-code-vec-to-regexpat-filter
+; This is a bit slower than old version v0
+(defn partial-decoded-code-vec-to-regexpat-for-filter-v1
   "Given partially decoded code cracker clue and new encoding map
-  and letter to use produce the regex used in filtercode
+  and letuse to use produce an efficient regex used in filtercode-using-regex
+  code vals > 26 are treated as free"
+  [partial-decoded-code-vec new-map letuse]
+  (let [;newchars (vals new-map)
+        newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
+        cleanletpat (letpat-filter (clean-letuse letuse newcharsfromconstrained))
+        freeletpat \. ;(letpat-filter (clean-letuse ""))
+        rfn (fn [input]
+              (cond
+                (number? input)(if (> input 26)
+                                 freeletpat
+                                 cleanletpat)
+                :else input))
+        v1 ; replace chars and duplicates with .
+        (reduce-kv (fn [res ind input]
+                     (conj res
+                        (cond
+                          ((set "abcdefghijklmnopqrstuvwxyz") input) \.
+                          ;(> input 26) input
+                          ; if remove checking for duplicates marginally faster and using filter about same ???
+                          ((set (take ind partial-decoded-code-vec)) input) \.
+                          :else (rfn (new-map input input)))))
+                   [] (vec partial-decoded-code-vec))
+        v3 (re-pattern (str/join "" v1))]
+    ;(println partial-decoded-code-vec new-map letuse)
+    ;(println cleanletpat freeletpat v1)
+    v3))
+
+
+(defn partial-decoded-code-vec-to-regexpat-for-filter-v0
+  "Given partially decoded code cracker clue and new encoding map
+  and letuse to use produce an efficient regex used in filtercode-using-regex
   code vals > 26 are treated as free"
   [partial-decoded-code-vec new-map letuse]
   (let [newchars (vals new-map)
         newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
         cleanletpat (letpat-filter (clean-letuse letuse newcharsfromconstrained))
-        freeletpat (letpat-filter (clean-letuse ""))
-        v1 (reduce (fn [res input]
-                     (conj res
-                           (cond
-                             ((set "abcdefghijklmnopqrstuvwxyz") input) \.
-                             (> input 26) input
-                             ((set res) input) \.
-                             :else input)))
-                   [] partial-decoded-code-vec)
-        v2 (replace new-map v1)
-        v3 (reduce (fn [res input]
-                     (conj res
-                           (cond
-                             (number? input) (if (> input 26)
-                                               freeletpat
-                                               cleanletpat)
-                             :else input)))
-                   [] v2)
+        freeletpat \. ;(letpat-filter (clean-letuse ""))
+        v1 ; replace chars and duplicates with .
+        (reduce (fn [res input]
+                  (conj res
+                        (cond
+                          ((set "abcdefghijklmnopqrstuvwxyz") input) \.
+                          ;(> input 26) input
+                          ((set res) input) \.
+                          :else input)))
+                [] partial-decoded-code-vec)
+        v2  ; replace new assigned codes with their letters
+        (replace new-map v1)
+        v3  ; replace number codes with free or clean pattern
+        (reduce (fn [res input]
+                  (conj res
+                        (cond
+                          (number? input) (if (> input 26)
+                                            freeletpat
+                                            cleanletpat)
+                          :else input)))
+                [] v2)
         v3 (re-pattern (str/join "" v3))]
     ;(println partial-decoded-code-vec new-map letuse)
     ;(println cleanletpat freeletpat v1 v2)
     v3))
 
+
 (defn filtercode-using-regex
-  ""
+  "Assumming otherwords satisfy otherclue with assigned-letter-map alm
+  filters out words that no longer satisfy otherclue using new letter map nlm"
   [alm nlm otherclue otherwords]
-  ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
-  ;TODO should be count of 1 or less??
-  (if (empty? otherwords)
+  (if (= alm nlm)
     otherwords
-    (let [repat (partial-decoded-code-vec-to-regexpat-filter (decode-to-vec otherclue alm) nlm "")]
+    (let [repat (partial-decoded-code-vec-to-regexpat-for-filter (decode-to-vec otherclue alm) nlm "")]
       ;(println repat)
       (filter #(re-matches repat %) otherwords))))
+
+; TODO use helper fcn here
+; basically same as partial-decoded-code-vec-to-regexpat-for-filter
+(defn partial-decoded-code-vec-to-info-for-rel
+  "Given partially decoded code cracker clue and new encoding map extending the one that
+  partially decoded the clue
+  and letuse to use produce an info needed
+  code vals > 26 are treated as free"
+  [partial-decoded-code-vec new-map letuse]
+  (let [mdot (constant-map partial-decoded-code-vec \.)
+        nodup (replace-duplicates partial-decoded-code-vec \.)
+        ;newchars (vals new-map)
+        newcharsfromconstrained (keep new-map (range 1 27)) ;chars added correponding to constrained letters
+        cleanletpat (letpat-filter (clean-letuse letuse newcharsfromconstrained))
+        freeletpat \. ;(letpat-filter (clean-letuse ""))
+        ;char-in-nodup (filter char? nodup)
+        num-in-clue (filter number? partial-decoded-code-vec)
+        free-in-clue (filter #(> % 26) num-in-clue)
+        rmap (merge mdot  (constant-map num-in-clue cleanletpat) (constant-map free-in-clue freeletpat) new-map)
+        posmap (zipmap (range 1 (inc (count nodup))) (replace rmap nodup))]
+    (apply dissoc posmap (filter #(= (posmap %) \.) (keys posmap)))))
+
+(declare get-by-pos-char-map)
+;TODO not finished will want otherwords to be a set and intersect with new letter at pos sets
+;TODO or remove letter pos sets for those letter pos no longer available.
+(defn filtercode-using-rels
+  "Assumming otherwords satisfy otherclue with assigned-letter-map alm
+  filters out words that no longer satisfy otherclue using new letter map nlm"
+  [alm nlm otherclue otherwords]
+  (if (= alm nlm)
+    {}
+    (let [posmap (partial-decoded-code-vec-to-info-for-rel (decode-to-vec otherclue alm) nlm "")
+          posmap (merge posmap {(inc (count otherclue)) nil})]
+      (println posmap)
+      (get-by-pos-char-map posmap))))
+
 
 ; using transducers
 ; speed depends on type of otherwords but fastest when it is lazy-seq, however at least 100 times slower than regex
@@ -577,9 +681,7 @@
   "removes words from otherwords that no longer fit otherclue when the assigned letter map als is
   updated to a new letter map nlm"
   [alm nlm otherclue otherwords]
-  ;TODO thought this would speed up as avoid overhead to calc bound vars but little effect
-  ;TODO should be count of 1 or less???
-  (if (empty? otherwords)
+  (if (= alm nlm)
     otherwords
     (let [;freelet  (clean-letuse "")
           ;cleanlet (clean-letuse "" (vals nlm))
@@ -814,10 +916,66 @@
    (partial children-from-best-clue make-child-rx key)))
 
 
-; Relations
+; Relations - overhead to make these relations, but fast to lookup
 (defn relation
   [f vs in-key out-key]
   (reduce (fn [rel inp] (conj rel {in-key inp out-key (f inp)})) #{} vs))
+
+;TODO note the maps in the rel do not all have the same keys
+(def word-letterpositions-rel
+  "#{{:word \"dog\" 1 \\d 2 \\o 3 \\g 4 nil}..}"
+  (reduce
+    (fn [rel inp]
+      (let [lenw (count inp)]
+        (conj rel
+              (merge
+                {:word inp}
+                (zipmap (range 1 (inc lenw)) (map (partial get inp) (range 0 lenw)))
+                {(inc lenw) nil}))))
+    #{}
+    all-words-in-set))
+
+(def position-indices
+  (let [pos (range 1 22)]
+    (zipmap
+      pos
+      (for [i pos] (set/index word-letterpositions-rel [i])))))
+
+;; First attempt which produces list of words
+;(defn get-by-pos-char
+;  [pos char]
+;  (map :word (get (position-indices pos) {pos char}))) ;produces lazy-seq
+;; in this routine need to convert to sets which is time costly to can intersect
+;(defn get-by-pos-char-map
+;  [pcmap]
+;  (let [matchsets (map (fn [k] (set (get-by-pos-char k (pcmap k)))) (keys pcmap))]
+;    (apply set/intersection matchsets)))
+
+;Now this keeps result as set
+(defn get-by-pos-char
+  [pos char]
+  ;(map :word (get (position-indices pos) {pos char}) ; turns into list so need to convert back to set
+  (get (position-indices pos) {pos char}))
+
+;Interset then extract the words is much faster but intersection depends on size of sets
+;TODO map :word or not? no difference in timing
+(defn get-by-pos-char-map
+  [pcmap]
+  (let [matchsets (map (fn [k] (get-by-pos-char k (pcmap k))) (keys pcmap))]
+    ;(map :word (apply set/intersection matchsets))
+    (apply set/intersection matchsets)))
+
+
+;TODO here the index is made each time, but if index is made once for
+;   those desired positions fast to look up for different chars
+;(defn get-by-pos-char-map
+;  "pcmap is map of letter position (1 to 21) to desired char or nil
+;  finds all words with specified char in those position
+;  e.g. {1 \\d 3 \\g 5 nil} finds words of 4 letters with first
+;  letter an d and third a g"
+;  [pcmap]
+;  (map :word (get (set/index word-letterpositions-rel (keys pcmap)) pcmap)))
+
 
 (def word-letters-rel (relation set all-words-in-set :word :letters))
 (def by-letters (set/index word-letters-rel [:letters]))
