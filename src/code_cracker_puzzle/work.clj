@@ -500,25 +500,63 @@
                      (seq matches)))]                       ;(seq empty) is nil=falsey (seq non-empty) is truthy
     (filter usethis?)))
 
+(defn single-clues-from
+  "list of single number clues from numbers occuring in some clue of clues"
+  [clues]
+  (map vector (distinct (apply concat clues))))
+
+(defn distinct-combined-clues
+  "combines in order given and removes duplicate clues"
+  [& clueslist]
+  (distinct (apply concat clueslist)))
+
+;TODO this works for partial decode clues but
+(defn meet-others-score-map
+  "a score is based only on the numbers in the partial decoded clues
+  [3 5 \\a 6 6] has numbers 3, 5 and 6 and hits [5 \\d \\e 3 3] three times.
+  keys are the pdclues and values the sum of hits with each other clue.
+  It is transformed so smaller scores mean more info gained by assigning a word to it.
+  Note hack so completed clues get score 3 all others <= 1
+  so an isolated clue gets score 1,
+  a one number clue with score 1/7 meets 6 other clues
+  longer clues with numbers repeated are more complicated. "
+  [pdclues]
+  (let [;counthits (fn [clue otherclue] (count (set/intersection (set clue) (set otherclue)))) ; old idea
+        counthits-fn (fn [clue otherclue] (count (keep #((set clue) %) (remove char? otherclue))))
+        counthitswith-fn (fn [clue]
+                           (let [ctnums (count (remove char? clue))]
+                             (if (zero? ctnums)
+                               -2/3 ; hack so transform takes this to 3
+                               (- (apply + (map (partial counthits-fn clue) pdclues)) ctnums))))
+        hits (map counthitswith-fn pdclues)
+        trans-fn #(/ (inc %))
+        scores (map trans-fn hits)]
+    ;(println hits)
+    (zipmap pdclues scores)))
 
 (defn sorted-single-letter-clues
   "Find all numbers occuring in a clue and how many clues it appears in
-  Returns list of single number clues for these and the count"
+  Returns map with keys
+     :singleclues for list of single number clues sorted by their decending counts
+     :numinothers for list of the corresponding counts
+     :numinothersmap which has keys the these clues and values their counts
+     "
   [cc]
   (let [clues (:clues cc)
+        distinctnums (distinct (apply concat clues))
         sortedpairs (sort
                       #(> (last %1) (last %2))
-                      (remove
-                        #(zero? (last %))
-                        (map
-                          (fn [n] [n (count (keep (fn [clue] ((set clue) n)) clues))])
-                          (range 1 27))))
-        singleclues (map #(seq [(first %)]) sortedpairs)
-        numinothers (map #(last %) sortedpairs)]
+                      (map
+                        (fn [n] [n (count (keep (fn [clue] ((set clue) n)) clues))])
+                        distinctnums))
+        singleclues (map #(vector (first %)) sortedpairs)
+        numinothers (map #(last %) sortedpairs)
+        numinothersmap (zipmap singleclues numinothers)]
     ;(println singleclues)
     ;(println numinothers)
+    ;(println distinctnums)
     ;singleclues
-    {:singleclues singleclues :numinothers numinothers}))
+    {:singleclues singleclues :numinothers numinothers :numinothersmap numinothersmap}))
 
 (defn letpat-filter
   [letuse]
@@ -536,6 +574,7 @@
              [] (vec v)))
 
 (defn constant-map
+  "Returns a map with the all keys mapped to the same const "
   [keys const]
   (zipmap keys (repeat (count keys) const)))
 
@@ -657,22 +696,24 @@
         num-in-clue (filter number? partial-decoded-code-vec)
         free-in-clue (filter #(> % 26) num-in-clue)
         rmap (merge mdot  (constant-map num-in-clue cleanletpat) (constant-map free-in-clue freeletpat) new-map)
+        ;TODO temp change
+        rmap (merge mdot  new-map)
         posmap (zipmap (range 1 (inc (count nodup))) (replace rmap nodup))]
     (apply dissoc posmap (filter #(= (posmap %) \.) (keys posmap)))))
 
 (declare get-by-pos-char-map)
-;TODO not finished will want otherwords to be a set and intersect with new letter at pos sets
 ;TODO or remove letter pos sets for those letter pos no longer available.
 (defn filtercode-using-rels
   "Assumming otherwords satisfy otherclue with assigned-letter-map alm
   filters out words that no longer satisfy otherclue using new letter map nlm"
   [alm nlm otherclue otherwords]
   (if (= alm nlm)
-    {}
-    (let [posmap (partial-decoded-code-vec-to-info-for-rel (decode-to-vec otherclue alm) nlm "")
-          posmap (merge posmap {(inc (count otherclue)) nil})]
-      (println posmap)
-      (get-by-pos-char-map posmap))))
+    otherwords
+    (let [posmap (partial-decoded-code-vec-to-info-for-rel (decode-to-vec otherclue alm) nlm "")]
+          ; don't need this below which sets word length as otherwords will be of correct length
+          ; posmap (merge posmap {(inc (count otherclue)) nil})]
+      ;(println posmap)
+      (get-by-pos-char-map posmap otherwords))))
 
 
 ; using transducers
@@ -709,6 +750,7 @@
                       (letter-to-avoid-filter maskforconst newcharsfromconstrained))
                     otherwords))))
 
+;TODO fix this hack which just gives non single digit clues score 3 and single digit clues original or 3 if complete
 (defn numinother-score
   [decodedclue oldnuminother]
   (if (or (> (count decodedclue) 1) (apply number? decodedclue)) oldnuminother 3))
@@ -777,6 +819,18 @@
   [cc]
   (every? #(or (< % 1) (= % 3)) (:wordcountscores cc)))     ; all good words
 
+(defn all-good-completed-or-independent?
+  [cc]
+  (and
+    (every? #(or (< % 1) (= % 3)) (:wordcountscores cc))     ; all good words
+    (every? #(or (= % 1) (= % 3)) (:numinothers cc))))
+
+(defn some-numinothers-and-all-good?
+  [cc]
+  (and
+    (some #(< % 1) (:numinothers cc))
+    (every? #(and (not= % 1) (not= % 2)) (:wordcountscores cc)))) ;some not completed but no  bad clues either completed or not
+
 (defn set-remaining-keys
   "Sets values for keys :partialwords :decodedclues :simplescores :wordcountscores
    :numinothers :completed :allgood"
@@ -787,7 +841,10 @@
         partialwords (map #(str/join "" (replace dotmap %)) decodedclue-vecs)
         simplescores (map simple-scores decodedclue-vecs (:wordlists cc))
         wordcountscores (map score-using-bounded-wordcount (:wordlists cc) simplescores)
-        numinothers (map numinother-score decodedclue-vecs (:numinothers cc))
+        ;more dynamic way of changing numinothers as in make-root
+        numinothers (replace (meet-others-score-map decodedclue-vecs) decodedclue-vecs)
+        ;simple not changing initial score except for single completed clues which become 3
+        ;numinothers (map numinother-score decodedclue-vecs (:numinothers cc))
         completed (if (every? #(> % 1) wordcountscores) "complete" "unfinished")
         allgood (if (every? #(or (< % 1) (= % 3)) wordcountscores) "all good" "some bad")]
     (merge cc
@@ -803,26 +860,80 @@
 (defn make-root
   "makes root from cc with :encodemap rootmap
   or (:encodemap cc) if exists else {}
-  adds single letters as clues if asl true"
-  [{cc :ccinfo rootmap :rootmap asl :addsingleletters}]
+  adds single letters as clues if asl true
+  removes any duplicate clues
+  completed clues are given score 3
+  single letter clues are given meet-other-scores
+  other clues given score 1
+  clues are sorted by meet-other-score
+  intersects wordlists with extrawordlists if provided"
+  [{cc :ccinfo rootmap :rootmap asl :addsingleletters extrawordlists :extrawordlists}]
   (let [clues (:clues cc)
         rootmap (or rootmap (merge {} (:encodemap cc)))
-        singleletterclues (if asl (sorted-single-letter-clues cc)
-                                  {:singleclues '() :numinothers '()})
-        numinothers (concat (map #(/ %) (singleletterclues :numinothers)) (repeat (count clues) 1))
-        augmentedclues (concat (singleletterclues :singleclues) clues)
+        exwmap (zipmap clues extrawordlists)
+        slcs (if asl (single-clues-from clues) (filter #(= (count %) 1) clues))
+        augmentedclues (distinct-combined-clues slcs clues)
         pdaugmentedclues (map #(decode-to-vec % rootmap) augmentedclues)
-        ;wordlists (map #(find-all-words % rootmap) augmentedclues)
-        wordlists (doall (map #(filteredlist (filter-from-partial-decoded-clue %)) pdaugmentedclues))
+        augtopdaugmap (zipmap augmentedclues pdaugmentedclues)
+        mosmap (meet-others-score-map pdaugmentedclues)
+        ;TODO could use this as alternative
+        ;numinothers (map #(get mosmap % 1) pdaugmentedclues) ; for all clues
+        mosmapaug (zipmap slcs  (map #((comp mosmap augtopdaugmap) %) slcs)) ;associate scores to slcs
+        numinothers (map #(get mosmapaug % 1) augmentedclues) ; for just slcs default 1 for rest
+        napairsorted (sort-by first (map #(vector %1 %2) numinothers augmentedclues))
+        augmentedcluessorted (map second napairsorted)
+        numinotherssorted (map first napairsorted)
+        wordlists (if extrawordlists
+                    (map
+                      #(seq (set/intersection
+                                (get exwmap % (set (map str (set "abcdefghijklmnopqrstuvwxyz"))))
+                                (set (filteredlist (filter-from-partial-decoded-clue (decode-to-vec % rootmap))))))
+                      augmentedcluessorted)
+                    (map #(filteredlist (filter-from-partial-decoded-clue (decode-to-vec % rootmap))) augmentedcluessorted))
         rmap (merge cc
-                    {:clues       augmentedclues
-                     :numinothers numinothers
+                    {:clues       augmentedcluessorted
+                     :numinothers numinotherssorted
                      :encodemap   rootmap
                      :wordlists   wordlists
                      :depth       0})]
+    ;(println extrawordlists)
     ;(println clues)
+    ;(println sslcs)
+    ;(println mosmap)
     ;(println augmentedclues)
+    ;(println numinothers)
+    ;(println augmentedclues)
+    ;(println pdclues)
+    ;(println pdnewclues)
+    ;(println pdaugmentedclues)
+    ;(println wordlists)
     (set-remaining-keys rmap)))
+
+
+;(defn make-root-old
+;  "makes root from cc with :encodemap rootmap
+;  or (:encodemap cc) if exists else {}
+;  adds single letters as clues if asl true"
+;  [{cc :ccinfo rootmap :rootmap asl :addsingleletters}]
+;  (let [clues (:clues cc)
+;        rootmap (or rootmap (merge {} (:encodemap cc)))
+;        singleletterclues (if asl (sorted-single-letter-clues cc)
+;                                  {:singleclues '() :numinothers '()})
+;        numinothers (concat (map #(/ %) (singleletterclues :numinothers)) (repeat (count clues) 1))
+;        augmentedclues (concat (singleletterclues :singleclues) clues)
+;        pdaugmentedclues (map #(decode-to-vec % rootmap) augmentedclues)
+;        ;wordlists (map #(find-all-words % rootmap) augmentedclues)
+;        ;TODO Why doall here was it for bench marking? If so can remove
+;        wordlists (doall (map #(filteredlist (filter-from-partial-decoded-clue %)) pdaugmentedclues))
+;        rmap (merge cc
+;                    {:clues       augmentedclues
+;                     :numinothers numinothers
+;                     :encodemap   rootmap
+;                     :wordlists   wordlists
+;                     :depth       0})]
+;    (println clues)
+;    (println augmentedclues)
+;    (set-remaining-keys rmap)))
 
 (defn update-assigned-letters-map
   [assigned-letters-map clue word-found]
@@ -890,9 +1001,10 @@
         sind (keys scm)]
     (children-from-clue-indicies make-child cc (take kbest sind))))
 
-
+;TODO noted when numinothers scores are all 1 and 3 multiple solutions can be found all at once
+;   (at least in the case of free numbers)
 (defn children-from-best-clue
-  "takes children of the best index using key (:wordcountscores, :simplescores, ...)
+  "takes children of the best index using key (:wordcountscores, :simplescores, :numinothers ..)
   since 0 is smallest possible  scan indices keeping track of min found
   but stop if find 0. Assumes values of key sorted upon are all < 4"
   [make-child key cc]
@@ -922,8 +1034,9 @@
   (reduce (fn [rel inp] (conj rel {in-key inp out-key (f inp)})) #{} vs))
 
 ;TODO note the maps in the rel do not all have the same keys
-(def word-letterpositions-rel
+(defn make-word-letterpositions-rel
   "#{{:word \"dog\" 1 \\d 2 \\o 3 \\g 4 nil}..}"
+  [wordsset]
   (reduce
     (fn [rel inp]
       (let [lenw (count inp)]
@@ -933,55 +1046,58 @@
                 (zipmap (range 1 (inc lenw)) (map (partial get inp) (range 0 lenw)))
                 {(inc lenw) nil}))))
     #{}
-    all-words-in-set))
+    wordsset))
 
-(def position-indices
+(def all-words-letterpositions-rel (make-word-letterpositions-rel all-words-in-set))
+
+
+(defn make-position-indices
+  [rel]
   (let [pos (range 1 22)]
     (zipmap
       pos
-      (for [i pos] (set/index word-letterpositions-rel [i])))))
+      (for [i pos] (set/index rel [i])))))
 
-;; First attempt which produces list of words
-;(defn get-by-pos-char
-;  [pos char]
-;  (map :word (get (position-indices pos) {pos char}))) ;produces lazy-seq
-;; in this routine need to convert to sets which is time costly to can intersect
-;(defn get-by-pos-char-map
-;  [pcmap]
-;  (let [matchsets (map (fn [k] (set (get-by-pos-char k (pcmap k)))) (keys pcmap))]
-;    (apply set/intersection matchsets)))
+(def all-words-position-indices (make-position-indices all-words-letterpositions-rel))
+  ;(let [pos (range 1 22)]
+  ;  (zipmap
+  ;    pos
+  ;    (for [i pos] (set/index all-words-letterpositions-rel [i])))))
 
-;Now this keeps result as set
+;Now this keeps result as set of maps
 (defn get-by-pos-char
-  [pos char]
-  ;(map :word (get (position-indices pos) {pos char}) ; turns into list so need to convert back to set
-  (get (position-indices pos) {pos char}))
+  "finds all having char in posiiton pos from the rel that
+  posindices corresponds to (default all-words-position-rel)"
+  [pos char
+   & {:keys [posindices]
+      :or {posindices all-words-position-indices}}]
+  ;(map :word (get (posindices pos) {pos char}) ; turns into list so need to convert back to set
+  ;(println posindices)
+  ((posindices pos) {pos char})) ; faster than (get (get posindices pos) {pos char}) which is faster than (get-in posindices [pos {pos char}])
 
-;Interset then extract the words is much faster but intersection depends on size of sets
-;TODO map :word or not? no difference in timing
 (defn get-by-pos-char-map
-  [pcmap]
-  (let [matchsets (map (fn [k] (get-by-pos-char k (pcmap k))) (keys pcmap))]
-    ;(map :word (apply set/intersection matchsets))
+  "finds intersection of wordsets rels and
+  all from the all-words-position-rel satisfying
+  the position char map pcmap"
+  [pcmap & wordsets]
+  (let [matchsets (map (fn [k] (get-by-pos-char k (pcmap k))) (keys pcmap))
+        matchsets  (apply conj matchsets wordsets)]
+    ;(map :word (apply set/intersection matchsets)) ; if just want set of word but makes little diff in timing
+    ;(println matchsets)
     (apply set/intersection matchsets)))
 
 
-;TODO here the index is made each time, but if index is made once for
-;   those desired positions fast to look up for different chars
-;(defn get-by-pos-char-map
-;  "pcmap is map of letter position (1 to 21) to desired char or nil
-;  finds all words with specified char in those position
-;  e.g. {1 \\d 3 \\g 5 nil} finds words of 4 letters with first
-;  letter an d and third a g"
-;  [pcmap]
-;  (map :word (get (set/index word-letterpositions-rel (keys pcmap)) pcmap)))
+;TODO need a removal vesion
+;(defn get-avoid-pos-char-map)
+; e.g. (get-avoid-pos-char-map {2 "te" 5 "te"} wordsets) would eliminate
+; using set/difference those having t or e in pos 2 or 5.
 
 
 (def word-letters-rel (relation set all-words-in-set :word :letters))
-(def by-letters (set/index word-letters-rel [:letters]))
+(def by-letters-set (set/index word-letters-rel [:letters]))
 (defn get-by-letters
   [letters]
-  (map :word (get by-letters {:letters (set letters)})))
+  (map :word (get by-letters-set {:letters (set letters)})))
 
 ; anagrams
 (def word-sortedletters-rel (relation sort all-words-in-set :word :sortedletters))

@@ -10,48 +10,50 @@
               [criterium.core :refer [quick-bench]]
               [clojure.set :as set]))
 
+;; DOES NOT WORK
+;(defn quick-bench-execution-time
+;  [expr]
+;  (second (re-find #"Execution time mean : (\d+\.\d+ \w*)"
+;           (with-out-str (quick-bench expr)))))
+
+
+
+;TODO use with-out-str to capture output from quick-bench to make nicer report
 ;TODO check and fix fcrels for clues having non free letters
-(defn compare-fc
-  [alm nlm otherclue]
-  (let [pdc (decode-to-vec otherclue alm)
-        otherwords (filteredlist (filter-from-partial-decoded-clue pdc))
-        otherwordsrel (filtercode-using-rels {30 \x} alm otherclue otherwords) ;hack TODO fix
-        fc (filtercode alm nlm otherclue otherwords)
-        fcr (filtercode-using-regex alm nlm otherclue otherwords)
-        fcrels (filtercode-using-rels alm nlm otherclue otherwords)
-        fcrels (set/intersection fcrels otherwordsrel)]
-    (println "fc   count " (count fc) fc)
-    (println "otherwordsrel   count " (count otherwordsrel) otherwordsrel)
-    (println "fcrels   count " (count fcrels) fcrels)
-    (if (= fc fcr)
-      (println "filtercode and filtercode-using-regex same result")
-      (println "fcrx  count " (count fcr) fcr))))
-
-
 (defn compare-and-benchmark-fc
-  [alm nlm otherclue]
+  "runs versions filtercode and compares
+  if optional keyword param :bench is true will use quick-bench to time"
+  [alm nlm otherclue & {:keys [bench] :or {:bench false}}]
   (let [pdc (decode-to-vec otherclue alm)
         otherwords (filteredlist (filter-from-partial-decoded-clue pdc))
-        otherwordsrel (filtercode-using-rels {} alm otherclue otherwords)
+        otherwordsrel (make-word-letterpositions-rel otherwords)
         fc (filtercode alm nlm otherclue otherwords)
         fcr (filtercode-using-regex alm nlm otherclue otherwords)
-        fcrels (filtercode-using-rels alm nlm otherclue otherwords)
-        fcrels (set/intersection fcrels otherwordsrel)]
-    (println "fc   " fc)
-    (println "fcrels   count " (count fcrels) fcrels)
+        fcrels (filtercode-using-rels alm nlm otherclue otherwordsrel)]
+    (assert (= (set otherwords) (set (map :word otherwordsrel))))
+    (println "fc   count " (count fc) fc)
+    ;(println "otherwords   count " (count otherwords) otherwords)
+    ;(println "otherwordsrel   count " (count otherwordsrel) otherwordsrel)
     (if (= fc fcr)
-      (println "filtercode and filtercode-using-regex same result")
-      (println "fcrx " fcr))
-    (println "fc quick-bench:")
-    (quick-bench (doall (filtercode alm nlm otherclue otherwords)))
-    (println "fc rx quick-bench")
-    (quick-bench (doall (filtercode-using-regex alm nlm otherclue otherwords)))
-    (println "fc rels quick-bench")
-    (quick-bench (set/intersection
-                   (filtercode-using-rels alm nlm otherclue otherwords)
-                   otherwordsrel))))
+      (println "filtercode-using-regex same result")
+      (println "PROBLEM fcrx  count " (count fcr) fcr))
+    (if (= (set fc) (set (map :word fcrels)))
+      (println "filtercode-using-rels same result")
+      (println "PROBLEM fcrels  count " (count fcrels) fcrels))
+    (when bench
+      (println "Benchmarking ...")
+      (criterium.core/report-point-estimate
+        "fc transducers"
+        (:mean (criterium.core/quick-benchmark (filtercode alm nlm otherclue otherwordsrel) nil)))
+      (criterium.core/report-point-estimate
+        "fc regex"
+        (:mean (criterium.core/quick-benchmark (filtercode-using-regex alm nlm otherclue otherwordsrel) nil)))
+      (criterium.core/report-point-estimate
+        "fc rels"
+        (:mean (criterium.core/quick-benchmark (filtercode-using-rels alm nlm otherclue otherwordsrel) nil))))))
 
-(defn make-example-for-work
+
+(defn make-example-from-sentence
   "Breaks sentence into lower case words and encodes via 1 \\a, 2 \\b ...
    to get list of clues which are used to solve.
    Produces root with {} encodemap"
@@ -92,7 +94,7 @@
 
 ; compares filtercode and filtercode-using-regex
 ; filtercode-using-regex usually faster by 10-20 times!
-; filtercode-using-rels even slower!!
+; filtercode-using-rels 3x slower!!
 (comment
   (compare-and-benchmark-fc {} {} [1 2 3 4 5])              ;fc 8.8 ms fc rx 0.47 ms
   (compare-and-benchmark-fc {1 \m 5 \o} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 17 micro sec fcrx 49 micro sec
@@ -206,18 +208,18 @@
 
 ;TODO clarify how to set up root and how to use tree-seq
 (comment
-  (def root (make-example-for-work "the quick brown fox jumps over the lazy level dog")) ; 96 solutions
-  (def root (make-example-for-work "abcd bcde cdef  abcdef")) ; hone ones nest honest ... 12 solutions
-  (def root (make-example-for-work "abcdefg bcdef cde"))    ;tragedy raged age ...pirates irate rat ...phoneys honey one ..20 sols
-  (def root (make-example-for-work "abcdefg fedcb"))        ; deviant naive ..10 sols
-  (def root (make-example-for-work "now is the time for all good men to come to the aid of their party")) ; lots of solutions
-  (def root (make-example-for-work "Jived fox nymph grabs quick waltz")) ; might take long time to verify this
-  (def root (make-example-for-work "abc cdef fghij jklmna")) ; lots of solutions 0 ... 5431
-  (def root (make-example-for-work "abc defg hijkl mnopqr stu")) ; solutions 0 ...
-  (def root (make-example-for-work "level"))                ;13 solutions
-  (def root (make-example-for-work "level kayak"))          ; disjoint palendromes so will also have kayak level
-  (def root (make-example-for-work "abc def ghi adg beh cfi")) ; 3x3 grid of distinct letters
-  (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp")) ; 4x4 grid of distinct letters
+  (def root (make-example-from-sentence "the quick brown fox jumps over the lazy level dog")) ; 96 solutions
+  (def root (make-example-from-sentence "abcd bcde cdef  abcdef")) ; hone ones nest honest ... 12 solutions
+  (def root (make-example-from-sentence "abcdefg bcdef cde"))    ;tragedy raged age ...pirates irate rat ...phoneys honey one ..20 sols
+  (def root (make-example-from-sentence "abcdefg fedcb"))        ; deviant naive ..10 sols
+  (def root (make-example-from-sentence "now is the time for all good men to come to the aid of their party")) ; lots of solutions
+  (def root (make-example-from-sentence "Jived fox nymph grabs quick waltz")) ; might take long time to verify this
+  (def root (make-example-from-sentence "abc cdef fghij jklmna")) ; lots of solutions 0 ... 5431
+  (def root (make-example-from-sentence "abc defg hijkl mnopqr stu")) ; solutions 0 ...
+  (def root (make-example-from-sentence "level"))                ;13 solutions
+  (def root (make-example-from-sentence "level kayak"))          ; disjoint palendromes so will also have kayak level
+  (def root (make-example-from-sentence "abc def ghi adg beh cfi")) ; 3x3 grid of distinct letters
+  (def root (make-example-from-sentence "abcd efgh ijkl mnop aeim bfjn cgko dhlp")) ; 4x4 grid of distinct letters
   ; using fastest below found 2 solutions in just under 10 minutes!, one the transpose matrix of the other
   ; then (show-at-most-n ans 2)
   ;0 (7 complete all good [13 14 15 16] sumo (newt achy grip sumo nags ecru whim typo) (3 3 3 3 3 3 3 3))
@@ -233,8 +235,24 @@
   (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}})) ; with hint
   ;"Elapsed time: 60.3222 msecs" Liz solved this in a few hours)
 
-  (def root (make-example-for-work "abcde fghij klmno pqrst uvwxy afkpu bglqv chmrw dinsx ejoty")) ; 5x5 grid of distinct letters
+  (def root (make-example-from-sentence "abcde fghij klmno pqrst uvwxy afkpu bglqv chmrw dinsx ejoty")) ; 5x5 grid of distinct letters
   ; nil "Elapsed time: 480560.109286 msecs" so no 5x5 of distinct letters verified in 8 minutes (maxcnt=10)
+
+  ;-------------------------------------------------------
+  ;TODO when not using free letters this still may be useful
+  ;make all clues uses free letters
+  (def root (make-example-from-sentence "now is the time for all good men to come to the aid of their party"))
+  (def root (make-root {:ccinfo {:clues (map #(vec (map (partial + 30) %)) (:clues root))}}))
+  ;here use :numinothers and stop when have only 3 and 1 for numinothers and still keeping all good clues
+  (def ans (filter
+             all-good-completed-or-independent?
+             (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :numinothers) root)))
+  (def ans (filter
+             all-good-completed-or-independent?
+             (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :wordcountscores) root))) ;faster
+  ;the partial words left are all independent so multiple solutions can be found from the wordlists
+  (:wordlists (nth ans 0))
+  ;--------------------------------------------------------
 
   ;fastest
   (def ans (filter
@@ -250,7 +268,7 @@
   (show-from-root (nth ans 0))                              ; show chain from root
   (str/join " " (:partialwords (nth ans 0)))                ; show just partialwords
   ; if want to examine complete tree traversal
-  (def root (make-example-for-work "pas pals clap sap lap slap claps pal")) ; 4 sols big tree
+  (def root (make-example-from-sentence "pas pals clap sap lap slap claps pal")) ; 4 sols big tree
   (def root (make-root {:ccinfo root :rootmap {16 \p 1 \a}})) ; 2 sols little tree
   (def ans (tree-seq non-completed-and-all-good? (children-from-best-clue-using :wordcountscores) root))
   (show-at-most-n ans 100))
@@ -317,14 +335,50 @@
   ; however by specifying 46 as \i it will find the solution
   (def root (make-root {:ccinfo root :rootmap {31 \e 33 \f 35 \r 37 \v 39 \e 41 \r 43 \s 45 \e 47 \d 49 \r 51 \e 53 \d 46 \i}})) ;finds
 
+
   (def root (make-example-from-clues (asym-grid 5)))
   (def root (make-example-from-clues (sym-grid 5)))
+
+  ; find asym grid solution with restrictions on initial words
+  ; the sols found still have some symmetry to kill all need
+  ;    to have free letter pairs that much be mutially exclusive
+  (def root (make-example-from-clues (asym-grid 5)))
+  (def cvcvc (set (get-by-vcstr "CVCVC")))
+  (def vcvcv (set (get-by-vcstr "VCVCV")))
+  (def extrawordlists [cvcvc vcvcv cvcvc vcvcv cvcvc cvcvc vcvcv cvcvc vcvcv cvcvc])
+  (def root (make-root {:ccinfo root :extrawordlists extrawordlists}))
+
   (def root (make-example-from-clues (diagsame-grid 3)))
   (def root (make-root {:ccinfo root :rootmap {39 \e}}))    ; middle of above
   (def root (make-example-from-clues (diagsame-grid 3)))
   (def root (make-example-from-clues (free-cube 3)))
-  (def root (make-example-from-clues (free-cube 4)))        ; none found yet  after long time
+  (def root (make-example-from-clues (free-cube 4))) ; none found yet  after long time
+
+  (def root (make-example-from-clues (asym-cube 3)))
+  (def cvc (set (get-by-vcstr "CVC")))
+  (def vcv (set (get-by-vcstr "VCV")))
+  ;(def cvc "cvc")
+  ;(def vcv "vcv")
+  (def extrawordlists (apply concat (repeat 3 (take 9 (apply concat (repeat 5 [cvc vcv]))))))
+  (def root (make-root {:ccinfo root :extrawordlists extrawordlists}))
+
+
+
   (def root (make-example-from-clues (asym-cube 4)))        ; none found after 1 hour
+
+  ; -----------------------------------------------
+  (def root (make-example-from-clues (concat [[30]] (asym-cube 4))))
+  (def cvcv (set (get-by-vcstr "CVCV")))
+  (def vcvc (set (get-by-vcstr "VCVC")))
+  ;(def cvcv "cvcv")
+  ;def vcvc "vcvc")
+  (def extrawordlists (apply concat (repeat 3 (apply concat (repeat 2 [cvcv vcvc cvcv vcvc vcvc cvcv vcvc cvcv])))))
+  (def extrawordlistsplus (conj extrawordlists  (set (map str (set "abcdefghijklmnopqrstuvwxyz")))))
+  (def root (make-root {:ccinfo root :extrawordlists extrawordlists}))
+  (def root (make-root {:ccinfo root :extrawordlists extrawordlistsplus})) ; nil (ran all night) tried each letter for 30 in turn
+  (def root (make-root {:ccinfo root :extrawordlists extrawordlists :encodemap {30 \t}})) ; no sols also \r \s
+  ;------------------------------------------------
+
   (def root (make-example-from-clues [[27] [28]]))          ; ok 676 sols all possible combos of 2 letters
   (def ans (filter
              all-completed-and-all-good?
@@ -343,7 +397,7 @@
   (test-sol root make-child-tr)
   (quick-bench (bench-test-sol root make-child-rx))
   (quick-bench (bench-test-sol root make-child-tr))
-  (def root (make-example-for-work "abcd efgh ijkl mnop aeim bfjn cgko dhlp"))
+  (def root (make-example-from-sentence "abcd efgh ijkl mnop aeim bfjn cgko dhlp"))
   (def root (make-root {:ccinfo root :rootmap {1 \n 4 \s 13 \t 16 \o}}))
   ;     in make-child filtercode using reg-ex quick-bench (bench-test-sol root)) 4.7 ms, using transducers 80 ms
   (def ccnumber 1)
@@ -365,7 +419,7 @@
   "find all words with all letters from letterset"
   [letterset]
   (let [letterset (set letterset)
-        keys (keys by-letters)
+        keys (keys by-letters-set)
         keystouse (filter (fn [key] (empty? (set/difference (:letters key) letterset))) keys)]
     ;(println letterset keystouse)
     (sort (flatten (seq (reduce #(conj %1 (get-by-letters (:letters %2))) #{} keystouse))))))
@@ -374,7 +428,7 @@
   "find all words with at least one letter from letterset"
   [letterset]
   (let [letterset (set letterset)
-        keys (keys by-letters)
+        keys (keys by-letters-set)
         keystouse (filter (fn [key] (seq (set/intersection (:letters key) letterset))) keys)]
     ;(println letterset keystouse)
     (sort (flatten (seq (reduce #(conj %1 (get-by-letters (:letters %2))) #{} keystouse))))))
@@ -384,7 +438,7 @@
 
   ; find all words with ta in 3rd and 4th pos and contains a z
   (set/intersection
-    (set (get-by-pos-letter-map {4 \a 3 \t}))
+    (set (map :word (get-by-pos-char-map {4 \a 3 \t})))
     (set (words-meet-letterset "z")))
 
   ; find all words using same set of letters as in "apple"

@@ -30,6 +30,8 @@
 ;(declare findall)
 ;(defn all-words-in-dic [] (findall #" +(\w*)(?= )" word-dic))
 
+
+
 (def CCdata
   ;(slurp "D:\\Bill\\My Documents\\UCmatlab\\CodeCracker\\CCdata.txt")
   (slurp "resources/CCdata.txt"))
@@ -51,6 +53,10 @@
         assigned-letters (str/lower-case (nth (line-seq (BufferedReader. (StringReader. CCdata))) (inc n1)))
         row-strings (subvec (vec (line-seq (BufferedReader. (StringReader. CCdata)))) (+ n1 2) n2)
         row-vectors (map #(edn/read-string (str "[" %1 "]")) row-strings)
+        ;TODO to make unique numbers to generate code crackers
+        ;rvflat (vec (mapcat identity row-vectors))
+        ;rvdistinct (reduce-kv (fn [res key val] (if (zero? val) (conj res 0) (conj res (+ 30 key)))) [] rvflat)
+        ;row-vectors (partition 13 rvdistinct)
         col-vectors (transpose row-vectors)
         clues-in-vec (fn [v] (filter #(and (> (count %) 1) (not (contains? (set %) 0))) (partition-by zero? v)))
         horizontal-clues (apply concat (map clues-in-vec row-vectors))
