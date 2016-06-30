@@ -317,19 +317,43 @@
   (show-from-root (nth ans 0)))                             ; show chain from root
 
 ;----------------- making up code crackers with pattern of given cracker
+
+  ; want to prevent duplicate words appearing in solution
+  ; afer having a solution letters in isolated positions can be made free again and try solving again
+  ; as they will all be independent
+  ; need to force using all the letters
+  ;TODO both using #1 and #1 first sol had same letters BFHJKQ missing? why?
+  ;TODO can also remove everyother column or even some horizonal and some vertical words to leave independent choices
+
+; ------ func to generate code crackers as outlined removing unneeded rows (but could use cols and mixture
+(defn gen-cc
+  [n & {:keys [em] :or {em {}}}]
+  (let [cc (get-cc n)
+        ccpat (merge cc {:clues (:clues-distinct cc) :rows (:rows-distinct cc)}) ; use distinct code for each blank 30, 31, ...
+        root (make-root {:ccinfo ccpat :rootmap em}) ; set up root overwritting assigned encodemap with em (default {})
+        solver (fn [root] (filter
+                            all-good-completed-or-independent?
+                            (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :simplescores) root)))
+        ans (solver root) ; will be lots but
+        cc0 (nth ans 0)   ; just take the first
+        unneeded? (if (< 5 (count (filter zero? (first (:rows cc0))))) even? odd?) ; count black squares
+        unneededrows (keep-indexed #(when (unneeded? %1) %2) (:rows cc0))
+        unneededkeys (flatten unneededrows)
+        nem (apply dissoc (:encodemap cc0) unneededkeys) ;remove keys for codes in unneeded rows
+        rootmulti (make-root {:ccinfo ccpat :rootmap nem}) ;set up root to use encoding map for needed rows
+        ansmulti (solver rootmulti) ; so should only be one solution with horizontal words specified and  vertical words from their wordlists
+        ccmulti (nth ansmulti 0)]
+    (printcodecracker cc0)
+    (printcodecracker ccmulti)
+    ;(println (:wordlists ccmulti))    ; will show all the words that can take the vertical position
+    (println "Number of these solutions: " (apply * (map count (:wordlists ccmulti))))
+    (println "Missing from all: " (clean-letuse "" (apply set/union (map set (flatten (:wordlists ccmulti))))))))
+
 (comment
-  ; set up root overwritting assigned encodemap and using {}
-  (def cc (get-cc 1))
-  (def ccpat (merge cc {:clues (:clues-distinct cc) :rows (:rows-distinct cc)})) ; use distinct clues instead
-  (def root (make-root {:ccinfo ccpat :rootmap {}}))
-  (def ans (filter
-             all-good-completed-or-independent?
-             (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :simplescores) root)))
-  (printcodecracker (nth ans 0)))
-; want to prevent duplicate words appearing in solution
-; afer having a solution letters in isolated positions can be made free again and try solving again
-; as they will all be independent
-; need to force using all the letters
+  (gen-cc 5 :em {30 \q 42 \k}) ;4803701760 but "x" is missing from them all
+  (gen-cc 5 :em {30 \q 42 \k 32 \x}) ;161404379136 sols will be possible to use all letters
+  nil)
+
 
 ;------------------------------------------------------------------------
 ;----------- Example from clues in various geometric patters

@@ -57,8 +57,8 @@
         makeclues-fn (fn [row-vectors]
                        (let [clues-in-vec (fn [v] (filter #(and (> (count %) 1) (not (contains? (set %) 0))) (partition-by zero? v)))
                              col-vectors (transpose row-vectors)
-                             horizontal-clues (apply concat (map clues-in-vec row-vectors))
-                             vertical-clues (apply concat (map clues-in-vec col-vectors))
+                             horizontal-clues (mapcat clues-in-vec row-vectors)
+                             vertical-clues (mapcat clues-in-vec col-vectors)
                              all-clues (concat horizontal-clues vertical-clues)]
                          all-clues))
         all-clues (makeclues-fn row-vectors)
