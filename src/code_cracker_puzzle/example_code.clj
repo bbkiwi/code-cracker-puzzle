@@ -1,6 +1,8 @@
 (ns code-cracker-puzzle.example-code
     (:require
-      [clojure.repl :refer :all]))
+      [clojure.repl :refer :all]
+      [io.aviso.ansi :as ioa]
+      [io.aviso.columns :as col]))
 
 ; transducer example from Colin
 (comment
@@ -26,7 +28,7 @@
 ; examples using io.aviso.ansi and io.aviso.columns for colored text and nice column output
 (comment
   (let [customers [{:first-name "Bill" :last-name "Baritompa" :age 71}
-                   {:last-name (ioa/red "foo") :first-name {:a 3 :b [55 100 233] :age 0}}]
+                   {:last-name (ioa/red "foo") :first-name {:a 3 :b [55 100 233]} :age 0}]
         formatter (col/format-columns [:right 10] ", " [:left 10] ": " :none)]
     (col/write-rows *out* formatter [:last-name :first-name :age] customers)
 

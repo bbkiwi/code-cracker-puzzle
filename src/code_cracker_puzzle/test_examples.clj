@@ -1,6 +1,7 @@
 (ns code-cracker-puzzle.test-examples
     (:gen-class)
-    (:require [code-cracker-puzzle.bill-utils :refer :all]
+    (:require [code-cracker-puzzle.global-vars-n-helpers :refer :all]
+              [code-cracker-puzzle.bill-utils :refer :all]
               [code-cracker-puzzle.work :refer :all]
               [code-cracker-puzzle.data-assembly :refer :all]
               [code-cracker-puzzle.output-routines :refer :all]
@@ -10,15 +11,14 @@
               [criterium.core :refer [quick-bench]]
               [clojure.set :as set]))
 
-;; DOES NOT WORK
+;; DOES NOT WORK - using with-out-str to capture output seems to cause
+;  quick-bench to time something else
 ;(defn quick-bench-execution-time
 ;  [expr]
 ;  (second (re-find #"Execution time mean : (\d+\.\d+ \w*)"
 ;           (with-out-str (quick-bench expr)))))
 
 
-
-;TODO use with-out-str to capture output from quick-bench to make nicer report
 ;TODO check and fix fcrels for clues having non free letters
 (defn compare-and-benchmark-fc
   "runs versions filtercode and compares
@@ -92,9 +92,8 @@
 
 
 
-; compares filtercode and filtercode-using-regex
-; filtercode-using-regex usually faster by 10-20 times!
-; filtercode-using-rels 3x slower!!
+; compares filtercode-using-regex, filtercode-using-rels, and filtercode (using transducer filters)
+; They are now in from fastest to slowest with relative times 1, 3, 15
 (comment
   (compare-and-benchmark-fc {} {} [1 2 3 4 5])              ;fc 8.8 ms fc rx 0.47 ms
   (compare-and-benchmark-fc {1 \m 5 \o} {1 \m 3 \n 5 \o 6 \p 7 \r} [1 2 3 4 5]) ; fc 17 micro sec fcrx 49 micro sec
@@ -105,14 +104,10 @@
 
   (compare-and-benchmark-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [31 32 33 34 35])
   (compare-and-benchmark-fc {} {31 \m 32 \a 33 \n 34 \g 35 \o} [35 34 33 32 31]) ; fc much slower than fc rx
-
-
   (comment
     (def f (other-clue-filter [1 2 3 4 5] [2 3 6 6]))
     (filteredlist f #{"crats" "brats" "house"})
     (filteredlist f (filteredlist (filter-from-partial-decoded-clue [31 32 33 34 35])))))
-
-
 
 (comment
   (quick-bench (findall #" +(a\w*)(?= )" word-dic)) ;269 ns using quick-bench
@@ -133,7 +128,7 @@
   (get-by-pos-char-map {1 \a 6 nil}) ;839.849934 µs with map word: and same time without
   (find-all-words [\a 32 33 34 35] {}) ;79.288385 µs
 
-  ;TODO FIX
+  ;TODO FIX - find-all-words limited to at most 8 distinct letters and doesn't handle free letters very well
   (find-all-words [31 31 31] {}) ; WRONG
   (find-all-words [1 2 2 33 33 3] {}) ; WRONG
   (filteredlist (filter-from-partial-decoded-clue [1 2 2 33 33 3]))
@@ -321,7 +316,23 @@
   (show-at-most-n ans 1)
   (show-from-root (nth ans 0)))                             ; show chain from root
 
+;----------------- making up code crackers with pattern of given cracker
+(comment
+  ; set up root overwritting assigned encodemap and using {}
+  (def cc (get-cc 1))
+  (def ccpat (merge cc {:clues (:clues-distinct cc) :rows (:rows-distinct cc)})) ; use distinct clues instead
+  (def root (make-root {:ccinfo ccpat :rootmap {}}))
+  (def ans (filter
+             all-good-completed-or-independent?
+             (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :simplescores) root)))
+  (printcodecracker (nth ans 0)))
+; want to prevent duplicate words appearing in solution
+; afer having a solution letters in isolated positions can be made free again and try solving again
+; as they will all be independent
+; need to force using all the letters
 
+;------------------------------------------------------------------------
+;----------- Example from clues in various geometric patters
 (comment
   (def root (make-example-from-clues [[1 2 3 4 5] [5 4 3 2 1]])) ; ok
   (def root (make-example-from-clues [[31 32 33 34 35] [35 34 33 32 31]])) ; ok
@@ -366,9 +377,9 @@
 
   (def root (make-example-from-clues (asym-cube 4)))        ; none found after 1 hour
 
-  ; -----------------------------------------------
+  ; --------------Putting single letter clue helps solve ---------------------
   (def root (make-example-from-clues (concat [[30]] (asym-cube 4))))
-  (def cvcv (set (get-by-vcstr "CVCV")))
+  (def cvcv (set (get-by-vcstr "CVCV"))) ; a restiction but not unreasonable
   (def vcvc (set (get-by-vcstr "VCVC")))
   ;(def cvcv "cvcv")
   ;def vcvc "vcvc")
@@ -391,7 +402,8 @@
 
 
 
-
+; -------------------------- compare using regex or filters ----
+; ----------------------- in general regex seems best but filters are more general
 (comment
   (test-sol root make-child-rx)
   (test-sol root make-child-tr)
@@ -412,6 +424,8 @@
   (def root (make-example-from-clues [[31 32 33 34 35] [1 31 32 33 1]])) ; 1.95 sec rx, ? sec tr
   nil)
 
+
+;-------------------- Using rels - set up time costly but fast for specific types of searches
 ;TODO check if this is much of an improvement over just filtering dictionary directly
 ; as (count (keys by-letters)) ;=> 34766
 ;(count all-words-in-set) ;=> 60419
@@ -433,9 +447,8 @@
     ;(println letterset keystouse)
     (sort (flatten (seq (reduce #(conj %1 (get-by-letters (:letters %2))) #{} keystouse))))))
 
+; ----------- Examples using rels
 (comment
-
-
   ; find all words with ta in 3rd and 4th pos and contains a z
   (set/intersection
     (set (map :word (get-by-pos-char-map {4 \a 3 \t})))
@@ -483,6 +496,6 @@
   (map str/join (distinct (map sort (get-by-anagram-count 6)))) ;=> ("eimrst" "acerst" "aelps" "aelpst" "aprst" "adeprs" "opst" "aers" "aelst")
   (map get-by-sortedletters (map str/join (distinct (map sort (get-by-anagram-count 6))))))
 
-
+; -------------------------------------------
 
 

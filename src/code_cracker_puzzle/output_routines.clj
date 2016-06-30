@@ -2,7 +2,9 @@
     (:gen-class)
     (:require
       [code-cracker-puzzle.bill-utils :refer :all]
+      [code-cracker-puzzle.global-vars-n-helpers :refer :all]
       [clojure.walk]
+      [clojure.string :as str]
       [clojure.repl :refer :all]
       [io.aviso.ansi :as ioa]
       [io.aviso.columns :as col]
@@ -19,8 +21,23 @@
          (cc :decodedclues)
          (cc :wordcountscores))))
 
+(defn printcodecracker
+  [cc]
+  (let [em (:encodemap cc)
+        notused (str/upper-case (clean-letuse ""(vals em)))
+        decodedrows (map #(decode-to-vec % em) (:rows cc))
+        rowstrs (map #(str/upper-case (str/join " " (replace dotmap %))) decodedrows)
+        rows (map #(zipmap [:row] [%1])
+              rowstrs)]
+    (println notused " not used")
+    (col/write-rows
+      *out*
+      [(comp ioa/bold-yellow :row)]
+      rows)))
+
+
 (defn printcctable
-  "prints table with each row being a the partial word, it's wordcount, simplescore and clue of cc
+  "prints table with each row being the partial word, it's wordcount, simplescore, numinother and clue of cc
   colored blue for most recent clue used, yellow for completed word not in dictionary, red for non-completible partial word,
   green for completible partial word, black for completed word in dictionary"
   [cc]

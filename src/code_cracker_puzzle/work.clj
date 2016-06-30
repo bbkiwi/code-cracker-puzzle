@@ -1,6 +1,7 @@
 (ns code-cracker-puzzle.work
     (:gen-class)
-    (:require [code-cracker-puzzle.bill-utils :refer :all]
+    (:require [code-cracker-puzzle.global-vars-n-helpers :refer :all]
+              [code-cracker-puzzle.bill-utils :refer :all]
               [code-cracker-puzzle.data-assembly :refer :all]
               [code-cracker-puzzle.output-routines :refer :all]
               [clojure.string :as str]
@@ -13,49 +14,6 @@
 ; ANS in project.clj ns desiginated by :main will get it.
 
 
-;TODO faster if keep set of words so (in-dictionary? word) == (all-words-in-set word)
-(defn in-dictionary?
-  "Returns wordstring with blanks added either side (truthy) if in dic else nil (falsey)"
-  [wordstring dic]
-  ;(println regex-pat)
-  (re-find (re-pattern (str " " wordstring " ")) dic))
-
-(defn clean-letuse
-  "Removes letters that are used in codecracker pattern from letter to
-   be used. letuse = \"\" is short for all letters. Returns string"
-  ([letuse]
-   (clean-letuse letuse ""))
-  ([letuse codecracker-pattern]
-   (let [actual-letuse (if (= letuse "") "abcdefghijklmnopqrstuvwxyz" letuse)]
-     (str/join
-       "" (set/difference (set actual-letuse) (set codecracker-pattern))))))
-
-(defn decode-to-vec
-  "Decodes the clue (coll of  numbers) using assigned-letters-map to
-  a vector of characters"
-  [clue assigned-letters-map]
-  (replace assigned-letters-map clue))
-
-(defn decode
-  "Decodes the clue (coll of  numbers) using assigned-letters-map to
-  a string. Note if some numbers are not keys in the map they will turn to strings."
-  [clue assigned-letters-map]
-  (str/join "" (decode-to-vec clue assigned-letters-map)))
-
-(defn encode
-  "Encodes a string of letters using assigned-letters-map
-  (or default {1 \\a, 2 \\b ...}  to a vector of numbers and
-  characters (if they are not in values in the map)"
-  ([word]
-   (encode word (zipmap (range 1 27) "abcdefghijklmnopqrstuvwxyz")))
-  ([word assigned-letters-map]
-   (replace (set/map-invert assigned-letters-map) (vec word))))
-
-(defn assigned-letters-map->assigned-letters-string
-  [alm]
-  (let [dmap (zipmap (range 1 27) "??????????????????????????")
-        rmap (merge dmap alm)]
-    (str/join "" (replace rmap (range 1 27)))))
 
 ;TODO remove restriction that a code can have at most 8 distinct code numbers
 (defn make-code-cracker-vector
@@ -573,12 +531,6 @@
                        :else input)))
              [] (vec v)))
 
-(defn constant-map
-  "Returns a map with the all keys mapped to the same const "
-  [keys const]
-  (zipmap keys (repeat (count keys) const)))
-
-
 (defn partial-decoded-code-vec-to-regexpat-for-filter
   "Given partially decoded code cracker clue and new encoding map extending the one that
   partially decoded the clue
@@ -831,12 +783,14 @@
     (some #(< % 1) (:numinothers cc))
     (every? #(and (not= % 1) (not= % 2)) (:wordcountscores cc)))) ;some not completed but no  bad clues either completed or not
 
+
+
 (defn set-remaining-keys
   "Sets values for keys :partialwords :decodedclues :simplescores :wordcountscores
    :numinothers :completed :allgood"
   [cc]
   (when (not (:depth cc)) (println "Warning set-remaining-keys got cc with no depth. Setting up root?"))
-  (let [dotmap (zipmap (range 1 27) (repeat 27 \.))
+  (let [;dotmap (zipmap (range 1 27) (repeat 27 \.))
         decodedclue-vecs (map #(decode-to-vec % (:encodemap cc)) (:clues cc))
         partialwords (map #(str/join "" (replace dotmap %)) decodedclue-vecs)
         simplescores (map simple-scores decodedclue-vecs (:wordlists cc))

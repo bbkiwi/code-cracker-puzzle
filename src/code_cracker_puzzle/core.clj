@@ -1,6 +1,7 @@
 (ns code-cracker-puzzle.core
     (:gen-class)
     (:require
+      [code-cracker-puzzle.global-vars-n-helpers :refer :all]
       [code-cracker-puzzle.bill-utils :refer :all]
       [code-cracker-puzzle.work :refer :all]
       [code-cracker-puzzle.data-assembly :refer :all]
