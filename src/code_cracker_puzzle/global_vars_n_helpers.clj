@@ -6,7 +6,7 @@
               [clojure.walk]
               [clojure.repl :refer :all]))
 
-(def dotmap (merge (constant-map (range 1 27) \-) (constant-map (range 27 500) \*) {0 (char 32)}))
+(def dotmap (merge (constant-map (range 1 27) \~) (constant-map (range 27 500) \-) {0 (char 32)}))
 
 
 ;TODO faster if keep set of words so (in-dictionary? word) == (all-words-in-set word)
@@ -52,3 +52,4 @@
   (let [dmap (zipmap (range 1 27) "??????????????????????????")
         rmap (merge dmap alm)]
     (str/join "" (replace rmap (range 1 27)))))
+

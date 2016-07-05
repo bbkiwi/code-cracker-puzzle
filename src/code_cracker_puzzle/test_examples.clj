@@ -327,10 +327,10 @@
 
 ; ------ func to generate code crackers as outlined removing unneeded rows (but could use cols and mixture
 (defn gen-cc
-  [n & {:keys [em] :or {em {}}}]
+  [n & {:keys [em randomize?] :or {em {} randomize? false}}]
   (let [cc (get-cc n)
         ccpat (merge cc {:clues (:clues-distinct cc) :rows (:rows-distinct cc)}) ; use distinct code for each blank 30, 31, ...
-        root (make-root {:ccinfo ccpat :rootmap em}) ; set up root overwritting assigned encodemap with em (default {})
+        root (make-root {:ccinfo ccpat :rootmap em :randomize? randomize?}) ; set up root overwritting assigned encodemap with em (default {})
         solver (fn [root] (filter
                             all-good-completed-or-independent?
                             (tree-seq some-numinothers-and-all-good? (children-from-best-clue-using :simplescores) root)))
@@ -347,11 +347,14 @@
     (printcodecracker ccmulti)
     ;(println (:wordlists ccmulti))    ; will show all the words that can take the vertical position
     (println "Number of these solutions: " (apply * (map count (:wordlists ccmulti))))
-    (println "Missing from all: " (clean-letuse "" (apply set/union (map set (flatten (:wordlists ccmulti))))))))
+    (println "Missing from all: " (clean-letuse "" (apply set/union (map set (flatten (:wordlists ccmulti))))))
+    {:ans ans :ansmulti ansmulti :cc0 cc0 :ccmulti ccmulti}))
 
 (comment
-  (gen-cc 5 :em {30 \q 42 \k}) ;4803701760 but "x" is missing from them all
-  (gen-cc 5 :em {30 \q 42 \k 32 \x}) ;161404379136 sols will be possible to use all letters
+  (def ex (gen-cc 5 :em {30 \q 42 \k})) ;4803701760 but "x" is missing from them all
+  (def ex (gen-cc 5 :em {30 \q 42 \k} :randomize? true)) ; will give different ans each time
+  (def ex (gen-cc 5 :em {30 \q 42 \k 32 \x})) ;161404379136 sols will be possible to use all letters
+  (show-from-root (nth (:ansmulti ex) 1)) ; should always give java.lang.IndexOutOfBoundsException:
   nil)
 
 

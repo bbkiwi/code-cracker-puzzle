@@ -132,7 +132,7 @@
   ;(println regex-pat)
   (map #(nth % 1) (re-seq regex-pat dic)))
 
-;TODO Fails for clues with repeated free letters
+;TODO Fails for clues with repeated free letters - limitation of max number of repeated in a regex
 (defn find-all-words
   "Takes clue (a vector of code numbers) and a partial solution map assigned-letters-map
    Returns a lazy seq  of each solution word."
@@ -821,7 +821,7 @@
   other clues given score 1
   clues are sorted by meet-other-score
   intersects wordlists with extrawordlists if provided"
-  [{cc :ccinfo rootmap :rootmap asl :addsingleletters extrawordlists :extrawordlists}]
+  [{cc :ccinfo rootmap :rootmap asl :addsingleletters extrawordlists :extrawordlists randomize? :randomize?}]
   (let [clues (:clues cc)
         rootmap (or rootmap (merge {} (:encodemap cc)))
         exwmap (zipmap clues extrawordlists)
@@ -844,6 +844,7 @@
                                 (set (filteredlist (filter-from-partial-decoded-clue (decode-to-vec % rootmap))))))
                       augmentedcluessorted)
                     (map #(filteredlist (filter-from-partial-decoded-clue (decode-to-vec % rootmap))) augmentedcluessorted))
+        wordlists  (if randomize? (map shuffle wordlists) wordlists)
         rmap (merge cc
                     {:clues       augmentedcluessorted
                      :numinothers numinotherssorted
