@@ -56,11 +56,22 @@
   [pred coll]
   (keep-indexed #(when (not (pred %2)) %1) coll))
 
+(defn indices-satifying
+  "returns indices in coll of values satisfied by pred"
+  [pred coll]
+  (keep-indexed #(when (pred %2) %1) coll))
+
 (defn replace-indices
   "returns coll with specified indices replaced by corresponding entry of rvals"
   [indices coll rvals]
   (let [rdist (replace-kv (zipmap indices rvals) coll)]
      rdist))
+
+(defn nth-indices
+  ([coll inds]
+   (map (partial nth coll) inds))
+  ([coll inds not-found]
+   (map #(nth coll % not-found) inds)))
 
 ;(defn prod-fn
 ;  "Returns the carteasean product of functions fns

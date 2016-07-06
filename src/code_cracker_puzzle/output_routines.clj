@@ -29,11 +29,12 @@
         rowstrs (map #(str/upper-case (str/join " " (replace dotmap %))) decodedrows)
         rows (map #(zipmap [:row] [%1])
               rowstrs)]
-    (println notused " not used")
+    (println "--------------------------------")
     (col/write-rows
       *out*
       [(comp ioa/bold-yellow :row)]
-      rows)))
+      rows)
+    (println notused " not used")))
 
 
 (defn printcctable

@@ -342,19 +342,55 @@
         nem (apply dissoc (:encodemap cc0) unneededkeys) ;remove keys for codes in unneeded rows
         rootmulti (make-root {:ccinfo ccpat :rootmap nem}) ;set up root to use encoding map for needed rows
         ansmulti (solver rootmulti) ; so should only be one solution with horizontal words specified and  vertical words from their wordlists
-        ccmulti (nth ansmulti 0)]
+        ccmulti (nth ansmulti 0)
+        ind-wordcountscorezero (indices-satifying zero? (:wordcountscores ccmulti))
+        words-wordcountscorezero (nth-indices (:wordlists ccmulti)  ind-wordcountscorezero)
+        clues-wordcountscorezero (nth-indices (:clues ccmulti) ind-wordcountscorezero)
+        extra-maps (map #(apply zipmap %1 %2) clues-wordcountscorezero words-wordcountscorezero)
+        new-em (apply merge (:encodemap ccmulti) extra-maps)
+        rootadded (make-root {:ccinfo ccpat :rootmap new-em}) ;set up root with horizontal words specified and those vertical which have only 1 possiblity
+        ansadded (solver rootadded) ; so should only be one solution with horizontal words specified and  vertical words from their wordlists
+        ccadded (nth ansadded 0)]
+
+
     (printcodecracker cc0)
     (printcodecracker ccmulti)
     ;(println (:wordlists ccmulti))    ; will show all the words that can take the vertical position
     (println "Number of these solutions: " (apply * (map count (:wordlists ccmulti))))
     (println "Missing from all: " (clean-letuse "" (apply set/union (map set (flatten (:wordlists ccmulti))))))
-    {:ans ans :ansmulti ansmulti :cc0 cc0 :ccmulti ccmulti}))
+    (printcodecracker ccadded)
+    ;(println (:wordlists ccadded))    ; will show all the words that can take the vertical position
+    (println "Number of these solutions: " (apply * (map count (:wordlists ccadded))))
+    (println "Missing from all: " (clean-letuse "" (apply set/union (map set (flatten (:wordlists ccadded))))))
+    {:ans ans :ansmulti ansmulti :ansadded ansadded :cc0 cc0 :ccmulti ccmulti :ccadded ccadded :root root :rootadded rootadded}))
 
 (comment
   (def ex (gen-cc 5 :em {30 \q 42 \k})) ;4803701760 but "x" is missing from them all
   (def ex (gen-cc 5 :em {30 \q 42 \k} :randomize? true)) ; will give different ans each time
   (def ex (gen-cc 5 :em {30 \q 42 \k 32 \x})) ;161404379136 sols will be possible to use all letters
   (show-from-root (nth (:ansmulti ex) 1)) ; should always give java.lang.IndexOutOfBoundsException:
+  (def ind-wordnotcompleted (indices-satifying #(< % 1) (:wordcountscores (:ccadded ex))))
+  (def wlnotcomp (nth-indices (:wordlists (:ccadded ex)) ind-wordnotcompleted))
+
+  (defn word-lists-meet
+    [str wordlists]
+    (map #(set/intersection (set (words-meet-letterset str)) (set %)) wordlists))
+
+  (map #(str/join ", " %)(remove (comp zero? count) (word-lists-meet "g" wlnotcomp))) ; do for all missing letters
+  ; decide which clues should be used (from have the least missing letters to most) use tree to search
+  ; manually chose words for non completed clues so included all the missing letter now ccnumber 49
+  (def bws (nth-indices (:clues (:ccadded ex)) ind-wordnotcompleted))
+  (def bwch '("askew" "abrades" "boxer" "jails" "planted" "quantum" "grade" "moldy" "winners" "tsarist"))
+  (def bexms (map #(zipmap %1 %2) bws bwch)) ; seq of maps from these clues and their chosen words
+  (def bill-em (apply merge (:encodemap (:ccadded ex)) bexms)) ; merge them all
+  (def ex (gen-cc 5 :em bill-em :randomize? true))
+  ; this is the new completed code cracker
+  (printcodecracker (:root ex))
+  (def con-map (zipmap (distinct (remove #(= 0 %) (flatten (map (partial replace bill-em) (:rows (:root ex)))))) (range 1 27)))
+  (def new-rows (map (partial replace con-map)(map (partial replace bill-em) (:rows (:root ex)))))
+
+  (map #(->> root :clues (apply concat) (filter #{%}) count) (range 1 27))
+  (replace (:encodemap (nth ans 0)) (range 1 27))
   nil)
 
 
