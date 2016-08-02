@@ -1068,6 +1068,13 @@
   [ccvec]
   (map :word (get by-ccvec {:ccvec ccvec})))
 
+(def codecracker-count-rel
+  (relation
+    #(count (by-ccvec {:ccvec %}))
+    (map :ccvec (keys by-ccvec))
+    :ccvec
+    :count))
+
 (def vcstr (partial replace (merge (zipmap "aeiou" (repeat 5 \V)) (zipmap "bcdfghjklmnpqrstvwxy" (repeat \C)))))
 (def word-vcstr-rel (relation vcstr all-words-in-set :word :vcstr))
 (def by-vcstr (set/index word-vcstr-rel [:vcstr]))
@@ -1117,3 +1124,9 @@
 (defn get-by-anagram-count
   [count]
   (map :word (get by-anagram-count {:count count})))
+
+(def word-codecracker-count-rel (set/join codecracker-count-rel word-codecracker-rel))
+(def by-ccvec-count (set/index word-codecracker-count-rel [:count]))
+(defn get-by-ccvec-count
+  [count]
+  (map :word (get by-ccvec-count {:count count})))

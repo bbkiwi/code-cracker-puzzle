@@ -522,7 +522,7 @@
   ;(quick-bench (get-by-letters "apple"))
 
 
-  ; find all words with this code-cracker-patter
+  ; find all words with this code-cracker-pattern
   (get-by-ccvec [1 2 3 3 1])                                ;=> ("shoos" "yummy" "tweet" "setts" "sills" "sells" "yukky" "yuppy")
   ; find all words with same code-cracker pattern as "level"
   (get-by-ccvec ((comp make-code-cracker-vector encode) "level"))
@@ -547,6 +547,8 @@
   ;=> (38013 4845 1277 565 310 171 112 81 53 38 41 19 19 14 17 6 5 3 1 3 1 1 0 0 0 1)
   (map str/join (distinct (map vowelless (get-by-count 20)))) ;=> ("bt" "prs" "ld")
   (map get-by-vowelless (map str/join (distinct (map vowelless (get-by-count 20)))))
+  ; vowelless string and words that correspond for count 3
+  (map #(flatten (vec [% ((comp  sort get-by-vowelless) %)])) (sort (map str/join (distinct (map vowelless (get-by-count 3))))))
 
   (apply max (map count (vals by-sortedletters)))               ;=> 7
   (get-by-anagram-count 7)                                      ; 7 words all anagrams of "reaps"
@@ -557,8 +559,21 @@
   (map #(/ (count (get-by-anagram-count %)) %) (range 1 8))
   ;=> (53135 2735 424 99 17 9 1)
   (map str/join (distinct (map sort (get-by-anagram-count 6)))) ;=> ("eimrst" "acerst" "aelps" "aelpst" "aprst" "adeprs" "opst" "aers" "aelst")
-  (map get-by-sortedletters (map str/join (distinct (map sort (get-by-anagram-count 6))))))
+  (map get-by-sortedletters (map str/join (distinct (map sort (get-by-anagram-count 6)))))
 
+  ; words counts related to cc patterns
+  (apply max (map count (vals by-ccvec))) ; 3368 biggest number of words determined by some code cracker patterns
+  (sort-by count (distinct (map (comp make-code-cracker-vector encode) (get-by-ccvec-count 3368)))) ; [1 2 3 4 5 6] is the only such pattern
+  (def nw (sort (distinct (map count (vals by-ccvec))))) ; 1 2 3 ... 565 662 1008 1913 1985 2990 3060 3368 (number of words determined by some patterns)
+  (def npat (map #(count (distinct (map (comp make-code-cracker-vector encode) (get-by-ccvec-count %)))) nw))
+  (def nwnpatmap (zipmap nw npat)) ; (nwnpatmap 1) => 9405 so there are that many different code cracker pattersn that give a unique ans
+
+  ; code cracker patterns having k distinct answers
+  (def k 1)
+  ; patterns only
+  (sort-by count (distinct (map (comp make-code-cracker-vector encode) (get-by-ccvec-count k))))
+  ; patterns with words solving them
+  (sort-by (comp count first) (map #(vec [% (get-by-ccvec %)]) (distinct (map (comp make-code-cracker-vector encode) (get-by-ccvec-count k))))))
 ; -------------------------------------------
 
 
